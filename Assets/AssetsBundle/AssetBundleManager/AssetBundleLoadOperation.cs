@@ -461,7 +461,7 @@ namespace Seunghak
             if (bundle != null)
             {
                 ///@TODO: When asset bundle download fails this throws an exception...
-                webRequest = bundle.m_AssetBundle.LoadAssetAsync(assetName, systemType);
+                webRequest = bundle.assetBundle.LoadAssetAsync(assetName, systemType);
                 return false;
             }
             else

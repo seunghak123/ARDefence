@@ -6,14 +6,14 @@ namespace Seunghak.UIManager
 {
     public class UIManager : UnitySingleton<UIManager>
     {
-        private Stack<BaseUI> _windowStack = new Stack<BaseUI>();
-        private BaseUI _currentUI = null;
+        private Stack<BaseUI> windowStack = new Stack<BaseUI>();
+        private BaseUI currentUI = null;
         public void PopupWindow()
         {
             //윈도우 뺴주는 작업 연계되어있는 것들을 다뺸다.
-            while (_windowStack.Count > 0)
+            while (windowStack.Count > 0)
             {
-                BaseUI popUI = _windowStack.Pop();
+                BaseUI popUI = windowStack.Pop();
                 if(popUI is BaseUIWindow)
                 {
 
@@ -28,16 +28,16 @@ namespace Seunghak.UIManager
             }
 
 
-            if (_windowStack.Count == 0)
+            if (windowStack.Count == 0)
             {
                 //push lobbywindow
             }
         }
         public void PopUI()
         {
-            if (_windowStack.Count > 0)
+            if (windowStack.Count > 0)
             {
-                BaseUI popUI = _windowStack.Pop();
+                BaseUI popUI = windowStack.Pop();
 
                 popUI.ExitWindow();
             }
@@ -45,9 +45,9 @@ namespace Seunghak.UIManager
         }
         public void PopAllWindow()
         {
-            while (_windowStack.Count > 0)
+            while (windowStack.Count > 0)
             {
-                BaseUI popUI = _windowStack.Pop();
+                BaseUI popUI = windowStack.Pop();
 
                 //데이터 세팅된 값들 제거, 
             }
@@ -60,7 +60,7 @@ namespace Seunghak.UIManager
         }
         public void PushUI(BaseUI stackUI)
         {
-            _windowStack.Push(stackUI);
+            windowStack.Push(stackUI);
         }
     }
 }

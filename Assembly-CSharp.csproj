@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\UI\BaseUIPopup.cs" />
     <Compile Include="Assets\Scripts\UI\BaseUIWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\ShopUIPopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Window\TitleBackGroundWindow.cs" />
     <Compile Include="Assets\Scripts\Utils\FileUtils.cs" />
     <Compile Include="Assets\Unity Technologies\SignInWithApple\API\SignInWithApple.cs" />
     <Compile Include="Assets\Unity Technologies\SignInWithApple\Samples\Scripts\SignInWithAppleTest_Callbacks.cs" />

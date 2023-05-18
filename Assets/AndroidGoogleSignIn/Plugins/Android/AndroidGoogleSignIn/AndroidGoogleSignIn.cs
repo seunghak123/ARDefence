@@ -17,13 +17,13 @@ public class AndroidGoogleSignIn : MonoBehaviour
 
 	#endregion
 
-    private Action<AndroidGoogleSignInAccount> _successCallback;
-    private Action<string> _errorCallback;
+    private Action<AndroidGoogleSignInAccount> successCallback;
+    private Action<string> errorCallback;
 
     public void SignIn(string webClientId, Action<AndroidGoogleSignInAccount> successCallback, Action<string> errorCallback)
     {
-        _successCallback = successCallback;
-        _errorCallback = errorCallback;
+        this.successCallback = successCallback;
+        this.errorCallback = errorCallback;
         using (var unityPlayerClass = new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
         using (var unityActivity = unityPlayerClass.GetStatic<AndroidJavaObject>("currentActivity"))
         using (var signInFragmentClass = new AndroidJavaClass("gr.loukaspd.googlesignin.GoogleSignInFragment"))
@@ -43,19 +43,19 @@ public class AndroidGoogleSignIn : MonoBehaviour
     		return;
     	}
 
-		if (_successCallback != null) _successCallback.Invoke(account);
+		if (successCallback != null) successCallback.Invoke(account);
 		ClearReferences ();
     }
 
     public void UnityGoogleSignInErrorCallback(string errorMsg) {
-		if (_errorCallback != null) _errorCallback.Invoke(errorMsg);
+		if (errorCallback != null) errorCallback.Invoke(errorMsg);
 
 		ClearReferences ();
     }
 
 
 	private void ClearReferences() {
-		_successCallback = null;
-		_errorCallback = null;
+		successCallback = null;
+		errorCallback = null;
 	}
 }

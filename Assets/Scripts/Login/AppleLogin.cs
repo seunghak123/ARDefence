@@ -6,7 +6,7 @@ namespace Seunghak.LoginSystem
 {
     public class AppleLogin : SignInWithApple, LoginInterface
     {
-        private string _appleUserId;
+        private string appleUserId;
 
         public void InitLogin()
         {
@@ -27,9 +27,9 @@ namespace Seunghak.LoginSystem
             UserInfo userInfo = args.userInfo;
 
             // Save the userId so we can use it later for other operations.
-            _appleUserId = userInfo.userId;
+            appleUserId = userInfo.userId;
 
-            GetCredentialState(_appleUserId, OnCredentialState);
+            GetCredentialState(appleUserId, OnCredentialState);
         }
 
         private void OnCredentialState(SignInWithApple.CallbackArgs args)

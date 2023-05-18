@@ -48,22 +48,22 @@ namespace Seunghak
     /// </summary>
     public class LoadedAssetBundle
     {
-        public AssetBundle m_AssetBundle;
-        public int m_ReferencedCount;
+        public AssetBundle assetBundle;
+        public int referencedCount;
 
         internal event Action unload;
 
         internal void OnUnload()
         {
-            m_AssetBundle.Unload(false);
+            assetBundle.Unload(false);
             if (unload != null)
                 unload();
         }
 
         public LoadedAssetBundle(AssetBundle assetBundle)
         {
-            m_AssetBundle = assetBundle;
-            m_ReferencedCount = 1;
+            this.assetBundle = assetBundle;
+            referencedCount = 1;
         }
     }
 
@@ -414,7 +414,7 @@ namespace Seunghak
             loadedAssetBundles.TryGetValue(assetBundleName, out bundle);
             if (bundle != null)
             {
-                ++bundle.m_ReferencedCount;
+                ++bundle.referencedCount;
                 return true;
             }
 
@@ -552,7 +552,7 @@ namespace Seunghak
             if (bundle == null)
                 return;
 
-            if (--bundle.m_ReferencedCount == 0)
+            if (--bundle.referencedCount == 0)
             {
                 bundle.OnUnload();
                 loadedAssetBundles.Remove(assetBundleName);
@@ -593,7 +593,7 @@ namespace Seunghak
                     Debug.Log("assetbundle null : " + download.assetBundleName);
                     return;
                 }
-                download.assetBundle.m_ReferencedCount = nRefCount;
+                download.assetBundle.referencedCount = nRefCount;
                 downloadingBundles.Remove(download.assetBundleName);
             }
             else
