@@ -98,14 +98,6 @@ namespace Seunghak
             set { baseDownloadingURL = value; }
         }
 
-        public delegate string OverrideBaseDownloadingURLDelegate(string bundleName);
-
-        /// <summary>
-        /// Implements per-bundle base downloading URL override.
-        /// The subscribers must return null values for unknown bundle names;
-        /// </summary>
-        public static event OverrideBaseDownloadingURLDelegate overrideBaseDownloadingURL;
-
         /// <summary>
         /// Variants which is used to define the active variants.
         /// </summary>
@@ -192,28 +184,6 @@ namespace Seunghak
         }
 
         /// <summary>
-        /// Sets base downloading URL to a local development server URL.
-        /// </summary>
-        public static void SetDevelopmentAssetBundleServer()
-        {
-#if UNITY_EDITOR
-            // If we're in Editor simulation mode, we don't have to setup a download URL
-            if (SimulateAssetBundleInEditor)
-                return;
-#endif
-
-            TextAsset urlFile = Resources.Load("AssetBundleServerURL") as TextAsset;
-            string url = (urlFile != null) ? urlFile.text.Trim() : null;
-            if (url == null || url.Length == 0)
-            {
-            }
-            else
-            {
-                AssetBundleManager.SetSourceAssetBundleURL(url);
-            }
-        }
-
-        /// <summary>
         /// Retrieves an asset bundle that has previously been requested via LoadAssetBundle.
         /// Returns null if the asset bundle or one of its dependencies have not been downloaded yet.
         /// </summary>
@@ -272,9 +242,6 @@ namespace Seunghak
         /// </summary>
         static public AssetBundleLoadManifestOperation Initialize(string manifestAssetBundleName)
         {
-            var go = new GameObject("AssetBundleManager", typeof(AssetBundleManager));
-            DontDestroyOnLoad(go);
-
 #if UNITY_EDITOR
             // If we're in Editor simulation mode, we don't need the manifest assetBundle.
             if (SimulateAssetBundleInEditor)
@@ -325,15 +292,6 @@ namespace Seunghak
         // This URL may be overridden on per-bundle basis via overrideBaseDownloadingURL event.
         protected static string GetAssetBundleBaseDownloadingURL(string bundleName)
         {
-            if (overrideBaseDownloadingURL != null)
-            {
-                foreach (OverrideBaseDownloadingURLDelegate method in overrideBaseDownloadingURL.GetInvocationList())
-                {
-                    string res = method(bundleName);
-                    if (res != null)
-                        return res;
-                }
-            }
             return baseDownloadingURL;
         }
 

@@ -2,6 +2,13 @@
 
 namespace Seunghak.UIManager
 {
+    public enum UI_TYPE
+    {
+        //1~100까진 기본 Window
+        LOBBY_WINDOW,
+
+
+    }
     public interface IBaseUIController
     {
         void EnterWindow();

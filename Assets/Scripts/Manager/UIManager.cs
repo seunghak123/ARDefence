@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace Seunghak.UIManager
 {
+    using Seunghak.Common;
     public class UIManager : UnitySingleton<UIManager>
     {
         private Stack<BaseUI> windowStack = new Stack<BaseUI>();
@@ -16,15 +17,13 @@ namespace Seunghak.UIManager
                 BaseUI popUI = windowStack.Pop();
                 if(popUI is BaseUIWindow)
                 {
-
+                    popUI.ExitWindow();
                     break;
                 }
                 else
                 {
-                    //popupUI일떄 
-
+                    popUI.ExitWindow();
                 }
-                popUI.ExitWindow();
             }
 
 
@@ -54,13 +53,29 @@ namespace Seunghak.UIManager
         }
         public void RestoreWindow()
         {
-            //게임 씬이나, 타 씬에서 복귀했을떄 불러줄 함수 로비로 가지않는한
-            //해당 함수가 불린다. 팝업과 윈도우가 둘다 복구 윈도우 초기화 함수 필요
-
+            Stack<BaseUI> removedPopup = new Stack<BaseUI>();
+            while (windowStack.Count > 0)
+            {
+                BaseUI popUI = windowStack.Peek();
+                if (popUI is BaseUIWindow)
+                {
+                    popUI.RestoreWindow();
+                    break;
+                }
+                else
+                {
+                    popUI.ExitWindow();
+                }
+                popUI.RestoreWindow();
+            }
         }
         public void PushUI(BaseUI stackUI)
         {
             windowStack.Push(stackUI);
+        }
+        public void PushUI(UI_TYPE uiType)
+        {
+            //GameResourceManager.Instance.s
         }
     }
 }

@@ -236,14 +236,20 @@ namespace Seunghak
         {
             error = webRequest.error;
             if (!string.IsNullOrEmpty(error))
+            {
                 return;
+            }
 
             var handler = webRequest.downloadHandler as DownloadHandlerAssetBundle;
             AssetBundle bundle = handler.assetBundle;
             if (bundle == null)
+            {
                 error = string.Format("{0} is not a valid asset bundle.", assetBundleName);
+            }
             else
+            {
                 assetBundle = new LoadedAssetBundle(bundle);
+            }
 
             webRequest.Dispose();
             webRequest = null;

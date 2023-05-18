@@ -79,11 +79,13 @@ namespace Seunghak.Common
         public static void LoadAssetDatas()
         {
             //번들매니저 초기화 Android 파일 세팅
+            AssetBundleManager.BaseDownloadingURL = "https://github.com/seunghak123/GitCDNRepa";
             AssetBundleManager.Initialize();
 
             string bundleSavePath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
 
             BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleSavePath);
+
 
             //json파일 읽고, 모든 번들 리스트를 가지고 저장해야한다.
             //
@@ -111,8 +113,6 @@ namespace Seunghak.Common
             {
                 prefabObjectpools.Add(type, new ObjectPool());
             }
-
-            //AssetBundleManager.GetLoadedAssetBundle()
             return null;
         }
         public void PushObjectPool(string type, GameObject targetObject)
@@ -124,17 +124,34 @@ namespace Seunghak.Common
 
             prefabObjectpools[type].PushPool(targetObject);
         }
-        public static void RemovePoolObject(GameObject targetObject)
+        public void RemovePoolObject(GameObject targetObject)
         {
             Destroy(targetObject);
+        }
+        public GameObject SpawnObject(string objectName)
+        {
+            if (!prefabObjectpools.ContainsKey(objectName))
+            {
+                if (prefabLists.ContainsKey(objectName))
+                {
+                    //
+                }
+                else
+                {
+                    //프리팹 리스트에 없는 상황
+                }
+            }
+            return null;
         }
     }
 
     public class ObjectPool
     {
         private List<GameObject> poolObjects = new List<GameObject>();
+        private GameObject poolObject;
         public void PushPool(GameObject targetObject)
         {
+            poolObject = targetObject;
             poolObjects.Add(targetObject);
         }
         public GameObject GetPoolObject(GameObject makeObject)
@@ -159,7 +176,7 @@ namespace Seunghak.Common
         {
             for(int i=0;i< poolObjects.Count; i++)
             {
-                GameResourceManager.RemovePoolObject(poolObjects[i]);
+                GameResourceManager.Instance.RemovePoolObject(poolObjects[i]);
             }
 
             poolObjects.Clear();
