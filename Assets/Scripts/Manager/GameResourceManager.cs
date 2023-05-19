@@ -70,7 +70,11 @@ namespace Seunghak.Common
             string bundleSavePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}";
             FileUtils.SaveFile<BundleListsDic>(bundleSavePath, FileUtils.BUNDLE_LIST_FILE_NAME, listsDic);
         }
-
+        [MenuItem("Tools/BuildAssetBundles", false, 1002)]
+        public static void BuildBundles()
+        {
+            BuildPipeline.BuildAssetBundles("Assets/Android", BuildAssetBundleOptions.None, BuildTarget.Android);
+        }
 #endif
         private Dictionary<string, object> prefabLists = new Dictionary<string, object>();
         private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
