@@ -43,6 +43,8 @@ namespace Seunghak.Common
     }
     public class GameResourceManager : UnitySingleton<GameResourceManager>
     {
+        private Dictionary<string, object> prefabLists = new Dictionary<string, object>();
+        private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
 #if UNITY_EDITOR
         private void Update()
         {
@@ -70,9 +72,6 @@ namespace Seunghak.Common
             string bundleSavePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}";
             FileUtils.SaveFile<BundleListsDic>(bundleSavePath, FileUtils.BUNDLE_LIST_FILE_NAME, listsDic);
         }
-#endif
-        private Dictionary<string, object> prefabLists = new Dictionary<string, object>();
-        private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
 
         [MenuItem("Tools/TestReadBundle", false, 1001)]
         public static void LoadAssetDatas()
@@ -89,6 +88,7 @@ namespace Seunghak.Common
             //json파일 읽고, 모든 번들 리스트를 가지고 저장해야한다.
             //
         }
+#endif
         private static string GetStreamingAssetsPath()
         {
             if (Application.isEditor)

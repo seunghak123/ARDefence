@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Seunghak.UIManager
 {
     using Seunghak.SceneManager;
-    public class TitleBackGroundWindow : BaseUIWindow
+    public class TitleWindow : BaseUIWindow
     {
         [SerializeField] private TextMeshProUGUI versionText;
         [SerializeField] private Button enterButton;
@@ -22,15 +22,15 @@ namespace Seunghak.UIManager
         }
         public override void RegistEvent()
         {
-            enterButton.onClick.AddListener(EnterLobby);
+            //enterButton.onClick.AddListener(EnterLobby);
         }
         public override void DeleteRegistedEvent()
         {
-            enterButton.onClick.RemoveListener(EnterLobby);
+            //enterButton.onClick.RemoveListener(EnterLobby);
         }
         private void EnterLobby()
         {
-            SceneManager.Instance.ChangeScene(E_SCENE_TYPE.LOBBY);
+            //SceneManager.Instance.ChangeScene(E_SCENE_TYPE.LOBBY);
         }
     }
 }
