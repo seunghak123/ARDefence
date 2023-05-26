@@ -5,7 +5,17 @@ namespace Seunghak
     public class UnitySingleton<T> : MonoBehaviour where T : UnityEngine.Component
     {
         private static T s_Instance = null;
-
+        private void Awake()
+        {
+            if (s_Instance == null)
+            {
+                s_Instance = this.gameObject.GetComponent<T>();
+                if (s_Instance != null)
+                {
+                    DontDestroyOnLoad(s_Instance.gameObject);
+                }
+            }
+        }
         private void OnDestroy()
         {
             s_Instance = null;

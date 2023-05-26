@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Seunghak.UIManager;
+using UnityEngine.Networking;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -81,11 +82,9 @@ namespace Seunghak.Common
             AssetBundleManager.BaseDownloadingURL = "https://github.com/seunghak123/GitCDNRepa/blob/main";
             AssetBundleManager.Initialize();
 
-            string bundleSavePath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+            string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
 
-            BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleSavePath);
-            //json파일 읽고, 모든 번들 리스트를 가지고 저장해야한다.
-            //
+            BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
         }
 #endif
         private static string GetStreamingAssetsPath()

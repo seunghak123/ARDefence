@@ -90,8 +90,6 @@ namespace Seunghak.SceneManager
         }
         private void BaseExitStep()
         {
-            //페이드인 페이드아웃이나, 각종 씬 나갈때의 액션들 출력(공용으로 사용할 것은 여기에 구현)
-            //공용으로 사용하지 않을 것들은 addactionList 에 정의 세팅해주는 함수 넣어줄 것
             _currentSceneController = null;
             ExecuteAddStepAcion();
             NextStep(E_SCENESTEP_TYPE.LOADSTEP);

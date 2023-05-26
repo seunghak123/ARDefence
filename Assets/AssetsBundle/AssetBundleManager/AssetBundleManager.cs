@@ -106,7 +106,13 @@ namespace Seunghak
             get { return activeVariants; }
             set { activeVariants = value; }
         }
+        public delegate string OverrideBaseDownloadingURLDelegate(string bundleName);
 
+        /// <summary>
+        /// Implements per-bundle base downloading URL override.
+        /// The subscribers must return null values for unknown bundle names;
+        /// </summary>
+        public static event OverrideBaseDownloadingURLDelegate overrideBaseDownloadingURL;
         /// <summary>
         /// AssetBundleManifest object which can be used to load the dependecies
         /// and check suitable assetBundle variants.
@@ -292,6 +298,15 @@ namespace Seunghak
         // This URL may be overridden on per-bundle basis via overrideBaseDownloadingURL event.
         protected static string GetAssetBundleBaseDownloadingURL(string bundleName)
         {
+            if (overrideBaseDownloadingURL != null)
+            {
+                foreach (OverrideBaseDownloadingURLDelegate method in overrideBaseDownloadingURL.GetInvocationList())
+                {
+                    string res = method(bundleName);
+                    if (res != null)
+                        return res;
+                }
+            }
             return baseDownloadingURL;
         }
 
