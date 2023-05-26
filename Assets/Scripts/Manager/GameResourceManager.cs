@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Seunghak.UIManager;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -43,7 +44,7 @@ namespace Seunghak.Common
     }
     public class GameResourceManager : UnitySingleton<GameResourceManager>
     {
-        private Dictionary<string, object> prefabLists = new Dictionary<string, object>();
+        private Dictionary<string, UnityEngine.Object> prefabLists = new Dictionary<string, UnityEngine.Object>();
         private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
 #if UNITY_EDITOR
         private void Update()
@@ -76,15 +77,13 @@ namespace Seunghak.Common
         [MenuItem("Tools/TestReadBundle", false, 1001)]
         public static void LoadAssetDatas()
         {
-            //번들매니저 초기화 Android 파일 세팅
-            AssetBundleManager.BaseDownloadingURL = "https://github.com/seunghak123/GitCDNRepa";
+        //번들매니저 초기화 Android 파일 세팅
+            AssetBundleManager.BaseDownloadingURL = "https://github.com/seunghak123/GitCDNRepa/blob/main";
             AssetBundleManager.Initialize();
 
             string bundleSavePath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
 
             BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleSavePath);
-
-
             //json파일 읽고, 모든 번들 리스트를 가지고 저장해야한다.
             //
         }
@@ -101,11 +100,6 @@ namespace Seunghak.Common
             }
             return "file://" + Application.streamingAssetsPath;
         }
-        //public T GetResourceObject<T>(string resouceName)
-        //{
-        //    AssetBundleManager.LoadAssetAsync<
-        //    return T;
-        //}
         public GameObject GetPoolObject(string type)
         {
             if (!prefabObjectpools.ContainsKey(type))
@@ -142,6 +136,15 @@ namespace Seunghak.Common
             }
             return null;
         }
+        public GameObject OpenUI(UI_TYPE openUIType)
+        {
+            if (prefabObjectpools.ContainsKey(openUIType.ToString()))
+            {
+                return prefabObjectpools[openUIType.ToString()].GetPoolObject();
+            }
+
+            return SpawnObject(openUIType.ToString());
+        }
     }
 
     public class ObjectPool
@@ -153,7 +156,7 @@ namespace Seunghak.Common
             poolObject = targetObject;
             poolObjects.Add(targetObject);
         }
-        public GameObject GetPoolObject(GameObject makeObject)
+        public GameObject GetPoolObject()
         {
             for(int i = 0; i < poolObjects.Count; i++)
             {
@@ -165,7 +168,7 @@ namespace Seunghak.Common
                 }
             }
 
-            return GameObject.Instantiate(makeObject);
+            return GameObject.Instantiate(poolObject);
         }
         public void ReleasePool()
         {

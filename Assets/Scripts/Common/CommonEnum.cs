@@ -7,3 +7,9 @@ public enum E_ANIMATION_EVENT
     CAMERA_ACATION,         //카메라 이벤트
     
 }
+public enum E_LOGIN_TYPE
+{
+    GUEST_LOGIN,
+    GOOGLE_LOGIN,
+    APPLE_LOGIN,
+}

@@ -71,7 +71,12 @@ namespace Seunghak.UIManager
         }
         public void PushUI(BaseUI stackUI)
         {
-            windowStack.Push(stackUI);
+            if (!windowStack.Contains(stackUI))
+            {
+                windowStack.Push(stackUI);
+            }
+
+            stackUI.EnterWindow();
         }
         public void PushUI(UI_TYPE uiType)
         {
