@@ -39,6 +39,7 @@ using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Seunghak.Common;
 
 namespace Seunghak
 {
@@ -147,15 +148,25 @@ namespace Seunghak
             }
         }
 #endif
+        public void InitAssetBundleManager()
+        {
+            string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
 
+            BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+
+            for(int i=0;i< loadDic.bundleNameLists.Count; i++)
+            {
+                LoadAssetBundle(loadDic.bundleNameLists[i]);
+            }
+        }
         private static string GetStreamingAssetsPath()
         {
             if (Application.isEditor)
-                return "file://" +  System.Environment.CurrentDirectory.Replace("\\", "/"); // Use the build output folder directly.
+                return Application.dataPath;
             else if (Application.isMobilePlatform || Application.isConsolePlatform)
                 return Application.streamingAssetsPath;
             else // For standalone player.
-                return "file://" +  Application.streamingAssetsPath;
+                return "file://" + Application.streamingAssetsPath;
         }
 
         /// <summary>

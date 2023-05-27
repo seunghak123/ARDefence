@@ -52,7 +52,30 @@ namespace Seunghak.Common
         {
             if (Input.GetKeyDown(KeyCode.A))
             {
-                LoadAssetDatas();
+                AssetBundleManager.Instance.InitAssetBundleManager();
+
+                string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+
+                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+
+                for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
+                {
+                    string errorCode;
+
+                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i], out errorCode);
+
+                    if (loadedAssets == null)
+                    {
+                        return;
+                    }
+
+                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i]].Count; j++)
+                    {
+                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j];
+
+                        prefabLists.Add(insertObject, loadedAssets.assetBundle.LoadAsset(insertObject));
+                    }
+                }
             }
         }
         [MenuItem("Tools/MakeBundleJson", false, 1000)]
@@ -62,14 +85,18 @@ namespace Seunghak.Common
             BundleListsDic listsDic = new BundleListsDic();
             for (int i=0;i< bundleLists.Length;i++)
             {
-                listsDic.AddBundleName(bundleLists[i]);
                 string[] bundleobjectlists = AssetDatabase.GetAssetPathsFromAssetBundle(bundleLists[i]);
+                if (bundleobjectlists.Length <= 0)
+                {
+                    continue;
+                }
                 for(int j=0;j< bundleobjectlists.Length; j++)
                 {
                     string[] bundlepaths = bundleobjectlists[j].Split('/');
                     listsDic.AddObjectRejeon(bundleLists[i], bundlepaths[bundlepaths.Length - 1]);
 
                 }
+                listsDic.AddBundleName(bundleLists[i]);
             }
             string bundleSavePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}";
             FileUtils.SaveFile<BundleListsDic>(bundleSavePath, FileUtils.BUNDLE_LIST_FILE_NAME, listsDic);
@@ -79,12 +106,8 @@ namespace Seunghak.Common
         public static void LoadAssetDatas()
         {
         //번들매니저 초기화 Android 파일 세팅
-            AssetBundleManager.BaseDownloadingURL = "https://github.com/seunghak123/GitCDNRepa/blob/main";
+            AssetBundleManager.BaseDownloadingURL = "C:/Users/dhtmd/ARDefence/Assets/Android";
             AssetBundleManager.Initialize();
-
-            string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
-
-            BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
         }
 #endif
         private static string GetStreamingAssetsPath()
@@ -109,12 +132,20 @@ namespace Seunghak.Common
         }
         public void PushObjectPool(string type, GameObject targetObject)
         {
+            if (targetObject == null)
+            {
+                return;
+            }
             if (!prefabObjectpools.ContainsKey(type))
             {
                 prefabObjectpools.Add(type, new ObjectPool());
             }
 
             prefabObjectpools[type].PushPool(targetObject);
+        }
+        private void SetFromAssetBundle(string objectName)
+        {
+
         }
         public void RemovePoolObject(GameObject targetObject)
         {
@@ -126,11 +157,13 @@ namespace Seunghak.Common
             {
                 if (prefabLists.ContainsKey(objectName))
                 {
-                    //
+                    PushObjectPool(objectName, prefabLists[objectName] as GameObject);
                 }
                 else
                 {
-                    //프리팹 리스트에 없는 상황
+                    //프리팹 리스트에 없는 상황 이 경우엔 에러 처리
+                    Debug.LogError($"PrefabLists have not {objectName}");
+                    return null;
                 }
             }
             return null;
@@ -151,7 +184,7 @@ namespace Seunghak.Common
         private List<GameObject> poolObjects = new List<GameObject>();
         private GameObject poolObject;
         public void PushPool(GameObject targetObject)
-        {
+        { 
             poolObject = targetObject;
             poolObjects.Add(targetObject);
         }
