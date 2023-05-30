@@ -47,37 +47,9 @@ namespace Seunghak.Common
     {
         private Dictionary<string, UnityEngine.Object> prefabLists = new Dictionary<string, UnityEngine.Object>();
         private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
+        private static string DOWNLOAD_WEB_URL = "C:/Users/dhtmd/ARDefence/Assets/Android";
 #if UNITY_EDITOR
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.A))
-            {
-                AssetBundleManager.Instance.InitAssetBundleManager();
 
-                string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
-
-                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
-
-                for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
-                {
-                    string errorCode;
-
-                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i], out errorCode);
-
-                    if (loadedAssets == null)
-                    {
-                        return;
-                    }
-
-                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i]].Count; j++)
-                    {
-                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j];
-
-                        prefabLists.Add(insertObject, loadedAssets.assetBundle.LoadAsset(insertObject));
-                    }
-                }
-            }
-        }
         [MenuItem("Tools/MakeBundleJson", false, 1000)]
         public static void MakeBundleJson()
         {
@@ -102,14 +74,42 @@ namespace Seunghak.Common
             FileUtils.SaveFile<BundleListsDic>(bundleSavePath, FileUtils.BUNDLE_LIST_FILE_NAME, listsDic);
         }
 
-        [MenuItem("Tools/TestReadBundle", false, 1001)]
-        public static void LoadAssetDatas()
-        {
-        //번들매니저 초기화 Android 파일 세팅
-            AssetBundleManager.BaseDownloadingURL = "C:/Users/dhtmd/ARDefence/Assets/Android";
-            AssetBundleManager.Initialize();
-        }
 #endif
+        public void DownLoadAssetDatas()
+        {
+            AssetBundleManager.BaseDownloadingURL = DOWNLOAD_WEB_URL;
+
+            AssetBundleManager.Initialize();
+
+            AssetBundleManager.Instance.InitAssetBundleManager();
+
+            LoadAssetDatas();       
+        }
+        public void LoadAssetDatas()
+        {
+            string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+
+            BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+
+            for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
+            {
+                string errorCode;
+
+                LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i], out errorCode);
+
+                if (loadedAssets == null)
+                {
+                    return;
+                }
+
+                for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i]].Count; j++)
+                {
+                    string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j];
+
+                    prefabLists.Add(insertObject, loadedAssets.assetBundle.LoadAsset(insertObject));
+                }
+            }
+        }
         private static string GetStreamingAssetsPath()
         {
             if (Application.isEditor)
