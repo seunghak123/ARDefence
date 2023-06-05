@@ -17,6 +17,10 @@ namespace Seunghak.UIManager
         [SerializeField] private Button appleLoginButton;
         [SerializeField] private Button guestLoginButton;
 
+        private void Awake()
+        {
+            EnterWindow();
+        }
         public void Update()
         {
 

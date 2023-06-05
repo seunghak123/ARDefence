@@ -7,6 +7,7 @@ namespace Seunghak.UIManager
     using Seunghak.Common;
     public class UIManager : UnitySingleton<UIManager>
     {
+        [SerializeField] BaseCanvas baseCanvasObject;
         private Stack<BaseUI> windowStack = new Stack<BaseUI>();
         private BaseUI currentUI = null;
         public void PopupWindow()
@@ -80,7 +81,33 @@ namespace Seunghak.UIManager
         }
         public void PushUI(UI_TYPE uiType)
         {
-            //GameResourceManager.Instance.s
+            GameObject targetUI = GameResourceManager.Instance.SpawnObject(uiType.ToString());
+
+            if (targetUI == null)
+            {
+                Debug.Log("Error : TargetUI Object is Empty");
+                return;
+            }
+
+            targetUI.SetActive(true);
+
+            if (targetUI.GetComponent<BaseUIWindow>() != null)
+            {
+                targetUI.transform.parent = BaseCanvas.Instance.windowUIParent;
+            }
+            else if (targetUI.GetComponent<BaseUIPopup>() != null)
+            {
+                targetUI.transform.parent = BaseCanvas.Instance.popUpUIParent;
+            }
+            else
+            {
+                targetUI.transform.parent = BaseCanvas.Instance.UtilUIParent ;
+            }
+            BaseUI uicomponent = targetUI.GetComponent<BaseUI>();
+            if (uicomponent != null)
+            {
+                uicomponent.EnterWindow();
+            }
         }
     }
 }

@@ -17,9 +17,7 @@ namespace Seunghak.LoginSystem
         {
             string userToken = Guid.NewGuid().ToString();
 
-            //서버에 userToken을 보내서 성공 요청
-
-
+            //Token 값에 따라 
         }
     }
 }

@@ -358,8 +358,7 @@ namespace Seunghak
         protected string levelName;
         protected bool isAdditive;
         protected string downloadingError;
-        protected AsyncOperation webOperation
-            ;
+        protected AsyncOperation webOperation;
 
         public AssetBundleLoadLevelOperation(string assetbundleName, string levelName, bool isAdditive)
         {
