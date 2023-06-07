@@ -115,9 +115,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 476e63d4931679a4496dc4fe4e996e05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windowUIParent: {fileID: 7801834497652600691}
-  popUpUIParent: {fileID: 7801834497112167378}
-  UtilUIParent: {fileID: 7801834498092790632}
+  windowUIParent: {fileID: 7801834497652600690}
+  popUpUIParent: {fileID: 7801834497112167377}
+  UtilUIParent: {fileID: 7801834498092790631}
 --- !u!1 &7801834497112167378
 GameObject:
   m_ObjectHideFlags: 0

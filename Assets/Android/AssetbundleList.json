@@ -1,1 +1,1 @@
-{"bundleNameLists":["ui_popup"],"bundleObjectLists":{"ui_popup":["BaseUIPopup.prefab"]}}
+{"bundleNameLists":["ui_common","ui_popup","ui_window"],"bundleObjectLists":{"ui_common":["BaseCanvas.prefab","BaseScrollView.prefab","BaseTopUI.prefab"],"ui_popup":["BaseUIPopup.prefab"],"ui_window":["BaseUIWindow.prefab","ShopWindow.prefab","TitleWindow.prefab"]}}

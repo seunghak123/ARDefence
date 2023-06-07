@@ -75,13 +75,27 @@ namespace Seunghak.Common
         }
 
 #endif
-        public void DownLoadAssetDatas()
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                StartCoroutine( DownLoadAssetDatas());
+            }
+        }
+        public IEnumerator DownLoadAssetDatas()
         {
             AssetBundleManager.BaseDownloadingURL = DOWNLOAD_WEB_URL;
 
-            AssetBundleManager.Initialize();
+#if UNITY_EDITOR
+            if (!AssetBundleManager.SimulateAssetBundleInEditor)
+            {
+                yield return AssetBundleManager.Initialize().IsDone();
+            }
+#endif
 
             AssetBundleManager.Instance.InitAssetBundleManager();
+
+            yield return AssetBundleManager.Instance.GetReadyStatus(); 
 
             LoadAssetDatas();       
         }
@@ -90,25 +104,40 @@ namespace Seunghak.Common
             string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
 
             BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
-
-            for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
+#if UNITY_EDITOR
+            if (!AssetBundleManager.SimulateAssetBundleInEditor)
+#endif
             {
-                string errorCode;
-
-                LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i], out errorCode);
-
-                if (loadedAssets == null)
+                for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
                 {
-                    return;
-                }
+                    string errorCode;
 
-                for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i]].Count; j++)
-                {
-                    string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j];
+                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i], out errorCode);
 
-                    prefabLists.Add(insertObject, loadedAssets.assetBundle.LoadAsset(insertObject));
+                    if (loadedAssets == null)
+                    {
+                        return;
+                    }
+
+                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i]].Count; j++)
+                    {
+                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j];
+                        string[] namelists = insertObject.Split('.');
+                        prefabLists.Add(namelists[0], loadedAssets.assetBundle.LoadAsset(insertObject));
+                    }
                 }
             }
+#if UNITY_EDITOR
+            else
+            {
+                string basicPath = Application.dataPath;
+                //for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
+                //{
+                //    basicPath.
+                //}
+            }
+#endif
+            Debug.Log("Ready To Load");
         }
         private static string GetStreamingAssetsPath()
         {
@@ -130,7 +159,7 @@ namespace Seunghak.Common
             }
             return null;
         }
-        public void PushObjectPool(string type, GameObject targetObject)
+        public void PushObjectPool(string type, Object targetObject)
         {
             if (targetObject == null)
             {
@@ -153,20 +182,32 @@ namespace Seunghak.Common
         }
         public GameObject SpawnObject(string objectName)
         {
-            if (!prefabObjectpools.ContainsKey(objectName))
+#if UNITY_EDITOR
+            if (!AssetBundleManager.SimulateAssetBundleInEditor)
+#endif
             {
-                if (prefabLists.ContainsKey(objectName))
+                if (!prefabObjectpools.ContainsKey(objectName))
                 {
-                    PushObjectPool(objectName, prefabLists[objectName] as GameObject);
+                    if (prefabLists.ContainsKey(objectName))
+                    {
+                        PushObjectPool(objectName, prefabLists[objectName] as GameObject);
+                    }
+                    else
+                    {
+                        //프리팹 리스트에 없는 상황 이 경우엔 에러 처리
+                        Debug.LogError($"PrefabLists have not {objectName}");
+                        return null;
+                    }
                 }
-                else
-                {
-                    //프리팹 리스트에 없는 상황 이 경우엔 에러 처리
-                    Debug.LogError($"PrefabLists have not {objectName}");
-                    return null;
-                }
+                return prefabObjectpools[objectName].GetPoolObject();
             }
-            return null;
+#if UNITY_EDITOR
+            else
+            {
+                //AssetBundle.LoadFromFile()
+                return null;
+            }
+#endif
         }
         public GameObject OpenUI(UI_TYPE openUIType)
         {
@@ -182,11 +223,10 @@ namespace Seunghak.Common
     public class ObjectPool
     {
         private List<GameObject> poolObjects = new List<GameObject>();
-        private GameObject poolObject;
-        public void PushPool(GameObject targetObject)
+        private Object poolObject;
+        public void PushPool(Object targetObject)
         { 
             poolObject = targetObject;
-            poolObjects.Add(targetObject);
         }
         public GameObject GetPoolObject()
         {
@@ -200,7 +240,7 @@ namespace Seunghak.Common
                 }
             }
 
-            return GameObject.Instantiate(poolObject);
+            return GameObject.Instantiate(poolObject) as GameObject;
         }
         public void ReleasePool()
         {

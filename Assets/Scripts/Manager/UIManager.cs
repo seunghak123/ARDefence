@@ -41,15 +41,12 @@ namespace Seunghak.UIManager
 
                 popUI.ExitWindow();
             }
-            //상위 UI하나만 뺴주는 작업
         }
         public void PopAllWindow()
         {
             while (windowStack.Count > 0)
             {
-                BaseUI popUI = windowStack.Pop();
-
-                //데이터 세팅된 값들 제거, 
+                PopUI();
             }
         }
         public void RestoreWindow()
@@ -78,10 +75,13 @@ namespace Seunghak.UIManager
             }
 
             stackUI.EnterWindow();
+            currentUI = stackUI;
         }
         public void PushUI(UI_TYPE uiType)
         {
-            GameObject targetUI = GameResourceManager.Instance.SpawnObject(uiType.ToString());
+            string targetUIName = uiType.ToString();
+
+            GameObject targetUI = GameResourceManager.Instance.SpawnObject(targetUIName);
 
             if (targetUI == null)
             {
@@ -90,7 +90,6 @@ namespace Seunghak.UIManager
             }
 
             targetUI.SetActive(true);
-
             if (targetUI.GetComponent<BaseUIWindow>() != null)
             {
                 targetUI.transform.parent = BaseCanvas.Instance.windowUIParent;
@@ -101,13 +100,22 @@ namespace Seunghak.UIManager
             }
             else
             {
-                targetUI.transform.parent = BaseCanvas.Instance.UtilUIParent ;
+                targetUI.transform.parent = BaseCanvas.Instance.UtilUIParent;
             }
+
+
             BaseUI uicomponent = targetUI.GetComponent<BaseUI>();
+
             if (uicomponent != null)
             {
+                if (!windowStack.Contains(uicomponent))
+                {
+                    windowStack.Push(uicomponent);
+                }
                 uicomponent.EnterWindow();
             }
+
+            currentUI = uicomponent;
         }
     }
 }

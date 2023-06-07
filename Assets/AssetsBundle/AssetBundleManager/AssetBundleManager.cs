@@ -542,7 +542,6 @@ namespace Seunghak
                 loadedAssetBundles.Remove(assetBundleName);
             }
         }
-
         void Update()
         {
             // Update all in progress operations
@@ -559,6 +558,14 @@ namespace Seunghak
                     ProcessFinishedOperation(operation);
                 }
             }
+        }
+        public bool GetReadyStatus()
+        {
+            if (inProgressOperations.Count > 0)
+            {
+                return false;
+            }
+            return true;
         }
 
         void ProcessFinishedOperation(AssetBundleLoadOperation operation)

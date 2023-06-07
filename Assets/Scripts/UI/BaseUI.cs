@@ -5,8 +5,8 @@ namespace Seunghak.UIManager
     public enum UI_TYPE
     {
         //1~100까진 기본 Window
-        LOBBY_WINDOW,
-
+        LobbyWindow,
+        TitleWindow,
 
     }
     public interface IBaseUIController
