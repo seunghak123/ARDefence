@@ -9,6 +9,7 @@ namespace Seunghak.UIManager
     {
         [SerializeField] BaseCanvas baseCanvasObject;
         private Stack<BaseUI> windowStack = new Stack<BaseUI>();
+        private Dictionary<string,BaseUI> addedWindowLists = new Dictionary<string, BaseUI>();
         private BaseUI currentUI = null;
         public void PopupWindow()
         {
@@ -67,44 +68,43 @@ namespace Seunghak.UIManager
                 popUI.RestoreWindow();
             }
         }
-        public void PushUI(BaseUI stackUI)
-        {
-            if (!windowStack.Contains(stackUI))
-            {
-                windowStack.Push(stackUI);
-            }
-
-            stackUI.EnterWindow();
-            currentUI = stackUI;
-        }
         public void PushUI(UI_TYPE uiType)
         {
             string targetUIName = uiType.ToString();
 
-            GameObject targetUI = GameResourceManager.Instance.SpawnObject(targetUIName);
+            BaseUI uicomponent;
 
-            if (targetUI == null)
+            if (addedWindowLists.ContainsKey(targetUIName))
             {
-                Debug.Log("Error : TargetUI Object is Empty");
-                return;
-            }
-
-            targetUI.SetActive(true);
-            if (targetUI.GetComponent<BaseUIWindow>() != null)
-            {
-                targetUI.transform.parent = BaseCanvas.Instance.windowUIParent;
-            }
-            else if (targetUI.GetComponent<BaseUIPopup>() != null)
-            {
-                targetUI.transform.parent = BaseCanvas.Instance.popUpUIParent;
+                uicomponent = addedWindowLists[targetUIName];
             }
             else
             {
-                targetUI.transform.parent = BaseCanvas.Instance.UtilUIParent;
+                GameObject targetUI = GameResourceManager.Instance.SpawnObject(targetUIName);
+
+                if (targetUI == null)
+                {
+                    Debug.Log("Error : TargetUI Object is Empty");
+                    return;
+                }
+
+                targetUI.SetActive(true);
+                if (targetUI.GetComponent<BaseUIWindow>() != null)
+                {
+                    targetUI.transform.parent = BaseCanvas.Instance.windowUIParent;
+                }
+                else if (targetUI.GetComponent<BaseUIPopup>() != null)
+                {
+                    targetUI.transform.parent = BaseCanvas.Instance.popUpUIParent;
+                }
+                else
+                {
+                    targetUI.transform.parent = BaseCanvas.Instance.UtilUIParent;
+                }
+                uicomponent = targetUI.GetComponent<BaseUI>();
+
+                addedWindowLists.Add(targetUIName, uicomponent);
             }
-
-
-            BaseUI uicomponent = targetUI.GetComponent<BaseUI>();
 
             if (uicomponent != null)
             {
