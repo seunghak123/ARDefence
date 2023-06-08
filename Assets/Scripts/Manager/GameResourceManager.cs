@@ -3,28 +3,33 @@ using System.Collections.Generic;
 using UnityEngine;
 using Seunghak.UIManager;
 using UnityEngine.Networking;
-
 #if UNITY_EDITOR
 using UnityEditor;
+using System.IO;
 #endif
 
 namespace Seunghak.Common
 {
+    public struct BundleFileInfo
+    {
+        public string FileName;
+        public long FileSize;
+    }
     public class BundleListsDic
     {
         [SerializeField]
         public List<string> bundleNameLists = new List<string>();
         [SerializeField]
-        public Dictionary<string, List<string>> bundleObjectLists = new Dictionary<string, List<string>>();
+        public Dictionary<string, List<BundleFileInfo>> bundleObjectLists = new Dictionary<string, List<BundleFileInfo>>();
 
-        public List<string> GetBundleObjectLists(string bundleName)
+        public List<BundleFileInfo> GetBundleObjectLists(string bundleName)
         {
             if (bundleObjectLists.ContainsKey(bundleName))
             {
                 return bundleObjectLists[bundleName];
             }
 
-            return new List<string>();
+            return new List<BundleFileInfo>();
         } 
         public void AddBundleName(string bundleName)
         {
@@ -33,14 +38,14 @@ namespace Seunghak.Common
                 bundleNameLists.Add(bundleName);
             }
         }
-        public void AddObjectRejeon(string bundleName,string objectName)
+        public void AddObjectRejeon(string bundleName, BundleFileInfo objectInfo)
         {
             if (!bundleObjectLists.ContainsKey(bundleName))
             {
-                bundleObjectLists.Add(bundleName, new List<string>());
+                bundleObjectLists.Add(bundleName, new List<BundleFileInfo>());
             }
 
-            bundleObjectLists[bundleName].Add(objectName);
+            bundleObjectLists[bundleName].Add(objectInfo);
         }
     }
     public class GameResourceManager : UnitySingleton<GameResourceManager>
@@ -62,18 +67,27 @@ namespace Seunghak.Common
                 {
                     continue;
                 }
+
                 for(int j=0;j< bundleobjectlists.Length; j++)
                 {
+                    BundleFileInfo newFileInfo;
+                    long bundlesize = GetAssetBundleSize(bundleobjectlists[j]);
                     string[] bundlepaths = bundleobjectlists[j].Split('/');
-                    listsDic.AddObjectRejeon(bundleLists[i], bundlepaths[bundlepaths.Length - 1]);
 
+                    newFileInfo.FileSize = bundlesize;
+                    newFileInfo.FileName = bundlepaths[bundlepaths.Length - 1];
+                    listsDic.AddObjectRejeon(bundleLists[i], newFileInfo);
                 }
                 listsDic.AddBundleName(bundleLists[i]);
             }
             string bundleSavePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}";
             FileUtils.SaveFile<BundleListsDic>(bundleSavePath, FileUtils.BUNDLE_LIST_FILE_NAME, listsDic);
         }
-
+        private static long GetAssetBundleSize(string path)
+        {
+            FileInfo fileInfo = new FileInfo(path);
+            return fileInfo.Length;
+        }
 #endif
         private void Update()
         {
@@ -84,7 +98,8 @@ namespace Seunghak.Common
         }
         public IEnumerator DownLoadAssetDatas()
         {
-            AssetBundleManager.BaseDownloadingURL = DOWNLOAD_WEB_URL;
+            AssetBundleManager.BaseDownloadingURL = "https://drive.google.com/drive/folders/1jgrxT4h0dn75GFuVMkW4vokGmpga6T4m?usp=sharing";
+            //DOWNLOAD_WEB_URL;
 
 #if UNITY_EDITOR
             if (!AssetBundleManager.SimulateAssetBundleInEditor)
@@ -121,7 +136,7 @@ namespace Seunghak.Common
 
                     for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i]].Count; j++)
                     {
-                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j];
+                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j].FileName;
                         string[] namelists = insertObject.Split('.');
                         prefabLists.Add(namelists[0], loadedAssets.assetBundle.LoadAsset(insertObject));
                     }
