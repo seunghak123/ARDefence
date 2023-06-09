@@ -93,14 +93,49 @@ namespace Seunghak.Common
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
-                StartCoroutine( DownLoadAssetDatas());
+                StartCoroutine(SetPreDownloadDatas());
             }
+        }
+        public IEnumerator SetPreDownloadDatas()
+        {
+            string preDownloadPath = Application.persistentDataPath;
+
+            string preCheckDownloadFile = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+
+            BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(preCheckDownloadFile);
+
+            if (loadDic == null)
+            {
+                string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+
+                IEnumerator coroutine = FileUtils.RequestTextFile<BundleListsDic>(bundleLoadPath);
+                while (coroutine.MoveNext())
+                {
+                    object current = coroutine.Current;
+                    if (current is BundleListsDic bundleData)
+                    {
+                        loadDic = bundleData;
+                    }
+                    yield return null;
+                }
+
+                FileUtils.SaveFile<BundleListsDic>(preDownloadPath, FileUtils.BUNDLE_LIST_FILE_NAME, loadDic);
+            }
+
+            //해당 json을 읽어서 미리 데이터 세팅 및 해시 세팅
+            //(미리 다운로드 받은것들 에셋번들에 넣어놓을것
+            //json을 다운로드 받고 용량 .. 말고 다른것도 추가해야할듯
+            //데이터 세팅이 끝나면 해시 비교하여, 어떤 에셋 번들을 받아야하는지 리스트 나열
+            //번들 다운로드 받아야할 총 용량을 확인 및, 다운로드 받을때마다 데이터 카운팅           
+            //파일 내역을 받고, 기존 데이터 세팅
+
+            StartCoroutine(DownLoadAssetDatas());
+
+            yield return null;
         }
         public IEnumerator DownLoadAssetDatas()
         {
-            AssetBundleManager.BaseDownloadingURL = "https://drive.google.com/drive/folders/1jgrxT4h0dn75GFuVMkW4vokGmpga6T4m?usp=sharing";
-            //DOWNLOAD_WEB_URL;
-
+            AssetBundleManager.BaseDownloadingURL = DOWNLOAD_WEB_URL;
 #if UNITY_EDITOR
             if (!AssetBundleManager.SimulateAssetBundleInEditor)
             {
@@ -110,7 +145,11 @@ namespace Seunghak.Common
 
             AssetBundleManager.Instance.InitAssetBundleManager();
 
-            yield return AssetBundleManager.Instance.GetReadyStatus(); 
+            //AssetBundleManager.BaseDownloadingURL = DOWNLOAD_WEB_URL;
+
+            //AssetBundleManager.Instance.InitAssetBundleManager();
+
+            yield return AssetBundleManager.Instance.GetReadyStatus();
 
             LoadAssetDatas();       
         }
@@ -138,7 +177,14 @@ namespace Seunghak.Common
                     {
                         string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j].FileName;
                         string[] namelists = insertObject.Split('.');
-                        prefabLists.Add(namelists[0], loadedAssets.assetBundle.LoadAsset(insertObject));
+                        if (prefabLists.ContainsKey(namelists[0]))
+                        {
+                            prefabLists[namelists[0]]=loadedAssets.assetBundle.LoadAsset(insertObject);
+                        }
+                        else
+                        {
+                            prefabLists.Add(namelists[0], loadedAssets.assetBundle.LoadAsset(insertObject));
+                        }
                     }
                 }
             }

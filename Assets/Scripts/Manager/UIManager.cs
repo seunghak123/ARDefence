@@ -87,7 +87,6 @@ namespace Seunghak.UIManager
                     Debug.Log("Error : TargetUI Object is Empty");
                     return;
                 }
-
                 targetUI.SetActive(true);
                 if (targetUI.GetComponent<BaseUIWindow>() != null)
                 {
@@ -100,6 +99,12 @@ namespace Seunghak.UIManager
                 else
                 {
                     targetUI.transform.parent = BaseCanvas.Instance.UtilUIParent;
+                }
+                targetUI.transform.position = Vector3.zero;
+
+                if (targetUI.GetComponent<RectTransform>() != null)
+                {
+                    targetUI.GetComponent<RectTransform>().localPosition = Vector2.zero;
                 }
                 uicomponent = targetUI.GetComponent<BaseUI>();
 

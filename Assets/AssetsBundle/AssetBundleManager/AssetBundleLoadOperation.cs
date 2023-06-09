@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement;
 #endif
 #if UNITY_5_4_OR_NEWER
 using UnityEngine.Networking;
+using System.Text;
 #endif
 #if ENABLE_IOS_ON_DEMAND_RESOURCES
 using UnityEngine.iOS;
@@ -249,6 +250,10 @@ namespace Seunghak
             else
             {
                 assetBundle = new LoadedAssetBundle(bundle);
+
+                byte[] bytes = Encoding.UTF8.GetBytes(assetBundle.ToString());
+
+                FileUtils.SaveFile<byte[]>(Application.persistentDataPath, assetBundleName, bytes);
             }
 
             webRequest.Dispose();
