@@ -14,7 +14,7 @@ public static class FileUtils
         {
             yield return request.SendWebRequest();
 
-            if (!request.isError)
+            if (!request.isNetworkError)
             {
                 string bundleData = request.downloadHandler.text;
 

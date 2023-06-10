@@ -9,17 +9,19 @@ namespace Seunghak.LoginSystem
         private AndroidGoogleSignInAccount googleUserData;
         public void InitLogin()
         {
-            Init(this.gameObject);
+            Init(new GameObject());
         }
 
         public void PlatformLogin()
         {
+            Debug.Log("SignIn Google ");
             SignIn(webCliendId, GoogleLoginSuccess, GoogleLoginFail);
         }
         private void GoogleLoginSuccess(AndroidGoogleSignInAccount userAccount)
         {
             googleUserData = userAccount;
 
+            Debug.Log("UserToken " + userAccount.Token);
             //여기에서
             //googleUserData.Token 값에 따라서 로그인
         }

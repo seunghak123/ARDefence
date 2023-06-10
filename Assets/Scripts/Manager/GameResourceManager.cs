@@ -14,6 +14,7 @@ namespace Seunghak.Common
     {
         public string FileName;
         public long FileSize;
+        public int HashCode;
     }
     public class BundleListsDic
     {
@@ -76,6 +77,12 @@ namespace Seunghak.Common
 
                     newFileInfo.FileSize = bundlesize;
                     newFileInfo.FileName = bundlepaths[bundlepaths.Length - 1];
+                    AssetImporter importer = AssetImporter.GetAtPath(bundleobjectlists[j]);
+                    newFileInfo.HashCode = 0;
+                    if (importer != null)
+                    {
+                        newFileInfo.HashCode = importer.GetHashCode();
+                    }
                     listsDic.AddObjectRejeon(bundleLists[i], newFileInfo);
                 }
                 listsDic.AddBundleName(bundleLists[i]);
