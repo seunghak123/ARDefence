@@ -10,6 +10,11 @@ using System.IO;
 
 namespace Seunghak.Common
 {
+    public struct BundleListInfo
+    {
+        public string BundleName;
+        public long TotalBundleSize;
+    }
     public struct BundleFileInfo
     {
         public string FileName;
@@ -18,6 +23,7 @@ namespace Seunghak.Common
     }
     public class BundleListsDic
     {
+        public bool isEndDownload = false;
         [SerializeField]
         public List<string> bundleNameLists = new List<string>();
         [SerializeField]
@@ -126,7 +132,38 @@ namespace Seunghak.Common
                     yield return null;
                 }
 
+                //여기에 다운로드 받을건지 말건지 하시오~ 라는 작업필요함 여기다가는 미리 action이나 특정 행동을 저장한
+                //delegate를 실행하게 해주자
+
+                yield return StartCoroutine(DownLoadAssetDatas());
+
+                loadDic.isEndDownload = true;
+
                 FileUtils.SaveFile<BundleListsDic>(preDownloadPath, FileUtils.BUNDLE_LIST_FILE_NAME, loadDic);
+            }
+            else
+            {
+                string bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+                //번들 경로를 이런것 처럼 넣어 줄것 변경된게 있으면 다운로드 받을 경로 없으면 기존 경로로 세팅
+                BundleListsDic downloadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+
+                List<string> downloadNeedLists = new List<string>();
+
+
+                //downloadDic과 loadDic 을 비교해서 다운로드 받아야할 번들 리스트 정리 
+                //비교 대상 - hashcode, 번들 총 사이즈, 
+
+                AssetBundleManager.overrideBaseDownloadingURL += (string aaaa)=>{
+                    //번들리스트에 들어가 잇는경우엔 원래경로, 아니면 변경된 경로
+                    return "AAA";
+                };
+
+
+                yield return StartCoroutine(DownLoadAssetDatas());
+
+                downloadDic.isEndDownload = true;
+
+                FileUtils.SaveFile<BundleListsDic>(preDownloadPath, FileUtils.BUNDLE_LIST_FILE_NAME, downloadDic);
             }
 
             //해당 json을 읽어서 미리 데이터 세팅 및 해시 세팅
@@ -135,8 +172,6 @@ namespace Seunghak.Common
             //데이터 세팅이 끝나면 해시 비교하여, 어떤 에셋 번들을 받아야하는지 리스트 나열
             //번들 다운로드 받아야할 총 용량을 확인 및, 다운로드 받을때마다 데이터 카운팅           
             //파일 내역을 받고, 기존 데이터 세팅
-
-            StartCoroutine(DownLoadAssetDatas());
 
             yield return null;
         }
