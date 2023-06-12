@@ -14,6 +14,7 @@ namespace Seunghak.Common
     {
         public string BundleName;
         public long TotalBundleSize;
+        public int BundleTotalHashCode;
     }
     public struct BundleFileInfo
     {
@@ -25,7 +26,7 @@ namespace Seunghak.Common
     {
         public bool isEndDownload = false;
         [SerializeField]
-        public List<string> bundleNameLists = new List<string>();
+        public List<BundleListInfo> bundleNameLists = new List<BundleListInfo>();
         [SerializeField]
         public Dictionary<string, List<BundleFileInfo>> bundleObjectLists = new Dictionary<string, List<BundleFileInfo>>();
 
@@ -38,11 +39,11 @@ namespace Seunghak.Common
 
             return new List<BundleFileInfo>();
         } 
-        public void AddBundleName(string bundleName)
+        public void AddBundleName(BundleListInfo bundleInfo)
         {
-            if (!bundleNameLists.Contains(bundleName))
+            if (!bundleNameLists.Contains(bundleInfo))
             {
-                bundleNameLists.Add(bundleName);
+                bundleNameLists.Add(bundleInfo);
             }
         }
         public void AddObjectRejeon(string bundleName, BundleFileInfo objectInfo)
@@ -69,29 +70,38 @@ namespace Seunghak.Common
             BundleListsDic listsDic = new BundleListsDic();
             for (int i=0;i< bundleLists.Length;i++)
             {
+                BundleListInfo bundleListInfo;
+
                 string[] bundleobjectlists = AssetDatabase.GetAssetPathsFromAssetBundle(bundleLists[i]);
                 if (bundleobjectlists.Length <= 0)
                 {
                     continue;
                 }
-
+                long totalBundleSize = 0;
+                int totalHashCode = 0;
                 for(int j=0;j< bundleobjectlists.Length; j++)
                 {
                     BundleFileInfo newFileInfo;
-                    long bundlesize = GetAssetBundleSize(bundleobjectlists[j]);
+                    long bundleSize = GetAssetBundleSize(bundleobjectlists[j]);
                     string[] bundlepaths = bundleobjectlists[j].Split('/');
 
-                    newFileInfo.FileSize = bundlesize;
+                    newFileInfo.FileSize = bundleSize;
+                    totalBundleSize += bundleSize;
                     newFileInfo.FileName = bundlepaths[bundlepaths.Length - 1];
                     AssetImporter importer = AssetImporter.GetAtPath(bundleobjectlists[j]);
                     newFileInfo.HashCode = 0;
+
                     if (importer != null)
                     {
                         newFileInfo.HashCode = importer.GetHashCode();
                     }
+                    totalHashCode += newFileInfo.HashCode;
                     listsDic.AddObjectRejeon(bundleLists[i], newFileInfo);
                 }
-                listsDic.AddBundleName(bundleLists[i]);
+                bundleListInfo.BundleName = bundleLists[i];
+                bundleListInfo.TotalBundleSize = totalBundleSize;
+                bundleListInfo.BundleTotalHashCode = totalHashCode;
+                listsDic.AddBundleName(bundleListInfo);
             }
             string bundleSavePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}";
             FileUtils.SaveFile<BundleListsDic>(bundleSavePath, FileUtils.BUNDLE_LIST_FILE_NAME, listsDic);
@@ -208,16 +218,16 @@ namespace Seunghak.Common
                 {
                     string errorCode;
 
-                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i], out errorCode);
+                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i].BundleName, out errorCode);
 
                     if (loadedAssets == null)
                     {
                         return;
                     }
 
-                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i]].Count; j++)
+                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i].BundleName].Count; j++)
                     {
-                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i]][j].FileName;
+                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].BundleName][j].FileName;
                         string[] namelists = insertObject.Split('.');
                         if (prefabLists.ContainsKey(namelists[0]))
                         {

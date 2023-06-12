@@ -156,7 +156,7 @@ namespace Seunghak
 
             for(int i=0;i< loadDic.bundleNameLists.Count; i++)
             {
-                LoadAssetBundle(loadDic.bundleNameLists[i]);
+                LoadAssetBundle(loadDic.bundleNameLists[i].BundleName);
             }
         }
         private static string GetStreamingAssetsPath()

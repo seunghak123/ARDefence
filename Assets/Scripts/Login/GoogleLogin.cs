@@ -2,32 +2,42 @@
 
 namespace Seunghak.LoginSystem
 {
-    public class GoogleLogin : AndroidGoogleSignIn, LoginInterface
+    using GooglePlayGames;
+    public class GoogleLogin :  LoginInterface
     {
-        private string webCliendId = "444202219035-3b9rutbd7pcrfpjvhmtck62e1pi4tn6k.apps.googleusercontent.com";
-        private string googleLoginId;
-        private AndroidGoogleSignInAccount googleUserData;
         public void InitLogin()
         {
-            Init(new GameObject());
+            PlayGamesPlatform.DebugLogEnabled = true;
+            PlayGamesPlatform.Activate();
         }
-
         public void PlatformLogin()
         {
-            Debug.Log("SignIn Google ");
-            SignIn(webCliendId, GoogleLoginSuccess, GoogleLoginFail);
+            PlayGamesPlatform.Instance.Authenticate(ProcessAuthentication);
         }
-        private void GoogleLoginSuccess(AndroidGoogleSignInAccount userAccount)
-        {
-            googleUserData = userAccount;
 
-            Debug.Log("UserToken " + userAccount.Token);
-            //여기에서
-            //googleUserData.Token 값에 따라서 로그인
-        }
-        private void GoogleLoginFail(string errorCallback)
+        internal void ProcessAuthentication(GooglePlayGames.BasicApi.SignInStatus status)
         {
-            Debug.Log($"Error Message : {errorCallback}");
+            if (status == GooglePlayGames.BasicApi.SignInStatus.Success)
+            {
+                GoogleLoginSuccess();
+            }
+            else
+            {
+                GoogleLoginFail();
+            }
+        }
+        private void GoogleLoginSuccess()
+        {
+            Debug.Log("LoginSuccess");
+        }
+        private void GoogleLoginFail()
+        {
+            Debug.Log("LoginFaile");
+        }
+
+        public void LogOut()
+        {
+            PlayGamesPlatform.Activate();
         }
     }
 }

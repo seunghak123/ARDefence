@@ -14,7 +14,7 @@
             <meta-data android:name="unityplayer.UnityActivity" android:value="true" />
         </activity>
     </application>
-  <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="@string/app_id" />
+  <meta-data android:name="com.google.android.gms.games.APP_ID" android:value="com.DefaultCompany.ARDefence" />
   <uses-permission android:name="android.permission.ACCESS_SURFACE_FLINGER" />
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

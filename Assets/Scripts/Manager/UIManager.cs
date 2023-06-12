@@ -10,7 +10,8 @@ namespace Seunghak.UIManager
         [SerializeField] BaseCanvas baseCanvasObject;
         private Stack<BaseUI> windowStack = new Stack<BaseUI>();
         private Dictionary<string,BaseUI> addedWindowLists = new Dictionary<string, BaseUI>();
-        private BaseUI currentUI = null;
+        private BaseUIWindow currentWindowUI = null;
+        private BaseUIPopup currentPopupUI = null;
         public void PopupWindow()
         {
             //윈도우 뺴주는 작업 연계되어있는 것들을 다뺸다.
@@ -88,13 +89,31 @@ namespace Seunghak.UIManager
                     return;
                 }
                 targetUI.SetActive(true);
+                uicomponent = targetUI.GetComponent<BaseUI>();
+
                 if (targetUI.GetComponent<BaseUIWindow>() != null)
                 {
+                    BaseUIWindow targetUIWindow = targetUI.GetComponent<BaseUIWindow>();
                     targetUI.transform.parent = BaseCanvas.Instance.windowUIParent;
+
+                    if (currentWindowUI != null)
+                    {
+                        currentWindowUI.ExitWindow();
+                    }
+                    currentWindowUI = targetUIWindow;
+                    //기존 UI window는 잠궈줘야한다.
                 }
                 else if (targetUI.GetComponent<BaseUIPopup>() != null)
                 {
                     targetUI.transform.parent = BaseCanvas.Instance.popUpUIParent;
+
+                    BaseUIPopup targetPopupWindow = targetUI.GetComponent<BaseUIPopup>();
+
+                    if (currentWindowUI != null)
+                    {
+                        currentWindowUI.ExitWindow();
+                    }
+                    currentPopupUI = targetPopupWindow;
                 }
                 else
                 {
@@ -106,7 +125,6 @@ namespace Seunghak.UIManager
                 {
                     targetUI.GetComponent<RectTransform>().localPosition = Vector2.zero;
                 }
-                uicomponent = targetUI.GetComponent<BaseUI>();
 
                 addedWindowLists.Add(targetUIName, uicomponent);
             }
@@ -119,8 +137,6 @@ namespace Seunghak.UIManager
                 }
                 uicomponent.EnterWindow();
             }
-
-            currentUI = uicomponent;
         }
     }
 }
