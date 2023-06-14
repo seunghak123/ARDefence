@@ -118,6 +118,14 @@ namespace Seunghak.Common
             {
                 StartCoroutine(SetPreDownloadDatas());
             }
+            if (Input.GetKeyDown(KeyCode.B))
+            {
+                UserDataManager.SavePlayerPref<int>(PlayerPrefKey.SaveTest, 5);
+            }
+            if (Input.GetKeyDown(KeyCode.V))
+            {
+                int a =  UserDataManager.GetPlayerPref<int>(PlayerPrefKey.SaveTest);
+            }
         }
         public IEnumerator SetPreDownloadDatas()
         {

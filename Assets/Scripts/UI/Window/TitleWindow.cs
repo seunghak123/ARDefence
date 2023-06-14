@@ -7,7 +7,7 @@ namespace Seunghak.UIManager
     using Seunghak.Common;
     using Seunghak.LoginSystem;
 
-    public class TitleWindow : BaseUIWindow
+    public class TitleWindow : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI versionText;
         [SerializeField] private Button enterButton;
@@ -27,24 +27,24 @@ namespace Seunghak.UIManager
 
         }
 
-        public override void EnterWindow()
+        public void EnterWindow()
         {
             DeleteRegistedEvent();
 
 
             RegistEvent();
         }
-        public override void ExitWindow()
+        public void ExitWindow()
         {
             DeleteRegistedEvent();
         }
-        public override void RegistEvent()
+        public void RegistEvent()
         {
             guestLoginButton.onClick.AddListener(()=>LoginPlatform(E_LOGIN_TYPE.GUEST_LOGIN));
             appleLoginButton.onClick.AddListener(() => LoginPlatform(E_LOGIN_TYPE.APPLE_LOGIN));
             googleLoginButton.onClick.AddListener(() => LoginPlatform(E_LOGIN_TYPE.GOOGLE_LOGIN));
         }
-        public override void DeleteRegistedEvent()
+        public void DeleteRegistedEvent()
         {
             guestLoginButton.onClick.RemoveAllListeners();
             appleLoginButton.onClick.RemoveAllListeners();

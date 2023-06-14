@@ -32,7 +32,7 @@ namespace Seunghak.UIManager
 
             if (windowStack.Count == 0)
             {
-                //push lobbywindow
+                //현재 아무것도 없을때 어떤것을 해주어야하는지
             }
         }
         public void PopUI()
@@ -53,7 +53,6 @@ namespace Seunghak.UIManager
         }
         public void RestoreWindow()
         {
-            Stack<BaseUI> removedPopup = new Stack<BaseUI>();
             while (windowStack.Count > 0)
             {
                 BaseUI popUI = windowStack.Peek();

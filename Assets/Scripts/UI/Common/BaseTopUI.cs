@@ -1,18 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 
-public class BaseTopUI : MonoBehaviour
+namespace Seunghak.UIManager
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BaseTopUI : BaseUI
     {
-        
-    }
+        [SerializeField] private WealthUI wealthUIObject;
+        //[SerializeField] private OptionUI
+        private void InitTopUI()
+        {
+            //재화 세팅
 
-    // Update is called once per frame
-    void Update()
-    {
+        }
+        //옵션 버튼 클래스
+        //재화 세팅 함수
         
+        //재화 탭
+        //유저 탭
+        //버튼 리스트들
+
     }
 }

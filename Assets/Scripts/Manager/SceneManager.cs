@@ -11,10 +11,8 @@ public enum E_SCENE_TYPE
     LOBBY,
     INGAME,
     FIELD,
-    // 그외 추가
     END,
 }
-// 해당 Enum도 Util쪽으로 뺄것
 public enum E_SCENESTEP_TYPE
 {
     NONE,
