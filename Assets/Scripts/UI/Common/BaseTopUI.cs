@@ -5,8 +5,8 @@ namespace Seunghak.UIManager
 {
     public class BaseTopUI : BaseUI
     {
-        [SerializeField] private WealthUI wealthUIObject;
-        //[SerializeField] private OptionUI
+        [SerializeField] private UserInfoUI userInfoUIObject;
+        [SerializeField] private WealthUI[] wealthUIObjects;
         private void InitTopUI()
         {
             //재화 세팅

@@ -4,23 +4,35 @@ using UnityEngine;
 using Seunghak.UIManager;
 using UnityEngine.Networking;
 #if UNITY_EDITOR
+using TMPro;
 using UnityEditor;
 using System.IO;
+using UnityEngine.U2D;
 #endif
 
 namespace Seunghak.Common
 {
     public struct BundleListInfo
     {
-        public string BundleName;
-        public long TotalBundleSize;
-        public int BundleTotalHashCode;
+        public string bundleName;
+        public long totalBundleSize;
+        public int bundleTotalHashCode;
     }
     public struct BundleFileInfo
     {
-        public string FileName;
-        public long FileSize;
-        public int HashCode;
+        public string fileName;
+        public long fileSize;
+        public int hashCode;
+        public string filePath;
+    }
+    public struct AtlasLists
+    {
+        public List<AtlasInfo> atlaseLists;
+    }
+    public struct AtlasInfo
+    {
+        public string atlasName;
+        public List<string> spriteLists;
     }
     public class BundleListsDic
     {
@@ -29,7 +41,6 @@ namespace Seunghak.Common
         public List<BundleListInfo> bundleNameLists = new List<BundleListInfo>();
         [SerializeField]
         public Dictionary<string, List<BundleFileInfo>> bundleObjectLists = new Dictionary<string, List<BundleFileInfo>>();
-
         public List<BundleFileInfo> GetBundleObjectLists(string bundleName)
         {
             if (bundleObjectLists.ContainsKey(bundleName))
@@ -60,8 +71,34 @@ namespace Seunghak.Common
     {
         private Dictionary<string, UnityEngine.Object> prefabLists = new Dictionary<string, UnityEngine.Object>();
         private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
+        private AtlasLists bundleAtlasLists;
         private static string DOWNLOAD_WEB_URL = "C:/Users/dhtmd/ARDefence/Assets/Android";
 #if UNITY_EDITOR
+        [MenuItem("Tools/AttachLocalizeScript", false, 1003)]
+        public static void AttachLocalizeScript()
+        {
+            if (Selection.activeGameObject != null)
+            {
+                GameObject targetObject = Selection.activeGameObject;
+
+                TextMeshProUGUI[] textArray = targetObject.GetComponentsInChildren<TextMeshProUGUI>();
+
+                if (textArray.Length <= 0)
+                {
+                    return;
+                }
+
+                List<TextMeshProUGUI> targetTextLists = new List<TextMeshProUGUI>(textArray);
+
+                for(int i=0;i< targetTextLists.Count; i++)
+                {
+                    //로컬라이즈 텍스트 관련 스크립트가 없다면 추가
+                    //targetTextLists[i].gameObject.GetComponent<>
+                }
+
+            }
+            //해당 함수는 선택한 오브젝트에 있는 모든 텍스트에 로컬라이즈 스크립트를 붙이는 툴
+        }
 
         [MenuItem("Tools/MakeBundleJson", false, 1000)]
         public static void MakeBundleJson()
@@ -85,26 +122,41 @@ namespace Seunghak.Common
                     long bundleSize = GetAssetBundleSize(bundleobjectlists[j]);
                     string[] bundlepaths = bundleobjectlists[j].Split('/');
 
-                    newFileInfo.FileSize = bundleSize;
+                    newFileInfo.fileSize = bundleSize;
+                    newFileInfo.filePath = bundleobjectlists[j];
                     totalBundleSize += bundleSize;
-                    newFileInfo.FileName = bundlepaths[bundlepaths.Length - 1];
+                    newFileInfo.fileName = bundlepaths[bundlepaths.Length - 1];
                     AssetImporter importer = AssetImporter.GetAtPath(bundleobjectlists[j]);
-                    newFileInfo.HashCode = 0;
+                    newFileInfo.hashCode = 0;
 
                     if (importer != null)
                     {
-                        newFileInfo.HashCode = importer.GetHashCode();
+                        newFileInfo.hashCode = importer.GetHashCode();
                     }
-                    totalHashCode += newFileInfo.HashCode;
+                    totalHashCode += newFileInfo.hashCode;
                     listsDic.AddObjectRejeon(bundleLists[i], newFileInfo);
                 }
-                bundleListInfo.BundleName = bundleLists[i];
-                bundleListInfo.TotalBundleSize = totalBundleSize;
-                bundleListInfo.BundleTotalHashCode = totalHashCode;
+                bundleListInfo.bundleName = bundleLists[i];
+                bundleListInfo.totalBundleSize = totalBundleSize;
+                bundleListInfo.bundleTotalHashCode = totalHashCode;
                 listsDic.AddBundleName(bundleListInfo);
             }
             string bundleSavePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}";
             FileUtils.SaveFile<BundleListsDic>(bundleSavePath, FileUtils.BUNDLE_LIST_FILE_NAME, listsDic);
+
+            AtlasLists atlasLists;
+            atlasLists.atlaseLists = new List<AtlasInfo>();
+
+            for (int i=0;i< listsDic.bundleObjectLists["atlas"].Count; i++)
+            {
+                AtlasInfo newAtlasInfo;
+                newAtlasInfo.atlasName = listsDic.bundleObjectLists["atlas"][i].fileName;
+
+                List<string> fileNames = new List<string>();
+                SpriteAtlas atlasSprits = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(listsDic.bundleObjectLists["atlas"][i].filePath);
+
+                newAtlasInfo.spriteLists = fileNames;
+            }
         }
         private static long GetAssetBundleSize(string path)
         {
@@ -226,16 +278,16 @@ namespace Seunghak.Common
                 {
                     string errorCode;
 
-                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i].BundleName, out errorCode);
+                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i].bundleName, out errorCode);
 
                     if (loadedAssets == null)
                     {
                         return;
                     }
 
-                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i].BundleName].Count; j++)
+                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName].Count; j++)
                     {
-                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].BundleName][j].FileName;
+                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName][j].fileName;
                         string[] namelists = insertObject.Split('.');
                         if (prefabLists.ContainsKey(namelists[0]))
                         {
@@ -293,10 +345,6 @@ namespace Seunghak.Common
 
             prefabObjectpools[type].PushPool(targetObject);
         }
-        private void SetFromAssetBundle(string objectName)
-        {
-
-        }
         public void RemovePoolObject(GameObject targetObject)
         {
             Destroy(targetObject);
@@ -330,6 +378,58 @@ namespace Seunghak.Common
             }
 #endif
         }
+        public List<SpriteAtlas> RequestAtlasLists()
+        {
+            List<SpriteAtlas> getAtlasLists = new List<SpriteAtlas>();
+
+            if(bundleAtlasLists.atlaseLists.Count == 0)
+            {
+                //초기화
+            }
+            //아틀라스 리스트를 아틀라스 리스트 파일에서 찾고
+            //그걸 LoadObject를 통해서 로드해서 SpirteAtlas로 변환
+            //해당 오브젝트들을 리스트에 넣고
+            // 값리턴
+            return null;
+        }
+        public string SpriteTargetAtlas(string spriteName)
+        {
+            //스프라이트를 아틀라스 리스트 파일에서 찾고
+            //스프라이트의 타겟 아틀라스를 찾아 넘겨준다
+
+            return null;
+        }
+        public Object LoadObject(string objectName)
+        {
+#if UNITY_EDITOR
+            if (!AssetBundleManager.SimulateAssetBundleInEditor)
+#endif
+            {
+                if (!prefabObjectpools.ContainsKey(objectName))
+                {
+                    if (prefabLists.ContainsKey(objectName))
+                    {
+                        if(prefabLists[objectName] is GameObject)
+                        {
+                            PushObjectPool(objectName, prefabLists[objectName]);
+                        }
+                        return prefabLists[objectName];
+                    }
+                    else
+                    {
+                        Debug.LogError($"ObjectLists have not {objectName}");
+                        return null;
+                    }
+                }
+                return prefabObjectpools[objectName].GetPoolObject();
+            }
+#if UNITY_EDITOR
+            else
+            {
+                return null;
+            }
+#endif
+        }
         public GameObject OpenUI(UI_TYPE openUIType)
         {
             if (prefabObjectpools.ContainsKey(openUIType.ToString()))
@@ -338,6 +438,11 @@ namespace Seunghak.Common
             }
 
             return SpawnObject(openUIType.ToString());
+        }
+        private void InitSpriteAtlas()
+        {
+            //파일 읽고 
+            bundleAtlasLists = FileUtils.LoadFile<AtlasLists>("");
         }
     }
 

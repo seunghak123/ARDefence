@@ -39,7 +39,7 @@ namespace Seunghak.SceneManager
         private SceneController _currentSceneController = null;
         #endregion Property
 
-        private void Awake()
+        protected override void InitSingleton()
         {
             InitSceneManager();
         }

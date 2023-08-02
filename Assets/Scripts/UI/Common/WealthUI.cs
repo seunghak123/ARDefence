@@ -1,18 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
-
+using UnityEngine.UI;
+using Seunghak.Common;
 public class WealthUI : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    [SerializeField] private TextMeshProUGUI wealthCountText;
+    [SerializeField] private Image wealthImage;
 
-    // Update is called once per frame
-    void Update()
+    public void SetWealth(string imageName, int wealthCount)
     {
-        
+        wealthCountText.text = wealthCount.ToString();
+        wealthImage.sprite = SpriteManager.Instance.LoadSprite(imageName);
     }
 }

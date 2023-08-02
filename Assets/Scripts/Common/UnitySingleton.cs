@@ -5,6 +5,7 @@ namespace Seunghak
     public class UnitySingleton<T> : MonoBehaviour where T : UnityEngine.Component
     {
         private static T s_Instance = null;
+        protected virtual void InitSingleton() { }
         private void Awake()
         {
             if (s_Instance == null)
@@ -13,6 +14,7 @@ namespace Seunghak
                 if (s_Instance != null)
                 {
                     DontDestroyOnLoad(s_Instance.gameObject);
+                    InitSingleton();
                 }
             }
         }

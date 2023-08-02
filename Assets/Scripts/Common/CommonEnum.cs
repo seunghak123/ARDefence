@@ -13,3 +13,9 @@ public enum E_LOGIN_TYPE
     GOOGLE_LOGIN,
     APPLE_LOGIN,
 }
+public enum E_SOUND_TYPE
+{
+    BGM_SOUND,
+    VOICE_SOUND,
+    FBX_SOUND,
+}
