@@ -382,15 +382,25 @@ namespace Seunghak.Common
         {
             List<SpriteAtlas> getAtlasLists = new List<SpriteAtlas>();
 
-            if(bundleAtlasLists.atlaseLists.Count == 0)
+            if (bundleAtlasLists.atlaseLists.Count == 0)
             {
-                //초기화
+                AtlasInfo newAddedInfo;
+                //newAddedInfo.atlasName = atlasName;
             }
-            //아틀라스 리스트를 아틀라스 리스트 파일에서 찾고
-            //그걸 LoadObject를 통해서 로드해서 SpirteAtlas로 변환
-            //해당 오브젝트들을 리스트에 넣고
-            // 값리턴
-            return null;
+            foreach (string atlasName in bundleAtlasLists.atlaseLists.ConvertAll<string>(find => find.atlasName))
+            {
+                Object atlasObject = LoadObject(atlasName);
+                if (atlasObject != null)
+                {
+                    SpriteAtlas spriteAtlas = atlasObject as SpriteAtlas;
+                    if (spriteAtlas != null)
+                    {
+                        getAtlasLists.Add(spriteAtlas);
+                    }
+                }
+            }
+
+            return getAtlasLists;
         }
         public string SpriteTargetAtlas(string spriteName)
         {
