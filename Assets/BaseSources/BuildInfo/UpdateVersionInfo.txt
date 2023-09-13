@@ -1,0 +1,1 @@
+{"cdnAddressInfoPath":"https://d2fvmix8egxgsw.cloudfront.net/ARDefenceBundle//Android/","currentVersion":"0.1.0001","forcedUpdateVersion":"0.1.0001"}

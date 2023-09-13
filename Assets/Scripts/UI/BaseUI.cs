@@ -8,6 +8,8 @@ namespace Seunghak.UIManager
         LobbyWindow,
         TitleWindow,
 
+
+        BasePopupWindow = 1000,
     }
     public interface IBaseUIController
     {

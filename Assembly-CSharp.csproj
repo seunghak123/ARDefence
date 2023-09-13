@@ -63,32 +63,44 @@
     <Compile Include="Assets\Scripts\Common\OHAssetBundleManager.cs" />
     <Compile Include="Assets\Scripts\Common\OHScrollView.cs" />
     <Compile Include="Assets\Scripts\Common\UnitySingleton.cs" />
+    <Compile Include="Assets\Scripts\Common\UserDataJsonEnum.cs" />
     <Compile Include="Assets\Scripts\Event\CharacterEvent.cs" />
     <Compile Include="Assets\Scripts\Event\CommonEvent.cs" />
+    <Compile Include="Assets\Scripts\JClass\JShopData.cs" />
+    <Compile Include="Assets\Scripts\JClass\JUnitData.cs" />
     <Compile Include="Assets\Scripts\Login\AppleLogin.cs" />
     <Compile Include="Assets\Scripts\Login\GoogleLogin.cs" />
     <Compile Include="Assets\Scripts\Login\GuestLogin.cs" />
     <Compile Include="Assets\Scripts\Login\LoginInterface.cs" />
+    <Compile Include="Assets\Scripts\Manager\ApplicationManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\AtlasManager.cs" />
     <Compile Include="Assets\Scripts\Manager\CameraManager.cs" />
     <Compile Include="Assets\Scripts\Manager\GameManager.cs" />
     <Compile Include="Assets\Scripts\Manager\GameResourceManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\GameVersion.cs" />
+    <Compile Include="Assets\Scripts\Manager\JsonDataManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\NetworkManager.cs" />
     <Compile Include="Assets\Scripts\Manager\SceneController.cs" />
     <Compile Include="Assets\Scripts\Manager\SceneManager.cs" />
     <Compile Include="Assets\Scripts\Manager\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Manager\SpriteManager.cs" />
     <Compile Include="Assets\Scripts\Manager\StoreManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\TimeManager.cs" />
     <Compile Include="Assets\Scripts\Manager\UIManager.cs" />
     <Compile Include="Assets\Scripts\Manager\UserDataManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\WaitTimeManager.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
     <Compile Include="Assets\Scripts\UI\BaseUI.cs" />
     <Compile Include="Assets\Scripts\UI\BaseUIPopup.cs" />
     <Compile Include="Assets\Scripts\UI\BaseUIWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Common\BaseCanvas.cs" />
     <Compile Include="Assets\Scripts\UI\Common\BaseTopUI.cs" />
+    <Compile Include="Assets\Scripts\UI\Common\LocalizeText.cs" />
     <Compile Include="Assets\Scripts\UI\Common\OptionUI.cs" />
     <Compile Include="Assets\Scripts\UI\Common\UserInfoUI.cs" />
     <Compile Include="Assets\Scripts\UI\Common\WealthUI.cs" />
-    <Compile Include="Assets\Scripts\UI\Popup\ShopUIPopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Popup\DownloadBundlePopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Window\LobbyWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\TitleWindow.cs" />
     <Compile Include="Assets\Scripts\Utils\FileUtils.cs" />
     <Compile Include="Assets\Unity Technologies\SignInWithApple\API\SignInWithApple.cs" />
@@ -96,12 +108,15 @@
     <Compile Include="Assets\Unity Technologies\SignInWithApple\Samples\Scripts\SignInWithAppleTest_EventSystem.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\BaseSources\BuildInfo\CDNAddress.txt" />
+    <None Include="Assets\BaseSources\BuildInfo\UpdateVersionInfo.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
     <None Include="Assets\GooglePlayGames\com.google.play.games\Proguard\games.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Assets\ScriptTemplates\01-ClassCreate__NewPopup-NewUIPopup.cs.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
@@ -112,11 +127,13 @@
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\ScriptTemplates\01-ClassCreate__NewWindow-NewUIWindow.cs.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\ScriptTemplates\01-ClassCreate__NewManager-NewManager.cs.txt" />
     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
   <ItemGroup>

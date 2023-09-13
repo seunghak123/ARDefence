@@ -4,12 +4,24 @@ using System.IO;
 using System;
 using UnityEngine.Networking;
 using System.Collections;
+using UnityEngine;
+using Seunghak.Common;
 
 public static class FileUtils
 {
     public const string BUNDLE_LIST_FILE_NAME = "AssetbundleList.json";
+    public const string ATLAS_LIST_FILE_NAME = "AtlasList.json";
+    public const string VERSION_INFO_FILE_NAME = "UpdateVersionInfo.txt";
+    public const string CDN_ADDRESS_FILE_NAME = "CDNAddress.txt";
+    public static string JSONFILE_LOAD_PATH = $"{Application.dataPath}/BaseSources/JsonData/";
+    public static string ATLAS_SAVE_PATH = $"{Application.dataPath}/BaseSources/Atlas/";
+    public static string DATA_SAVE_PATH = $"{Application.dataPath}/BaseSources/BuildInfo/";
+    public static string[] FILE_SIZE_COLUMN = new string[] {"Bytes", "KBs", "MBs", "GBs", "TBs" };
     public static IEnumerator RequestTextFile<T>(string url)
     {
+#if UNITY_EDITOR
+        yield return FileUtils.LoadFile<T>(url);
+#else
         using (UnityWebRequest request = UnityWebRequest.Get(url))
         {
             yield return request.SendWebRequest();
@@ -23,7 +35,9 @@ public static class FileUtils
                 yield return loadClass;
             }
         }
+#endif
     }
+
     #region Base64
     public static string Base64Encode(string data)
     {
@@ -65,7 +79,7 @@ public static class FileUtils
         try
         {
             string fildData = File.ReadAllText(filePath);
-
+            //string decodeData = Base64Decode(fildData);
             loadClass = JsonConvert.DeserializeObject<T>(fildData);
         }
         catch(Exception e)
@@ -96,10 +110,68 @@ public static class FileUtils
         }
         try
         {
+            //string encodeData = Base64Encode(saveStringData);
             File.WriteAllText($"{savePath}{fileName}", saveStringData);
         }catch(Exception e)
         {
 
         }
+    }
+    public static bool CompareHash<T>(T userData , string downloadData)
+    {
+        //downloadData는 해쉬코드를 받아야한다
+        //if(userData.GetHashCode().CompareTo()
+        return false;
+    }
+    public static BundleListsDic CompareDicData(BundleListsDic preloadDic, BundleListsDic downloadDic)
+    {
+        BundleListsDic finalDownloadDic = new BundleListsDic();
+        foreach(var downloadAssets in downloadDic.bundleNameLists)
+        {
+            BundleListInfo bundleInfo = preloadDic.bundleNameLists.Find(find => find.bundleName == downloadAssets.bundleName);
+            if(string.IsNullOrEmpty(bundleInfo.bundleName))
+            {
+                //값을 찾지 못했을떄
+                finalDownloadDic.AddBundleName(downloadAssets);
+                finalDownloadDic.AddObjectsRejeon(downloadAssets.bundleName, downloadDic.bundleObjectLists[downloadAssets.bundleName]);
+            }
+            else
+            {
+                if (bundleInfo.bundleTotalHashCode.Equals(downloadAssets.bundleTotalHashCode))
+                {
+                    //같다면 ~
+                    continue;
+                }
+                else
+                {
+                    long compareHash = UserDataManager.GetAssetBundleLocalHash(downloadAssets.bundleName);
+                    if (compareHash.Equals(downloadAssets.bundleTotalHashCode))
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        finalDownloadDic.AddBundleName(downloadAssets);
+                        finalDownloadDic.AddObjectsRejeon(downloadAssets.bundleName,
+                            downloadDic.bundleObjectLists[downloadAssets.bundleName]);
+                    }
+                }
+            }
+        }
+        return finalDownloadDic;
+    }
+    public static string GetFileSizeString(long fileSize)
+    {
+        int index = 0;
+        int fileColumnValue = 1024;
+        long remainValue = 0;
+        while (fileSize > fileColumnValue)
+        {
+            remainValue = (fileSize % fileColumnValue) / 100;
+            fileSize /= fileColumnValue;
+            index++;
+        }
+        string fileSizeString = $"{fileSize}.{remainValue} {FILE_SIZE_COLUMN[index]}";
+        return fileSizeString;
     }
 }

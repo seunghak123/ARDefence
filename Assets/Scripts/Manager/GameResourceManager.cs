@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using Seunghak.UIManager;
 using UnityEngine.Networking;
-#if UNITY_EDITOR
-using TMPro;
-using UnityEditor;
 using System.IO;
 using UnityEngine.U2D;
+using TMPro;
+using System.Linq;
+#if UNITY_EDITOR
+using UnityEditor;
 #endif
 
 namespace Seunghak.Common
@@ -66,6 +67,35 @@ namespace Seunghak.Common
 
             bundleObjectLists[bundleName].Add(objectInfo);
         }
+        public void AddObjectsRejeon(string bundleName, List<BundleFileInfo> objectInfoLists)
+        {
+            if (!bundleObjectLists.ContainsKey(bundleName))
+            {
+                bundleObjectLists.Add(bundleName, new List<BundleFileInfo>());
+            }
+
+            foreach(var objectInfo in objectInfoLists)
+            {
+                BundleFileInfo finedObject = bundleObjectLists[bundleName].Find(find => find.fileName == objectInfo.fileName);
+                if (!string.IsNullOrEmpty(finedObject.fileName))
+                {
+                    bundleObjectLists[bundleName].Add(finedObject);
+                }
+                else
+                {
+                    finedObject = objectInfo;
+                }
+            }
+        }
+        public long GetTotalSize()
+        {
+            long returnValue = 0;
+            foreach(var listInfo in bundleNameLists)
+            {
+                returnValue += listInfo.totalBundleSize;
+            }
+            return returnValue;
+        }
     }
     public class GameResourceManager : UnitySingleton<GameResourceManager>
     {
@@ -74,32 +104,6 @@ namespace Seunghak.Common
         private AtlasLists bundleAtlasLists;
         private static string DOWNLOAD_WEB_URL = "C:/Users/dhtmd/ARDefence/Assets/Android";
 #if UNITY_EDITOR
-        [MenuItem("Tools/AttachLocalizeScript", false, 1003)]
-        public static void AttachLocalizeScript()
-        {
-            if (Selection.activeGameObject != null)
-            {
-                GameObject targetObject = Selection.activeGameObject;
-
-                TextMeshProUGUI[] textArray = targetObject.GetComponentsInChildren<TextMeshProUGUI>();
-
-                if (textArray.Length <= 0)
-                {
-                    return;
-                }
-
-                List<TextMeshProUGUI> targetTextLists = new List<TextMeshProUGUI>(textArray);
-
-                for(int i=0;i< targetTextLists.Count; i++)
-                {
-                    //로컬라이즈 텍스트 관련 스크립트가 없다면 추가
-                    //targetTextLists[i].gameObject.GetComponent<>
-                }
-
-            }
-            //해당 함수는 선택한 오브젝트에 있는 모든 텍스트에 로컬라이즈 스크립트를 붙이는 툴
-        }
-
         [MenuItem("Tools/MakeBundleJson", false, 1000)]
         public static void MakeBundleJson()
         {
@@ -133,7 +137,7 @@ namespace Seunghak.Common
                     {
                         newFileInfo.hashCode = importer.GetHashCode();
                     }
-                    totalHashCode += newFileInfo.hashCode;
+                    totalHashCode ^= newFileInfo.hashCode;
                     listsDic.AddObjectRejeon(bundleLists[i], newFileInfo);
                 }
                 bundleListInfo.bundleName = bundleLists[i];
@@ -146,17 +150,69 @@ namespace Seunghak.Common
 
             AtlasLists atlasLists;
             atlasLists.atlaseLists = new List<AtlasInfo>();
-
+            string jsonSavePath = $"{FileUtils.ATLAS_SAVE_PATH}";
             for (int i=0;i< listsDic.bundleObjectLists["atlas"].Count; i++)
             {
                 AtlasInfo newAtlasInfo;
                 newAtlasInfo.atlasName = listsDic.bundleObjectLists["atlas"][i].fileName;
+                int lastDotIndex = newAtlasInfo.atlasName.LastIndexOf('.');
 
+                if (lastDotIndex >= 0)
+                {
+                    newAtlasInfo.atlasName = newAtlasInfo.atlasName.Substring(0, lastDotIndex);
+                }
                 List<string> fileNames = new List<string>();
                 SpriteAtlas atlasSprits = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(listsDic.bundleObjectLists["atlas"][i].filePath);
+                Object[] lists = UnityEditor.U2D.SpriteAtlasExtensions.GetPackables(atlasSprits);
 
+                foreach (var atlasObject in lists)
+                {
+                    switch (atlasObject)
+                    {
+                        case DefaultAsset asset:
+                            string assetPath = AssetDatabase.GetAssetPath(atlasObject.GetInstanceID());
+                            List<string> objectlists = GetPathObjectNameLists(assetPath);
+                            fileNames.AddRange(objectlists);
+                            break;
+                        case Texture texture:
+                        case Sprite sprite:
+                            int objectNameDotPos = atlasObject.name.LastIndexOf('.');
+                            string addObjectName = atlasObject.name;
+                            if (objectNameDotPos >= 0)
+                            {
+                                addObjectName = addObjectName.Substring(0, objectNameDotPos);
+                            }
+                            fileNames.Add(addObjectName);
+                            break;
+                    }
+                }
                 newAtlasInfo.spriteLists = fileNames;
+
+                atlasLists.atlaseLists.Add(newAtlasInfo);
             }
+            FileUtils.SaveFile<AtlasLists>(jsonSavePath, FileUtils.ATLAS_LIST_FILE_NAME, atlasLists);
+        }
+        private static List<string> GetPathObjectNameLists(string assetPath)
+        {
+            List<string> findedAssets = new List<string>();
+            string[] findedAssetArrays = AssetDatabase.FindAssets(null,new[] { assetPath }).Distinct().ToArray();
+            for(int i = 0; i < findedAssetArrays.Length; i++)
+            {
+                string findedAssetPath = AssetDatabase.GUIDToAssetPath(findedAssetArrays[i]);
+                if (!string.IsNullOrEmpty(findedAssetPath))
+                {
+                    string[] pathSplit = findedAssetPath.Split('/');
+                    string addObjectName = pathSplit[pathSplit.Length - 1];
+                    int objectNameDotPos = addObjectName.LastIndexOf('.');
+
+                    if (objectNameDotPos >= 0)
+                    {
+                        addObjectName = addObjectName.Substring(0, objectNameDotPos);
+                    }
+                    findedAssets.Add(addObjectName);
+                }
+            }
+            return findedAssets;
         }
         private static long GetAssetBundleSize(string path)
         {
@@ -164,7 +220,7 @@ namespace Seunghak.Common
             return fileInfo.Length;
         }
 #endif
-        private void Update()
+            private void Update()
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
@@ -363,8 +419,14 @@ namespace Seunghak.Common
                     }
                     else
                     {
-                        //프리팹 리스트에 없는 상황 이 경우엔 에러 처리
-                        Debug.LogError($"PrefabLists have not {objectName}");
+                        Debug.LogWarning($"PrefabLists have not {objectName}");
+                        Object useritem = Resources.Load(objectName);
+                        
+                        if (useritem != null)
+                        {
+                            return useritem as GameObject;
+                        }
+
                         return null;
                     }
                 }
@@ -386,6 +448,7 @@ namespace Seunghak.Common
             {
                 AtlasInfo newAddedInfo;
                 //newAddedInfo.atlasName = atlasName;
+
             }
             foreach (string atlasName in bundleAtlasLists.atlaseLists.ConvertAll<string>(find => find.atlasName))
             {

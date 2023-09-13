@@ -68,7 +68,7 @@ namespace Seunghak.UIManager
                 popUI.RestoreWindow();
             }
         }
-        public void PushUI(UI_TYPE uiType)
+        public BaseUI PushUI(UI_TYPE uiType)
         {
             string targetUIName = uiType.ToString();
 
@@ -85,7 +85,7 @@ namespace Seunghak.UIManager
                 if (targetUI == null)
                 {
                     Debug.Log("Error : TargetUI Object is Empty");
-                    return;
+                    return null;
                 }
                 targetUI.SetActive(true);
                 uicomponent = targetUI.GetComponent<BaseUI>();
@@ -136,6 +136,7 @@ namespace Seunghak.UIManager
                 }
                 uicomponent.EnterWindow();
             }
+            return uicomponent;
         }
     }
 }

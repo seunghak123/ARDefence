@@ -87,7 +87,7 @@ namespace Seunghak
         static Dictionary<string, string> downloadingErrors = new Dictionary<string, string>();
         static Dictionary<string, int> downloadingBundles = new Dictionary<string, int>();
 
-        static List<AssetBundleLoadOperation> inProgressOperations = new List<AssetBundleLoadOperation>();
+        public static List<AssetBundleLoadOperation> inProgressOperations = new List<AssetBundleLoadOperation>();
         static Dictionary<string, string[]> dependencies = new Dictionary<string, string[]>();
         /// <summary>
         /// The base downloading url which is used to generate the full
@@ -157,6 +157,13 @@ namespace Seunghak
             for(int i=0;i< loadDic.bundleNameLists.Count; i++)
             {
                 LoadAssetBundle(loadDic.bundleNameLists[i].bundleName);
+            }
+        }
+        public void InitAssetBundleManager(BundleListsDic initBundleLists)
+        {
+            for (int i = 0; i < initBundleLists.bundleNameLists.Count; i++)
+            {
+                LoadAssetBundle(initBundleLists.bundleNameLists[i].bundleName);
             }
         }
         private static string GetStreamingAssetsPath()

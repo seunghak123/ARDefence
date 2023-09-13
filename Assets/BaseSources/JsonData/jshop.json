@@ -1,0 +1,14 @@
+[
+  {
+    "index": 0,
+    "shop_id": 0,
+    "shop_price": 5000,
+    "shop_id_string": "골드 패키지"
+  },
+  {
+    "index": 1,
+    "shop_id": 1,
+    "shop_price": 10000,
+    "shop_id_string": "크리스탈 패키지"
+  }
+]

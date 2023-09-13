@@ -28,7 +28,8 @@ namespace Seunghak.LoginSystem
         }
         private void GoogleLoginSuccess()
         {
-            Debug.Log("LoginSuccess");
+            //서버에 해당 UserID를 보낼것
+            //PlayGamesPlatform.Instance.GetUserId();
         }
         private void GoogleLoginFail()
         {

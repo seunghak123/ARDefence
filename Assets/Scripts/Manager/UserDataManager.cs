@@ -65,5 +65,38 @@ namespace Seunghak.Common
             }
             return convertValue;
         }
+        private static string attendString = "SaveBundleHash";
+        public static void SaveAssetBundleHash(string assetName,long saveValue)
+        {
+            string saveKey = $"{attendString}_{assetName}";
+            PlayerPrefs.SetString(saveKey, saveValue.ToString());
+        }
+        public static long GetAssetBundleLocalHash(string assetName)
+        {
+            long returnValue = 0;
+            string loadKey = $"{attendString}_{assetName}";
+            string getValue = PlayerPrefs.GetString(loadKey);
+            try
+            {
+                returnValue = (long)Convert.ChangeType(getValue, typeof(long));
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Convert HashValue Error {e.Message}");
+            }
+            return returnValue;
+        }
+    }
+    class UserOptionData
+    {
+        [Range(0, 100)] private int masterVolume = 50;
+        [Range(0, 100)] private int soundVolume = 50;
+        [Range(0, 100)] private int fbxVolume = 50;
+        private E_LANGUAGE_TYPE userLangType = E_LANGUAGE_TYPE.KOREAN;
+        public int MasterVolume { get { return masterVolume; } set { masterVolume = value; } }
+        public int SoundVolume { get { return soundVolume; } set { soundVolume = value; } }
+        public int FBXVolume { get { return fbxVolume; } set { fbxVolume = value; } }
+        public bool IsMute { get; set; } = false;
+        public E_LANGUAGE_TYPE UserLanguageType { get { return userLangType; }set { userLangType = value; } }
     }
 }

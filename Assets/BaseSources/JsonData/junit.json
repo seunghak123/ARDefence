@@ -1,0 +1,27 @@
+[
+  {
+    "index": 0,
+    "unitName": "궁수",
+    "unitHp": 3
+  },
+  {
+    "index": 1,
+    "unitName": "기사",
+    "unitHp": 10
+  },
+  {
+    "index": 2,
+    "unitName": "마법사",
+    "unitHp": 5
+  },
+  {
+    "index": 3,
+    "unitName": "전사",
+    "unitHp": 12
+  },
+  {
+    "index": 4,
+    "unitName": "토끼",
+    "unitHp": 1
+  }
+]
