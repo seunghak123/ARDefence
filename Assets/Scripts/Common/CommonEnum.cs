@@ -25,18 +25,13 @@ public enum E_LANGUAGE_TYPE
     KOREAN,
     ENGLISH,
 }
-//앱 구동 순서
-//앱 구동,
-//매니페스트(권한 요청)
-//앱 업데이트
-//번들 업데이트,
-//결제 데이터 업데이트(인앱 데이터 갱신)
-//로그인 
+
 public enum E_APPLICATION_STATE
 {
     APPLICATION_START,
     APPLICATION_UPDATE,
     REQUEST_PERMISSION,
+    USER_LOGIN,
     BUNDLE_UPDATE,
     INAPP_UPDATE,
     TITLE,

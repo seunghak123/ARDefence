@@ -101,7 +101,6 @@ namespace Seunghak.Common
     {
         private Dictionary<string, UnityEngine.Object> prefabLists = new Dictionary<string, UnityEngine.Object>();
         private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
-        private AtlasLists bundleAtlasLists;
         private static string DOWNLOAD_WEB_URL = "C:/Users/dhtmd/ARDefence/Assets/Android";
 #if UNITY_EDITOR
         [MenuItem("Tools/MakeBundleJson", false, 1000)]
@@ -220,7 +219,7 @@ namespace Seunghak.Common
             return fileInfo.Length;
         }
 #endif
-            private void Update()
+        private void Update()
         {
             if (Input.GetKeyDown(KeyCode.F))
             {
@@ -440,38 +439,6 @@ namespace Seunghak.Common
             }
 #endif
         }
-        public List<SpriteAtlas> RequestAtlasLists()
-        {
-            List<SpriteAtlas> getAtlasLists = new List<SpriteAtlas>();
-
-            if (bundleAtlasLists.atlaseLists.Count == 0)
-            {
-                AtlasInfo newAddedInfo;
-                //newAddedInfo.atlasName = atlasName;
-
-            }
-            foreach (string atlasName in bundleAtlasLists.atlaseLists.ConvertAll<string>(find => find.atlasName))
-            {
-                Object atlasObject = LoadObject(atlasName);
-                if (atlasObject != null)
-                {
-                    SpriteAtlas spriteAtlas = atlasObject as SpriteAtlas;
-                    if (spriteAtlas != null)
-                    {
-                        getAtlasLists.Add(spriteAtlas);
-                    }
-                }
-            }
-
-            return getAtlasLists;
-        }
-        public string SpriteTargetAtlas(string spriteName)
-        {
-            //스프라이트를 아틀라스 리스트 파일에서 찾고
-            //스프라이트의 타겟 아틀라스를 찾아 넘겨준다
-
-            return null;
-        }
         public Object LoadObject(string objectName)
         {
 #if UNITY_EDITOR
@@ -499,6 +466,21 @@ namespace Seunghak.Common
 #if UNITY_EDITOR
             else
             {
+                 string bundleFilePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+                 
+                BundleListsDic bundleLists = FileUtils.LoadFile<BundleListsDic>(bundleFilePath);
+                for(int i=0;i< bundleLists.bundleNameLists.Count; i++)
+                {
+                    BundleFileInfo info = bundleLists.bundleObjectLists[bundleLists.bundleNameLists[i].bundleName].Find(find => find.fileName == objectName);
+
+                    if (!string.IsNullOrEmpty(info.fileName))
+                    {
+                        //찾앗다면
+                        return Resources.Load(info.filePath);
+                    }
+                }
+
+                //번들 리스트 파일 읽고, 오브젝트 찾아서 직접 생산 이미지 파일 경우는 아틀라스 읽고 참조하는 코드 만들것
                 return null;
             }
 #endif
@@ -511,11 +493,6 @@ namespace Seunghak.Common
             }
 
             return SpawnObject(openUIType.ToString());
-        }
-        private void InitSpriteAtlas()
-        {
-            //파일 읽고 
-            bundleAtlasLists = FileUtils.LoadFile<AtlasLists>("");
         }
     }
 
@@ -540,10 +517,6 @@ namespace Seunghak.Common
             }
 
             return GameObject.Instantiate(poolObject) as GameObject;
-        }
-        public void ReleasePool()
-        {
-
         }
         public void DestoryPool()
         {

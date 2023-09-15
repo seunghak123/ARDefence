@@ -42,6 +42,9 @@ namespace Seunghak.Common
                 case E_APPLICATION_STATE.APPLICATION_UPDATE:
                     StartCoroutine(ApplicationUpdate());
                     break;
+                case E_APPLICATION_STATE.USER_LOGIN:
+                    //로그인 UI 키고 유저 정보 입력받을 떄 까지 대기
+                    break;
                 case E_APPLICATION_STATE.BUNDLE_UPDATE:
                     StartCoroutine(BundleUpdate());
                     break;
@@ -142,7 +145,12 @@ namespace Seunghak.Common
             }
             if (isDownload)
             {
-                AssetBundleManager.BaseDownloadingURL = Application.persistentDataPath;
+
+                //if (!AssetBundleManager.SimulateAssetBundleInEditor)
+                {
+                    yield return AssetBundleManager.Initialize().IsDone();
+                }
+                //AssetBundleManager.BaseDownloadingURL = Application.persistentDataPath;
                 AssetBundleManager.overrideBaseDownloadingURL += (string assetBundle) => {
                     //번들리스트에 들어가 잇는경우엔 원래경로, 아니면 변경된 경로
                     return "AAA";
@@ -155,7 +163,7 @@ namespace Seunghak.Common
                 yield return WaitTimeManager.WaitForEndFrame();
             }
             //전부 완료되면 해당 데이터 저장
-            FileUtils.SaveFile<BundleListsDic>(Application.persistentDataPath, FileUtils.BUNDLE_LIST_FILE_NAME, compareLoadDic);
+            //FileUtils.SaveFile<BundleListsDic>(Application.persistentDataPath, FileUtils.BUNDLE_LIST_FILE_NAME, compareLoadDic);
             //5.다운로드 받으면서 기존 파일 갱신 
             //6.다운로드 완료시 json파일 갱신 
             //에셋 번들 매니저 초기화, UI 출력, 확인시 Progress Update 
