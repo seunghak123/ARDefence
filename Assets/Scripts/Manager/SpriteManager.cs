@@ -56,26 +56,28 @@ namespace Seunghak.Common
                         }
                     }
                 }
-
+                for(int j = 0; j < atlasLists.atlaseLists[i].spriteLists.Count; j++)
+                {
+                    spriteAtlasPathDic[atlasLists.atlaseLists[i].spriteLists[j]] = atlasLists.atlaseLists[i].atlasName;
+                }
             }
-
-            for (int i = 0; i < atlasLists.atlaseLists.Count; i++)
-            {
-
-                SpriteAtlas atlasSprits = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(atlasLists.atlaseLists[i].atlasName);
-            }
-
-            atlasLists = JsonUtility.FromJson<AtlasLists>(GameResourceManager.Instance.LoadObject("AtlasList").ToString());
-            //GameResourceManager.Instance.LoadObject()
-
 #else
-            //1. 아틀라스 리스트 관련 파일 읽기
-            //2. 아틀라스 리스트 저장및 구조저장
-#endif
+            atlasLists = JsonUtility.FromJson<AtlasLists>(GameResourceManager.Instance.LoadObject("AtlasList").ToString());
+
             for (int i = 0; i < atlasLists.atlaseLists.Count; i++)
             {
-                //SpriteAtlas atlasSprits = AssetDatabase.LoadAssetAtPath<SpriteAtlas>(atlasLists.atlaseLists[i].atlasName);
+                SpriteAtlas atlas =  GameResourceManager.Instance.LoadObject(atlasLists.atlaseLists[i].atlasName) as SpriteAtlas;
+                if (atlas != null)
+                {
+                    spriteAtlasLists.Add(atlas);
+
+                    for (int j = 0; j < atlasLists.atlaseLists[i].spriteLists.Count; j++)
+                    {
+                        spriteAtlasPathDic[atlasLists.atlaseLists[i].spriteLists[j]] = atlasLists.atlaseLists[i].atlasName;
+                    }
+                }
             }
+#endif
         }
         private void RequestAtlasCallback(string tag, System.Action<SpriteAtlas> callback)
         {
