@@ -93,7 +93,7 @@ namespace Seunghak.UIManager
                 if (targetUI.GetComponent<BaseUIWindow>() != null)
                 {
                     BaseUIWindow targetUIWindow = targetUI.GetComponent<BaseUIWindow>();
-                    targetUI.transform.parent = BaseCanvas.Instance.windowUIParent;
+                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;
 
                     if (currentWindowUI != null)
                     {
@@ -104,7 +104,7 @@ namespace Seunghak.UIManager
                 }
                 else if (targetUI.GetComponent<BaseUIPopup>() != null)
                 {
-                    targetUI.transform.parent = BaseCanvas.Instance.popUpUIParent;
+                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.popUpUIParent;
 
                     BaseUIPopup targetPopupWindow = targetUI.GetComponent<BaseUIPopup>();
 
@@ -116,7 +116,7 @@ namespace Seunghak.UIManager
                 }
                 else
                 {
-                    targetUI.transform.parent = BaseCanvas.Instance.UtilUIParent;
+                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.UtilUIParent;
                 }
                 targetUI.transform.position = Vector3.zero;
 

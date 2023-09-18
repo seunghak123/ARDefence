@@ -89,6 +89,12 @@ public static class FileUtils
 
         return loadClass;
     }
+    public static string LoadFile(string filePath)
+    {
+        string fildData = File.ReadAllText(filePath);
+
+        return fildData;
+    }
     public static string GetPlatformString()
     {
 #if UNITY_ANDROID
@@ -173,5 +179,17 @@ public static class FileUtils
         }
         string fileSizeString = $"{fileSize}.{remainValue} {FILE_SIZE_COLUMN[index]}";
         return fileSizeString;
+    }
+    public static string GetStreamingAssetsPath()
+    {
+        if (Application.isEditor)
+        {
+            return Application.dataPath;
+        }
+        else if (Application.isMobilePlatform || Application.isConsolePlatform)
+        {
+            return Application.streamingAssetsPath;
+        }
+        return "file://" + Application.streamingAssetsPath;
     }
 }

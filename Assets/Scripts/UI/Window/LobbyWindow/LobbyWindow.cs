@@ -6,9 +6,12 @@ namespace Seunghak.UIManager
 {
     public class LobbyWindow : BaseUIWindow
     {
+        [SerializeField] private UserInfoUI userInfoDataUI; 
         public override void EnterWindow()
         {
             base.EnterWindow();
+
+            //userInfoDataUI.SetData();
         }
 
         public override void ExitWindow()

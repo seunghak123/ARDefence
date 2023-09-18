@@ -5,24 +5,24 @@ namespace Seunghak.SceneManager
 {
     public class #SCRIPTNAME# : SceneController
     {
-        protected void Awake()
+        protected override void Awake()
         {
-            RegistSceneController();
+            base.Awake();
         }
         //현재 씬 컨트롤러 초기화 함수
         public override void InitSceneController() { }
         //씬 로드 시 씬 매니저에 현재 컨트롤러 등록하는 함수
         public override void RegistSceneController()
         {
-            SceneManager.Instance.RegistSceneController(this);
+            base.RegistSceneController();
         }
         public override void RegistSceneStepAction(E_SCENESTEP_TYPE actionType, Action playAction)
         {
-            SceneManager.Instance.AddStepAction(actionType, playAction);
+            base.RegistSceneStepAction(actionType, playAction);
         }
         public override void ChangeScene(E_SCENE_TYPE nextScene)
         {
-            SceneManager.Instance.ChangeScene(nextScene);
+            base.ChangeScene(nextScene);
         }
     }
 }

@@ -251,7 +251,7 @@ namespace Seunghak.Common
 #if UNITY_EDITOR
             if (AssetBundleManager.SimulateAssetBundleInEditor)
             {
-                bundleLoadPath = $"{GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+                bundleLoadPath = $"{FileUtils.GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
             }
             if (!AssetBundleManager.SimulateAssetBundleInEditor)
 #endif
@@ -260,7 +260,6 @@ namespace Seunghak.Common
                 for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
                 {
                     string errorCode;
-
                     LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i].bundleName, out errorCode);
 
                     if (loadedAssets == null)
@@ -283,21 +282,32 @@ namespace Seunghak.Common
                     }
                 }
             }
+#if UNITY_EDITOR
+            else
+            {
+                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+                for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
+                {
+ 
+                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName].Count; j++)
+                    {
+                        string loadPath = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName][j].filePath;
+                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName][j].fileName;
+                        string[] namelists = insertObject.Split('.');
+                        if (namelists.Length > 0)
+                        {
+                            Object loadObject = AssetDatabase.LoadAssetAtPath(loadPath,typeof(Object));
+                            prefabLists[namelists[0]] = loadObject;
+                        }
+                        
+                    }
+                }
+            }
+#endif
             isReady = true;
             Debug.Log("Ready To Load");
         }
-        private static string GetStreamingAssetsPath()
-        {
-            if (Application.isEditor)
-            {
-                return Application.dataPath; 
-            }
-            else if (Application.isMobilePlatform || Application.isConsolePlatform)
-            {
-                return Application.streamingAssetsPath;
-            }
-            return "file://" + Application.streamingAssetsPath;
-        }
+
         public GameObject GetPoolObject(string type)
         {
             if (!prefabObjectpools.ContainsKey(type))
@@ -325,38 +335,26 @@ namespace Seunghak.Common
         }
         public GameObject SpawnObject(string objectName)
         {
-#if UNITY_EDITOR
-            if (!AssetBundleManager.SimulateAssetBundleInEditor)
-#endif
+            if (!prefabObjectpools.ContainsKey(objectName))
             {
-                if (!prefabObjectpools.ContainsKey(objectName))
+                if (prefabLists.ContainsKey(objectName))
                 {
-                    if (prefabLists.ContainsKey(objectName))
-                    {
-                        PushObjectPool(objectName, prefabLists[objectName] as GameObject);
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"PrefabLists have not {objectName}");
-                        Object useritem = Resources.Load(objectName);
-                        
-                        if (useritem != null)
-                        {
-                            return useritem as GameObject;
-                        }
-
-                        return null;
-                    }
+                    PushObjectPool(objectName, prefabLists[objectName] as GameObject);
                 }
-                return prefabObjectpools[objectName].GetPoolObject();
+                else
+                {
+                    Debug.LogWarning($"PrefabLists have not {objectName}");
+                    Object useritem = Resources.Load(objectName);
+
+                    if (useritem != null)
+                    {
+                        return useritem as GameObject;
+                    }
+
+                    return null;
+                }
             }
-#if UNITY_EDITOR
-            else
-            {
-                //AssetBundle.LoadFromFile()
-                return null;
-            }
-#endif
+            return prefabObjectpools[objectName].GetPoolObject();
         }
         public Object LoadObject(string objectName)
         {

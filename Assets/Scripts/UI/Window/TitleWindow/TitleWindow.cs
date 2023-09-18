@@ -10,12 +10,11 @@ namespace Seunghak.UIManager
     public class TitleWindow : MonoBehaviour
     {
         [SerializeField] private TextMeshProUGUI versionText;
-
         [SerializeField] private GameObject loginPanel;
         [SerializeField] private Button googleLoginButton;
         [SerializeField] private Button appleLoginButton;
         [SerializeField] private Button guestLoginButton;
-
+        [SerializeField] public DownloadBundlePopup downloadPopup;
         private void Awake()
         {
             EnterWindow();

@@ -3,14 +3,23 @@ using UnityEngine;
 
 namespace Seunghak.SceneManager
 {
-    public class TitleSceneController : SceneController
+    public class LobbySceneController : SceneController
     {
         protected override void Awake()
         {
             base.Awake();
+
+            InitSceneController();
         }
         //���� �� ��Ʈ�ѷ� �ʱ�ȭ �Լ�
-        public override void InitSceneController() { }
+        public override void InitSceneController() 
+        {
+            UIManager.UIManager.Instance.PushUI(UIManager.UI_TYPE.LobbyWindow);
+
+
+            //로그인 보상등등 이벤트 팝업 띄워주고, 
+
+        }
         //�� �ε� �� �� �Ŵ����� ���� ��Ʈ�ѷ� ����ϴ� �Լ�
         public override void RegistSceneController()
         {

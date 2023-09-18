@@ -5,7 +5,7 @@ namespace Seunghak.SceneManager
 {
     public abstract class SceneController : MonoBehaviour
     {
-        protected void Awake()
+        protected virtual void Awake()
         {
             RegistSceneController();
         }

@@ -13,6 +13,7 @@ namespace Seunghak.Common
     {
         [SerializeField] public static string cdnAddressPath = "https://d2fvmix8egxgsw.cloudfront.net/ARDefenceBundle/";
         [SerializeField] private bool isUseBundle;
+        [SerializeField] public GameObject managersObject;
         [Header("Init UI")]
         [SerializeField] TitleWindow usertitleWindow;
         [SerializeField] DownloadBundlePopup userDownloadBundlePopup;
@@ -20,15 +21,18 @@ namespace Seunghak.Common
         private E_APPLICATION_STATE applicationState = E_APPLICATION_STATE.APPLICATION_START;
         private void InitApplication()
         {
+            if (managersObject != null)
+            {
+                DontDestroyOnLoad(managersObject);
+            }
             if (usertitleWindow == null)
             {
                 usertitleWindow = GameObject.Find("TitleWindow").GetComponent<TitleWindow>();
             }
             if (userDownloadBundlePopup == null)
             {
-                userDownloadBundlePopup = GameObject.Find("DownloadBundlePopup").GetComponent<DownloadBundlePopup>();
+                userDownloadBundlePopup = usertitleWindow.downloadPopup;
             }
-
             if (usertitleWindow != null)
             {
                 usertitleWindow.InitTitleWindow();
@@ -44,9 +48,10 @@ namespace Seunghak.Common
         {
             InitApplication();
         }
-        private void ApplicationWork(E_APPLICATION_STATE nextType)
+        private void ApplicationWork(E_APPLICATION_STATE nextType,bool isLocalAsset = false)
         {
             applicationState = nextType;
+            bool isLocal = isLocalAsset;
             switch (applicationState)
             {
                 case E_APPLICATION_STATE.APPLICATION_START:
@@ -64,19 +69,69 @@ namespace Seunghak.Common
                 case E_APPLICATION_STATE.BUNDLE_UPDATE:
                     StartCoroutine(BundleUpdate());
                     break;
+                case E_APPLICATION_STATE.GAME_RESOURCE_LOAD:
+                    StartCoroutine(GameResourceLoad(isLocal));
+                    break;
                 case E_APPLICATION_STATE.INAPP_UPDATE:
-
+                    StartCoroutine(InAppUpdate());
                     break;
                 case E_APPLICATION_STATE.TITLE:
+                    StartCoroutine(GoToTitle());
                     break;
             }
 
         }
-        private void MoveNextState(E_APPLICATION_STATE nextType)
+        private void MoveNextState(E_APPLICATION_STATE nextType,bool isLocal = false)
         {
             //State사이 시간 부여 등등 action들을 등록하고 대기하는 시간을 갖도록 변경
-            ApplicationWork(nextType);
+            ApplicationWork(nextType, isLocal);
 
+        }
+        private IEnumerator GameResourceLoad(bool isLocal = false)
+        {
+            //만약 에셋을 다운로드 받지 않았다면 초기화가 필요
+            if (isLocal
+#if UNITY_EDITOR
+                && !AssetBundleManager.SimulateAssetBundleInEditor
+#endif
+                )
+            {
+                string bundleLoadPath = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+                AssetBundleManager.BaseDownloadingURL = Application.persistentDataPath;
+
+                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+                string target = FileUtils.LoadFile<string>($"{Application.persistentDataPath}/Android");
+                    
+                yield return AssetBundleManager.Initialize().IsDone();
+                
+                while (AssetBundleManager.inProgressOperations.Count > 0)
+                {
+                    yield return WaitTimeManager.WaitForEndFrame();
+                }
+                AssetBundleManager.Instance.InitAssetBundleManager(loadDic);
+                while (AssetBundleManager.inProgressOperations.Count > 0)
+                {
+                    //게임 리소스하는데 좀 길어진다 싶으면 영상 틀것
+                    yield return WaitTimeManager.WaitForEndFrame();
+                }
+            }
+
+            StartCoroutine(GameResourceManager.Instance.SetDownloadDatas());
+
+            while (!GameResourceManager.Instance.isReady)
+            {
+                yield return WaitTimeManager.WaitForEndFrame();
+            }
+
+            MoveNextState(E_APPLICATION_STATE.INAPP_UPDATE);
+            yield break;
+        }
+        private IEnumerator GoToTitle()
+        {
+            //로비로 가야하는가 ? 아니면 인트로로 가야하는가에 따라 결정 우선 인트로는 빠지고 
+            //바로 로비로 인토르는, 스킵가능하도록 만들자
+            SceneManager.SceneManager.Instance.ChangeScene(E_SCENE_TYPE.LOBBY);
+            yield break;
         }
         private IEnumerator ApplicationUpdate()
         {
@@ -89,7 +144,10 @@ namespace Seunghak.Common
         }
         private IEnumerator UserLogin()
         {
-            usertitleWindow.SetUserLogin();
+            if (usertitleWindow != null)
+            {
+                usertitleWindow.SetUserLogin();
+            }
             yield break;
         }
         private IEnumerator BundleUpdate()
@@ -141,8 +199,7 @@ namespace Seunghak.Common
 
             if (totalDownloadSize <= 0)
             {
-                //다운로드 받을 것이 없을경우 바로 인앱 업데이트로 이동
-                MoveNextState(E_APPLICATION_STATE.INAPP_UPDATE);
+                MoveNextState(E_APPLICATION_STATE.GAME_RESOURCE_LOAD,true);
                 yield break;
             }
             float waitDownloadTime = 0.0f;
@@ -174,6 +231,11 @@ namespace Seunghak.Common
             {
                 //다운로드 경로 강제로 가라 처리
                 AssetBundleManager.BaseDownloadingURL = "C:/Users/dhtmd/Desktop/TestLocalStorage/Android/09111200";
+
+                //AssetBundleManager.overrideBaseDownloadingURL += (string assetBundle) => {
+                //다운로드 URL에 빠져잇는경우 전부 persistance
+                //    return "AAA";
+                //};
                 //if (!AssetBundleManager.SimulateAssetBundleInEditor)
                 {
                     yield return AssetBundleManager.Initialize().IsDone();
@@ -195,18 +257,16 @@ namespace Seunghak.Common
             }
 
             FileUtils.SaveFile<BundleListsDic>(Application.persistentDataPath, FileUtils.BUNDLE_LIST_FILE_NAME, compareLoadDic);
-           
-            StartCoroutine( GameResourceManager.Instance.SetDownloadDatas());
-
-            while (!GameResourceManager.Instance.isReady)
-            {
-                yield return WaitTimeManager.WaitForEndFrame();
-            }
-            Object a = GameResourceManager.Instance.LoadObject("jshop");
-
-            MoveNextState(E_APPLICATION_STATE.INAPP_UPDATE);
+ 
+            MoveNextState(E_APPLICATION_STATE.GAME_RESOURCE_LOAD,false);
             yield return null;
         }
+
+        private string AssetBundleManager_overrideBaseDownloadingURL(string bundleName)
+        {
+            throw new System.NotImplementedException();
+        }
+
         //private void 
         private IEnumerator RequestPermission()
         {
@@ -228,6 +288,7 @@ namespace Seunghak.Common
         private IEnumerator InAppUpdate()
         {
             MoveNextState(E_APPLICATION_STATE.TITLE);
+            Destroy(usertitleWindow.gameObject);
             yield break;
         }
         //어플리케이션 업데이트 로직

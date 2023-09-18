@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Seunghak.Common;
+using UnityEngine;
 
 namespace Seunghak
 {
@@ -15,6 +16,11 @@ namespace Seunghak
                 {
                     DontDestroyOnLoad(s_Instance.gameObject);
                     InitSingleton();
+                    GameObject parentObj = GameObject.Find("Managers");
+                    if (parentObj != null)
+                    {
+                        this.transform.parent = parentObj.transform;
+                    }
                 }
             }
         }

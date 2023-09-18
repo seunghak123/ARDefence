@@ -10,12 +10,5 @@ namespace Seunghak.UIManager
         [SerializeField] public Transform popUpUIParent;
         [SerializeField] public Transform UtilUIParent;
 
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.G))
-            {
-                UIManager.Instance.PushUI(UI_TYPE.TitleWindow);
-            }
-        }
     }
 }

@@ -454,16 +454,23 @@ namespace Seunghak
                 // UnityWebRequest also is able to load from there, but we use the former API because:
                 // - UnityWebRequest under Android OS fails to load StreamingAssets files (at least Unity5.50 or less)
                 // - or UnityWebRequest anyway internally calls AssetBundle.LoadFromFileAsync for StreamingAssets files
-                if (url.StartsWith(Application.streamingAssetsPath)) {
+                if (url.StartsWith(Application.streamingAssetsPath)){ 
                     inProgressOperations.Add(new AssetBundleDownloadFileOperation(assetBundleName, url));
-                } else {
+                } 
+#if UNITY_EDITOR
+                else if (url.StartsWith(Application.persistentDataPath))
+                {
+                    inProgressOperations.Add(new AssetBundleLoadPersistentOperation(assetBundleName,url));
+                }
+#endif
+                else {
                     
                     UnityWebRequest request = null;
                     if (isLoadingAssetBundleManifest) {
                         // For manifest assetbundle, always download it as we don't have hash for it.
-                        request = UnityWebRequestAssetBundle.GetAssetBundle(url);
+                        request = UnityWebRequest.Get(url);
                     } else {
-                        request = UnityWebRequestAssetBundle.GetAssetBundle(url, assetBundleManifest.GetAssetBundleHash(assetBundleName), 0);
+                        request = UnityWebRequest.Get(url);
                     }
                     inProgressOperations.Add(new AssetBundleDownloadWebRequestOperation(assetBundleName, request));
                 }
@@ -578,38 +585,57 @@ namespace Seunghak
         void ProcessFinishedOperation(AssetBundleLoadOperation operation)
         {
             AssetBundleDownloadOperation download = operation as AssetBundleDownloadOperation;
-            if (download == null)
+            AssetBundleDownloadWebRequestOperation subdownload = operation as AssetBundleDownloadWebRequestOperation;
+            AssetBundleLoadPersistentOperation localdownload = operation as AssetBundleLoadPersistentOperation;
+            if (download == null&& subdownload == null&& localdownload==null)
             {
                 return;
             }
-            if ( downloadingBundles.ContainsKey(download.assetBundleName) == true )
-            {
-                int nRefCount = downloadingBundles[download.assetBundleName];
+            string error = string.Empty;
+            string assetbundleName = string.Empty;
+            LoadedAssetBundle loadedAssets = default;
 
-                if (download.assetBundle == null)
+            if (subdownload != null)
+            {
+                assetbundleName =  string.IsNullOrEmpty(download.assetBundleName)? subdownload.assetBundleName : download.assetBundleName;
+                loadedAssets = download.assetBundle == null? subdownload.assetBundle: download.assetBundle;
+                error = string.IsNullOrEmpty(download.error) ? subdownload.error : download.error;
+            }
+            else if (localdownload != null)
+            {
+                assetbundleName = localdownload.assetBundleName;
+                loadedAssets = localdownload.loadedAssetBundle;
+                error = localdownload.err; 
+            }
+
+            if ( downloadingBundles.ContainsKey(assetbundleName) == true )
+            {
+                int nRefCount = downloadingBundles[assetbundleName];
+                if (loadedAssets.assetBundle==null)
                 {
-                    Debug.Log("assetbundle null : " + download.assetBundleName);
+                    Debug.Log("assetbundle null : " + assetbundleName);
                     return;
                 }
-                download.assetBundle.referencedCount = nRefCount;
-                downloadingBundles.Remove(download.assetBundleName);
+
+                loadedAssets.referencedCount = nRefCount;
+                downloadingBundles.Remove(assetbundleName);
             }
             else
             {
-                Debug.Log("m_DownloadingBundles not contain " + download.assetBundleName);
+                Debug.Log("m_DownloadingBundles not contain " + assetbundleName);
             }
-            if (download.error == null)
+            if (string.IsNullOrEmpty(error))
             {
-                if(download.assetBundle!=null)
+                if(loadedAssets.assetBundle!=null)
                 {
-                    loadedAssetBundles.Add(download.assetBundleName, download.assetBundle);
+                    loadedAssetBundles.Add(assetbundleName, loadedAssets);
                 }
             }
             else
             {
-                string msg = string.Format("Failed downloading bundle {0} from {1}: {2}",
-                        download.assetBundleName, download.GetSourceURL(), download.error);
-                downloadingErrors.Add(download.assetBundleName, msg);
+                string msg = string.Format("Failed downloading bundle {0} from  {1}",
+                       assetbundleName, error);
+                downloadingErrors.Add(assetbundleName, msg);
             }       
         }
 

@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 #if UNITY_5_4_OR_NEWER
 using UnityEngine.Networking;
 using System.Text;
+using System;
 #endif
 #if ENABLE_IOS_ON_DEMAND_RESOURCES
 using UnityEngine.iOS;
@@ -219,11 +220,12 @@ namespace Seunghak
         private UnityWebRequest webRequest;
         private AsyncOperation webOperation;
         private string webUrl;
+        public LoadedAssetBundle assetBundle;
 
         public AssetBundleDownloadWebRequestOperation(string assetBundleName, UnityWebRequest request)
             : base(assetBundleName)
         {
-            if (request == null || !(request.downloadHandler is DownloadHandlerAssetBundle))
+            if (request == null)
                 throw new System.ArgumentNullException("request");
             webUrl = request.url;
             webRequest = request;
@@ -247,21 +249,17 @@ namespace Seunghak
                 return;
             }
 
-            var handler = webRequest.downloadHandler as DownloadHandlerAssetBundle;
-            AssetBundle bundle = handler.assetBundle;
+            var handler = webRequest.downloadHandler ;
+            AssetBundle bundle = AssetBundle.LoadFromMemory(handler.data);
             if (bundle == null)
             {
                 error = string.Format("{0} is not a valid asset bundle.", assetBundleName);
             }
             else
             {
-                assetBundle = new LoadedAssetBundle(bundle);
-
-                byte[] bytes = Encoding.UTF8.GetBytes(assetBundle.ToString());
-
-                FileUtils.SaveFile<byte[]>(Application.persistentDataPath, assetBundleName, bytes);
+                FileUtils.SaveFile<byte[]>(Application.persistentDataPath, assetBundleName, webRequest.downloadHandler.data);
             }
-
+            assetBundle = new LoadedAssetBundle(bundle);
             webRequest.Dispose();
             webRequest = null;
             webOperation = null;
@@ -304,9 +302,13 @@ namespace Seunghak
             }
 
             if (bundle == null)
+            {
                 error = string.Format("{0} is not a valid asset bundle.", assetBundleName);
+            }
             else
+            {
                 assetBundle = new LoadedAssetBundle(bundle);
+            }
             assetBundleRequest = null;
         }
 
@@ -421,9 +423,9 @@ namespace Seunghak
 
     public class AssetBundleLoadAssetOperationSimulation : AssetBundleLoadAssetOperation
     {
-        Object simulationObject;
+        UnityEngine.Object simulationObject;
 
-        public AssetBundleLoadAssetOperationSimulation(Object simulatedObject)
+        public AssetBundleLoadAssetOperationSimulation(UnityEngine.Object simulatedObject)
         {
             simulationObject = simulatedObject;
         }
@@ -518,6 +520,39 @@ namespace Seunghak
             }
             else
                 return true;
+        }
+    }
+    public class AssetBundleLoadPersistentOperation : AssetBundleLoadOperation
+    {
+        public string assetBundleName;
+        protected string downloadPersistentUrl;
+        public string err = string.Empty;
+        public LoadedAssetBundle loadedAssetBundle;
+        public AssetBundleLoadPersistentOperation(string bundleName,string url)
+        {
+            assetBundleName = bundleName;
+            downloadPersistentUrl = url;
+        }
+
+        public override bool IsDone()
+        {
+            return loadedAssetBundle.assetBundle != null;
+        }
+
+        public override bool Update()
+        {
+            byte[] targetData = FileUtils.LoadFile<byte[]>(downloadPersistentUrl);
+            AssetBundle bundle = AssetBundle.LoadFromMemory(targetData);
+            loadedAssetBundle = new LoadedAssetBundle(bundle);
+            if (loadedAssetBundle != null)
+            {
+                return false;
+            }
+            else
+            {
+                err = "SomeError";
+                return true;
+            }
         }
     }
 }
