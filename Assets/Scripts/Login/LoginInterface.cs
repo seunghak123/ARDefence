@@ -1,8 +1,10 @@
-﻿namespace Seunghak.LoginSystem
+﻿using System;
+
+namespace Seunghak.LoginSystem
 {
     public interface LoginInterface
     {
         void InitLogin();
-        void PlatformLogin();
+        void PlatformLogin(Action successResultAct);
     }
 }

@@ -20,10 +20,22 @@ namespace Seunghak.UIManager
         {
             EnterWindow();
         }
-        public void Update()
+
+        public void InitTitleWindow()
         {
+            if (loginPanel != null)
+            {
+                loginPanel.SetActive(false);
+            }
 
-
+            versionText.text = Application.version;
+        }
+        public void SetUserLogin()
+        {
+            if (loginPanel != null)
+            {
+                loginPanel.SetActive(true);
+            } 
         }
 
         public void EnterWindow()
@@ -32,6 +44,8 @@ namespace Seunghak.UIManager
 
 
             RegistEvent();
+
+            InitTitleWindow();
         }
         public void ExitWindow()
         {
@@ -57,7 +71,13 @@ namespace Seunghak.UIManager
         {
             UserDataManager.Instance.SetLoginInfo(loginType);
 
-            UserDataManager.Instance.LoginPlatform();
+            UserDataManager.Instance.LoginPlatform(()=>
+            {
+                ApplicationManager.Instance.UserLoginSuccess();
+
+                InitTitleWindow();
+            }
+            );
         }
     }
 }

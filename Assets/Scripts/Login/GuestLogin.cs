@@ -13,10 +13,15 @@ namespace Seunghak.LoginSystem
         public void InitLogin()
         {
         }
-        public void PlatformLogin()
+        public void PlatformLogin(Action successAction)
         {
             string userToken = Guid.NewGuid().ToString();
 
+
+            if (successAction != null)
+            {
+                successAction();
+            }
             //Token 값에 따라 
         }
     }

@@ -22,7 +22,14 @@ namespace Seunghak
                 return null;
             }
         }
-
+        virtual public long GetBundleSize()
+        {
+            return 0;
+        }
+        virtual public long GetDownloadedBundleSize()
+        {
+            return 0;
+        }
         public bool MoveNext()
         {
             return !IsDone();
@@ -52,7 +59,6 @@ namespace Seunghak
 
         protected abstract bool downloadIsDone { get; }
         protected abstract void FinishDownload();
-
         public override bool Update()
         {
             if (!done && downloadIsDone)

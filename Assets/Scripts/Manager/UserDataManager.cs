@@ -40,9 +40,9 @@ namespace Seunghak.Common
 
             userLogin.InitLogin();
         }      
-        public void LoginPlatform()
+        public void LoginPlatform(Action successResultAction)
         {
-            userLogin.PlatformLogin();
+            userLogin.PlatformLogin(successResultAction);
         }
         public static void SavePlayerPref<T>(PlayerPrefKey saveKey, T saveData)
         {

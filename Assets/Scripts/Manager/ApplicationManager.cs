@@ -20,13 +20,29 @@ namespace Seunghak.Common
         private E_APPLICATION_STATE applicationState = E_APPLICATION_STATE.APPLICATION_START;
         private void InitApplication()
         {
-            usertitleWindow = GameObject.Find("TitleWindow").GetComponent<TitleWindow>();
-            userDownloadBundlePopup = GameObject.Find("DownloadBundlePopup").GetComponent<DownloadBundlePopup>();
+            if (usertitleWindow == null)
+            {
+                usertitleWindow = GameObject.Find("TitleWindow").GetComponent<TitleWindow>();
+            }
+            if (userDownloadBundlePopup == null)
+            {
+                userDownloadBundlePopup = GameObject.Find("DownloadBundlePopup").GetComponent<DownloadBundlePopup>();
+            }
+
+            if (usertitleWindow != null)
+            {
+                usertitleWindow.InitTitleWindow();
+            }
+            if (userDownloadBundlePopup != null)
+            {
+                userDownloadBundlePopup.gameObject.SetActive(false);
+            }
+
             ApplicationWork(E_APPLICATION_STATE.APPLICATION_START);
         }
         private void Start()
         {
-            ApplicationWork(E_APPLICATION_STATE.APPLICATION_START);
+            InitApplication();
         }
         private void ApplicationWork(E_APPLICATION_STATE nextType)
         {
@@ -43,7 +59,7 @@ namespace Seunghak.Common
                     StartCoroutine(ApplicationUpdate());
                     break;
                 case E_APPLICATION_STATE.USER_LOGIN:
-                    //로그인 UI 키고 유저 정보 입력받을 떄 까지 대기
+                    StartCoroutine(UserLogin());
                     break;
                 case E_APPLICATION_STATE.BUNDLE_UPDATE:
                     StartCoroutine(BundleUpdate());
@@ -64,15 +80,23 @@ namespace Seunghak.Common
         }
         private IEnumerator ApplicationUpdate()
         {
+            MoveNextState(E_APPLICATION_STATE.USER_LOGIN);
+            yield break;
+        }
+        public void UserLoginSuccess()
+        {
             MoveNextState(E_APPLICATION_STATE.BUNDLE_UPDATE);
+        }
+        private IEnumerator UserLogin()
+        {
+            usertitleWindow.SetUserLogin();
             yield break;
         }
         private IEnumerator BundleUpdate()
         {
             string jsonPath;//= $"{cdnAddressPath}/Version/{Application.version}{FileUtils.VERSION_INFO_FILE_NAME}";
-            jsonPath = $"C:/Users/dhtmd/Desktop/TestLocalStorage/Version/{Application.version}/{FileUtils.VERSION_INFO_FILE_NAME}";
             //우선 CDN 테스트가 완료되었기 떄문에, 임시적으로 로컬에서 다운로드
-            Debug.LogError(jsonPath);
+            jsonPath = $"C:/Users/dhtmd/Desktop/TestLocalStorage/Version/{Application.version}/{FileUtils.VERSION_INFO_FILE_NAME}";
             UpdateVersionInfo userData = new UpdateVersionInfo();
 
             IEnumerator jsonCoroutine = FileUtils.RequestTextFile<UpdateVersionInfo>(jsonPath);
@@ -86,6 +110,7 @@ namespace Seunghak.Common
                 }
                 yield return null;
             }
+            //CdnPath강제로 가라 처리
             userData.cdnAddressInfoPath = "C://Users/dhtmd/Desktop/TestLocalStorage/Android/09111200";
             string preCheckDownloadFile = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
 
@@ -97,6 +122,7 @@ namespace Seunghak.Common
             }
 
             BundleListsDic compareLoadDic = new BundleListsDic();
+
             string downloadCheckDownloadPath = $"{userData.cdnAddressInfoPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
             IEnumerator checkDownloadCoroutine = FileUtils.RequestTextFile<BundleListsDic>(downloadCheckDownloadPath);
             while (checkDownloadCoroutine.MoveNext())
@@ -115,10 +141,11 @@ namespace Seunghak.Common
 
             if (totalDownloadSize <= 0)
             {
-                //다운로드 받을 것이 없을경우
+                //다운로드 받을 것이 없을경우 바로 인앱 업데이트로 이동
                 MoveNextState(E_APPLICATION_STATE.INAPP_UPDATE);
                 yield break;
             }
+            float waitDownloadTime = 0.0f;
 
             if (userDownloadBundlePopup == null)
             {
@@ -145,28 +172,39 @@ namespace Seunghak.Common
             }
             if (isDownload)
             {
-
+                //다운로드 경로 강제로 가라 처리
+                AssetBundleManager.BaseDownloadingURL = "C:/Users/dhtmd/Desktop/TestLocalStorage/Android/09111200";
                 //if (!AssetBundleManager.SimulateAssetBundleInEditor)
                 {
                     yield return AssetBundleManager.Initialize().IsDone();
                 }
-                //AssetBundleManager.BaseDownloadingURL = Application.persistentDataPath;
-                AssetBundleManager.overrideBaseDownloadingURL += (string assetBundle) => {
-                    //번들리스트에 들어가 잇는경우엔 원래경로, 아니면 변경된 경로
-                    return "AAA";
-                };
+                while (AssetBundleManager.inProgressOperations.Count > 0)
+                {
+                    yield return WaitTimeManager.WaitForEndFrame();
+                }
 
                 AssetBundleManager.Instance.InitAssetBundleManager(finalDownloadDic);
             }
             while (AssetBundleManager.inProgressOperations.Count > 0)
             {
+                waitDownloadTime += Time.deltaTime;
+
+                //만약 waitDownloadTime가 일정 시간을 지나면
+                //어플리케이션용 미니게임 또는 서브게임이 출력 또는 가라 게임이 출력
                 yield return WaitTimeManager.WaitForEndFrame();
             }
-            //전부 완료되면 해당 데이터 저장
-            //FileUtils.SaveFile<BundleListsDic>(Application.persistentDataPath, FileUtils.BUNDLE_LIST_FILE_NAME, compareLoadDic);
-            //5.다운로드 받으면서 기존 파일 갱신 
-            //6.다운로드 완료시 json파일 갱신 
-            //에셋 번들 매니저 초기화, UI 출력, 확인시 Progress Update 
+
+            FileUtils.SaveFile<BundleListsDic>(Application.persistentDataPath, FileUtils.BUNDLE_LIST_FILE_NAME, compareLoadDic);
+           
+            StartCoroutine( GameResourceManager.Instance.SetDownloadDatas());
+
+            while (!GameResourceManager.Instance.isReady)
+            {
+                yield return WaitTimeManager.WaitForEndFrame();
+            }
+            Object a = GameResourceManager.Instance.LoadObject("jshop");
+
+            MoveNextState(E_APPLICATION_STATE.INAPP_UPDATE);
             yield return null;
         }
         //private void 
