@@ -8,16 +8,19 @@ namespace Seunghak.UIManager
     public class UIManager : UnitySingleton<UIManager>
     {
         [SerializeField] BaseCanvas baseCanvasObject;
-        private Stack<BaseUI> windowStack = new Stack<BaseUI>();
+        private Stack<string> windowStack = new Stack<string>();
+        private Stack<string> popupStack = new Stack<string>();
         private Dictionary<string,BaseUI> addedWindowLists = new Dictionary<string, BaseUI>();
-        private BaseUIWindow currentWindowUI = null;
-        private BaseUIPopup currentPopupUI = null;
+        private string currentUIString = string.Empty;
+        private BaseUI currentUI = null;
+
+        #region UI_FlowLogic
         public void PopupWindow()
         {
             //윈도우 뺴주는 작업 연계되어있는 것들을 다뺸다.
             while (windowStack.Count > 0)
             {
-                BaseUI popUI = windowStack.Pop();
+                BaseUI popUI = GetUI(windowStack.Pop());
                 if(popUI is BaseUIWindow)
                 {
                     popUI.ExitWindow();
@@ -25,6 +28,7 @@ namespace Seunghak.UIManager
                 }
                 else
                 {
+                    popupStack.Pop();
                     popUI.ExitWindow();
                 }
             }
@@ -39,9 +43,14 @@ namespace Seunghak.UIManager
         {
             if (windowStack.Count > 0)
             {
-                BaseUI popUI = windowStack.Pop();
-
-                popUI.ExitWindow();
+                if(currentUI is BaseUIWindow)
+                {
+                    PopupWindow();
+                }
+                else if(currentUI is BaseUIPopup)
+                {
+                    GetUI(popupStack.Pop()).ExitWindow();
+                }
             }
         }
         public void PopAllWindow()
@@ -55,30 +64,35 @@ namespace Seunghak.UIManager
         {
             while (windowStack.Count > 0)
             {
-                BaseUI popUI = windowStack.Peek();
-                if (popUI is BaseUIWindow)
+                BaseUI popuserUI = GetUI(windowStack.Peek());
+                if (popuserUI is BaseUIWindow)
                 {
-                    popUI.RestoreWindow();
+                    popuserUI.RestoreWindow();
                     break;
                 }
                 else
                 {
-                    popUI.ExitWindow();
+                    PopUI();
                 }
-                popUI.RestoreWindow();
+                popuserUI.RestoreWindow();
             }
         }
         public BaseUI PushUI(UI_TYPE uiType)
         {
             string targetUIName = uiType.ToString();
-
-            BaseUI uicomponent;
+            return PushUI(targetUIName);
+        }
+        public BaseUI PushUI(string uiType)
+        {
+            string targetUIName = uiType;
+            BaseUI uicomponent = null;
 
             if (addedWindowLists.ContainsKey(targetUIName))
             {
                 uicomponent = addedWindowLists[targetUIName];
             }
-            else
+
+            if (uicomponent == null)
             {
                 GameObject targetUI = GameResourceManager.Instance.SpawnObject(targetUIName);
 
@@ -89,22 +103,21 @@ namespace Seunghak.UIManager
                 }
                 targetUI.SetActive(true);
                 uicomponent = targetUI.GetComponent<BaseUI>();
-  
+
                 int layerSortingOrder = 0;
 
                 if (targetUI.GetComponent<BaseUIWindow>() != null)
                 {
-                    layerSortingOrder = SortingLayer.NameToID("Window");                  
+                    layerSortingOrder = SortingLayer.NameToID("Window");
 
                     BaseUIWindow targetUIWindow = targetUI.GetComponent<BaseUIWindow>();
                     targetUI.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;
-
-                    if (currentWindowUI != null)
+                    if (currentUI != null)
                     {
-                        currentWindowUI.ExitWindow();
+                        currentUI.ExitWindow();
                     }
-                    currentWindowUI = targetUIWindow;
-                    //기존 UI window는 잠궈줘야한다.
+                    currentUI = targetUIWindow;
+                    popupStack.Clear();
                 }
                 else if (targetUI.GetComponent<BaseUIPopup>() != null)
                 {
@@ -113,11 +126,11 @@ namespace Seunghak.UIManager
 
                     BaseUIPopup targetPopupWindow = targetUI.GetComponent<BaseUIPopup>();
 
-                    if (currentPopupUI != null)
+                    if (currentUI != null)
                     {
-                        currentPopupUI.ExitWindow();
+                        currentUI.ExitWindow();
                     }
-                    currentPopupUI = targetPopupWindow;
+                    currentUI = targetPopupWindow;
                 }
                 else
                 {
@@ -144,13 +157,90 @@ namespace Seunghak.UIManager
 
             if (uicomponent != null)
             {
-                if (!windowStack.Contains(uicomponent))
+                if (uicomponent is BaseUIWindow)
                 {
-                    windowStack.Push(uicomponent);
+                    BaseUIWindow pushWindow = uicomponent as BaseUIWindow;
+                    if (!windowStack.Contains(targetUIName))
+                    {
+                        windowStack.Push(targetUIName);
+                    }
+                }
+                else if (uicomponent is BaseUIPopup)
+                {
+                    BaseUIPopup pushPopup = uicomponent as BaseUIPopup;
+                    if (!popupStack.Contains(targetUIName))
+                    {
+                        popupStack.Push(targetUIName);
+                    }
                 }
                 uicomponent.EnterWindow();
             }
             return uicomponent;
+        }
+        public BaseUI GetUI(string uiType)
+        {
+            string targetUIName = uiType;
+            BaseUI uicomponent = null;
+
+            if (addedWindowLists.ContainsKey(targetUIName))
+            {
+                uicomponent = addedWindowLists[targetUIName];
+            }
+            if (uicomponent == null)
+            {
+                GameObject targetUI = GameResourceManager.Instance.SpawnObject(targetUIName);
+
+                if (targetUI == null)
+                {
+                    Debug.Log("Error : TargetUI Object is Empty");
+                    return null;
+                }
+                targetUI.SetActive(true);
+                uicomponent = targetUI.GetComponent<BaseUI>();
+
+                int layerSortingOrder = 0;
+
+                if (targetUI.GetComponent<BaseUIWindow>() != null)
+                {
+                    layerSortingOrder = SortingLayer.NameToID("Window");
+                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;  
+                }
+                else if (targetUI.GetComponent<BaseUIPopup>() != null)
+                {
+                    layerSortingOrder = SortingLayer.NameToID("Popup");
+                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.popUpUIParent;
+                }
+                else
+                {
+                    layerSortingOrder = SortingLayer.NameToID("Utils");
+                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.UtilUIParent;
+                }
+                targetUI.transform.position = Vector3.zero;
+                Canvas targetUICanvas = targetUI.GetComponent<Canvas>();
+                if (targetUICanvas != null)
+                {
+                    targetUICanvas.sortingLayerID = layerSortingOrder;
+                }
+                else
+                {
+                    Debug.Log("Cavas is Null ");
+                }
+                if (targetUI.GetComponent<RectTransform>() != null)
+                {
+                    targetUI.GetComponent<RectTransform>().localPosition = Vector2.zero;
+                }
+
+                addedWindowLists.Add(targetUIName, uicomponent);
+            }
+            return uicomponent;
+        }
+        #endregion UI_FlowLogic
+        public void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+
+            }
         }
     }
 }
