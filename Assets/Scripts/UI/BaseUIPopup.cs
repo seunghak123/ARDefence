@@ -6,6 +6,6 @@ namespace Seunghak.UIManager
 {
     public class BaseUIPopup : BaseUI
     {
-
+   
     }
 }

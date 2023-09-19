@@ -23,6 +23,6 @@ public class UserInfoUI : MonoBehaviour
     }
     private void OpenUIPopup()
     {
-       // UIManager.Instance.PushUI(UI_TYPE.BasePopupWindow);
+       UIManager.Instance.PushUI(UI_TYPE.UserInfoPopup);
     }
 }

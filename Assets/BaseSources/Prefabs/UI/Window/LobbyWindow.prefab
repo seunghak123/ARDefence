@@ -369,6 +369,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1d9193833f67d346842c4cd8c34145a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiPropertyType: 1
+  userInfoDataUI: {fileID: 0}
 --- !u!114 &6929050301279997425
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -506,6 +508,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7395036584996319870}
+  - component: {fileID: 2872817120219730480}
   m_Layer: 5
   m_Name: UserInfo
   m_TagString: Untagged
@@ -533,6 +536,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &2872817120219730480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7657789737482721978}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cadc1c55be1e7c4e932476fd603fc04, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  userIconImage: {fileID: 4521346475034027703}
+  userInfoPopupButton: {fileID: 3932856806390061244}
+  userNameText: {fileID: 7825592427975906753}
+  userLvText: {fileID: 7061133213608285431}
 --- !u!1 &7792873210593919979
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,7 +563,6 @@ GameObject:
   - component: {fileID: 6433757108607358551}
   - component: {fileID: 8615266202288915318}
   - component: {fileID: 3739784438648821540}
-  - component: {fileID: 4987329223036390557}
   m_Layer: 5
   m_Name: UserInfoBack
   m_TagString: Untagged
@@ -611,21 +629,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4987329223036390557
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7792873210593919979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1cadc1c55be1e7c4e932476fd603fc04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  userIconImage: {fileID: 4521346475034027703}
-  userNameText: {fileID: 7825592427975906753}
-  userLvText: {fileID: 7061133213608285431}
 --- !u!1 &7891218480039147503
 GameObject:
   m_ObjectHideFlags: 0

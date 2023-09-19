@@ -2,6 +2,13 @@
 
 namespace Seunghak.UIManager
 {
+    public enum UI_TYPE_PROPERTY
+    {
+        None,
+        Window,
+        Popup,
+        Utils,
+    }
     public enum UI_TYPE
     {
         //1~100까진 기본 Window
@@ -10,6 +17,7 @@ namespace Seunghak.UIManager
 
 
         BasePopupWindow = 1000,
+        UserInfoPopup ,
     }
     public interface IBaseUIController
     {

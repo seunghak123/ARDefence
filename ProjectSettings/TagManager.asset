@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Window
+    uniqueID: 1023899259
+    locked: 0
+  - name: Popup
+    uniqueID: 1805372351
+    locked: 0
+  - name: Utils
+    uniqueID: 2866068565
+    locked: 0

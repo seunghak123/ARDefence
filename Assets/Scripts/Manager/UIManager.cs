@@ -89,9 +89,13 @@ namespace Seunghak.UIManager
                 }
                 targetUI.SetActive(true);
                 uicomponent = targetUI.GetComponent<BaseUI>();
+  
+                int layerSortingOrder = 0;
 
                 if (targetUI.GetComponent<BaseUIWindow>() != null)
                 {
+                    layerSortingOrder = SortingLayer.NameToID("Window");                  
+
                     BaseUIWindow targetUIWindow = targetUI.GetComponent<BaseUIWindow>();
                     targetUI.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;
 
@@ -104,22 +108,32 @@ namespace Seunghak.UIManager
                 }
                 else if (targetUI.GetComponent<BaseUIPopup>() != null)
                 {
+                    layerSortingOrder = SortingLayer.NameToID("Popup");
                     targetUI.transform.parent = UIManager.Instance.baseCanvasObject.popUpUIParent;
 
                     BaseUIPopup targetPopupWindow = targetUI.GetComponent<BaseUIPopup>();
 
-                    if (currentWindowUI != null)
+                    if (currentPopupUI != null)
                     {
-                        currentWindowUI.ExitWindow();
+                        currentPopupUI.ExitWindow();
                     }
                     currentPopupUI = targetPopupWindow;
                 }
                 else
                 {
+                    layerSortingOrder = SortingLayer.NameToID("Utils");
                     targetUI.transform.parent = UIManager.Instance.baseCanvasObject.UtilUIParent;
                 }
                 targetUI.transform.position = Vector3.zero;
-
+                Canvas targetUICanvas = targetUI.GetComponent<Canvas>();
+                if (targetUICanvas != null)
+                {
+                    targetUICanvas.sortingLayerID = layerSortingOrder;
+                }
+                else
+                {
+                    Debug.Log("Cavas is Null ");
+                }
                 if (targetUI.GetComponent<RectTransform>() != null)
                 {
                     targetUI.GetComponent<RectTransform>().localPosition = Vector2.zero;

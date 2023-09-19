@@ -102,6 +102,7 @@
     <Compile Include="Assets\Scripts\UI\Common\UserInfoUI.cs" />
     <Compile Include="Assets\Scripts\UI\Common\WealthUI.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\DownloadBundlePopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Popup\UserInfoPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Window\LobbyWindow\LobbyWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\TitleWindow\TitleWindow.cs" />
     <Compile Include="Assets\Scripts\Utils\FileUtils.cs" />

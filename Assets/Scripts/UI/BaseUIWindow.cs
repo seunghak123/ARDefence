@@ -6,7 +6,6 @@ namespace Seunghak.UIManager
 {
     public class BaseUIWindow : BaseUI
     {
-
     }
 }
 
