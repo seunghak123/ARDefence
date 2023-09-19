@@ -6,6 +6,10 @@ namespace Seunghak.UIManager
 {
     public class UserInfoPopup : BaseUIPopup
     {
+        public void EnterShopPopup()
+        {
+            UIManager.Instance.PushUI(UI_TYPE.ShopBuyPopup);
+        }
         public override void EnterWindow()
         {
             base.EnterWindow();

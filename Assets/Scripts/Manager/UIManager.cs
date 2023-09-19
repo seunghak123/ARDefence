@@ -23,7 +23,12 @@ namespace Seunghak.UIManager
                 BaseUI popUI = GetUI(windowStack.Pop());
                 if(popUI is BaseUIWindow)
                 {
+                    if(popUI is LobbyWindow)
+                    {
+                        break;
+                    }
                     popUI.ExitWindow();
+                    currentUI = GetUI(windowStack.Peek());
                     break;
                 }
                 else
@@ -36,20 +41,25 @@ namespace Seunghak.UIManager
 
             if (windowStack.Count == 0)
             {
-                //현재 아무것도 없을때 어떤것을 해주어야하는지
+                PushUI(UI_TYPE.LobbyWindow);
             }
         }
         public void PopUI()
         {
             if (windowStack.Count > 0)
             {
+                if (currentUI == null)
+                {
+                    currentUI = GetUI(currentUIString);
+                }
                 if(currentUI is BaseUIWindow)
                 {
                     PopupWindow();
                 }
                 else if(currentUI is BaseUIPopup)
                 {
-                    GetUI(popupStack.Pop()).ExitWindow();
+                    popupStack.Clear();
+                    currentUI = GetUI(windowStack.Peek());
                 }
             }
         }
@@ -91,7 +101,6 @@ namespace Seunghak.UIManager
             {
                 uicomponent = addedWindowLists[targetUIName];
             }
-
             if (uicomponent == null)
             {
                 GameObject targetUI = GameResourceManager.Instance.SpawnObject(targetUIName);
@@ -103,71 +112,84 @@ namespace Seunghak.UIManager
                 }
                 targetUI.SetActive(true);
                 uicomponent = targetUI.GetComponent<BaseUI>();
+                addedWindowLists.Add(targetUIName, uicomponent);
+            }
 
+            if (uicomponent != null)
+            {
                 int layerSortingOrder = 0;
-
-                if (targetUI.GetComponent<BaseUIWindow>() != null)
+                if (uicomponent.GetComponent<BaseUIWindow>() != null)
                 {
-                    layerSortingOrder = SortingLayer.NameToID("Window");
+                    layerSortingOrder = 10;
 
-                    BaseUIWindow targetUIWindow = targetUI.GetComponent<BaseUIWindow>();
-                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;
-                    if (currentUI != null)
+                    BaseUIWindow targetUIWindow = uicomponent.GetComponent<BaseUIWindow>();
+                    uicomponent.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;
+                    if (currentUI is BaseUIPopup)
                     {
                         currentUI.ExitWindow();
+                        GetUI(windowStack.Peek()).gameObject.SetActive(false);
+                    }
+                    else if(currentUI is BaseUIWindow)
+                    {
+                        currentUI.gameObject.SetActive(false);
                     }
                     currentUI = targetUIWindow;
+                    currentUIString = targetUIName;
                     popupStack.Clear();
                 }
-                else if (targetUI.GetComponent<BaseUIPopup>() != null)
+                else if (uicomponent.GetComponent<BaseUIPopup>() != null)
                 {
-                    layerSortingOrder = SortingLayer.NameToID("Popup");
-                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.popUpUIParent;
+                    layerSortingOrder = 100;
+                    uicomponent.transform.parent = UIManager.Instance.baseCanvasObject.popUpUIParent;
 
-                    BaseUIPopup targetPopupWindow = targetUI.GetComponent<BaseUIPopup>();
+                    BaseUIPopup targetPopupWindow = uicomponent.GetComponent<BaseUIPopup>();
 
-                    if (currentUI != null)
+                    if (currentUI is BaseUIPopup)
                     {
                         currentUI.ExitWindow();
                     }
                     currentUI = targetPopupWindow;
+                    currentUIString = targetUIName;
                 }
                 else
                 {
-                    layerSortingOrder = SortingLayer.NameToID("Utils");
-                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.UtilUIParent;
+                    layerSortingOrder = 5000;
+                    uicomponent.transform.parent = UIManager.Instance.baseCanvasObject.UtilUIParent;
                 }
-                targetUI.transform.position = Vector3.zero;
-                Canvas targetUICanvas = targetUI.GetComponent<Canvas>();
+                uicomponent.transform.position = Vector3.zero;
+                Canvas targetUICanvas = uicomponent.GetComponent<Canvas>();
                 if (targetUICanvas != null)
                 {
-                    targetUICanvas.sortingLayerID = layerSortingOrder;
+                    targetUICanvas.sortingOrder = layerSortingOrder;
                 }
                 else
                 {
                     Debug.Log("Cavas is Null ");
                 }
-                if (targetUI.GetComponent<RectTransform>() != null)
+                if (uicomponent.GetComponent<RectTransform>() != null)
                 {
-                    targetUI.GetComponent<RectTransform>().localPosition = Vector2.zero;
+                    uicomponent.GetComponent<RectTransform>().localPosition = Vector2.zero;
                 }
-
-                addedWindowLists.Add(targetUIName, uicomponent);
             }
 
             if (uicomponent != null)
             {
                 if (uicomponent is BaseUIWindow)
                 {
-                    BaseUIWindow pushWindow = uicomponent as BaseUIWindow;
                     if (!windowStack.Contains(targetUIName))
                     {
                         windowStack.Push(targetUIName);
                     }
+                    else
+                    {
+                        while (windowStack.Peek() != targetUIName)
+                        {
+                            GetUI( windowStack.Peek()).ExitWindow();
+                        }
+                    }
                 }
                 else if (uicomponent is BaseUIPopup)
                 {
-                    BaseUIPopup pushPopup = uicomponent as BaseUIPopup;
                     if (!popupStack.Contains(targetUIName))
                     {
                         popupStack.Push(targetUIName);

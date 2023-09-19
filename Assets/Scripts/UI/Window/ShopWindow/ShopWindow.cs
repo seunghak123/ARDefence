@@ -4,19 +4,21 @@ using UnityEngine;
 
 namespace Seunghak.UIManager
 {
-    public class LobbyWindow : BaseUIWindow
+    public class ShopWindow : BaseUIWindow
     {
-        [SerializeField] private UserInfoUI userInfoDataUI; 
+        public void EnterShopInfo()
+        {
+            UIManager.Instance.PushUI(UI_TYPE.ShopBuyPopup);
+        }
+        public void EnterBattleWindow()
+        {
+            UIManager.Instance.PushUI(UI_TYPE.BattleWindow);
+        }
         public override void EnterWindow()
         {
             base.EnterWindow();
+        }
 
-            //userInfoDataUI.SetData();
-        }
-        public void EnterShopWindow()
-        {
-            UIManager.Instance.PushUI(UI_TYPE.ShopWindow);
-        }
         public override void ExitWindow()
         {
             base.ExitWindow();

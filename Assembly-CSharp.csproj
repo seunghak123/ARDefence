@@ -103,7 +103,10 @@
     <Compile Include="Assets\Scripts\UI\Common\WealthUI.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\DownloadBundlePopup.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\UserInfoPopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Window\BattleWindow\BattleWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\LobbyWindow\LobbyWindow.cs" />
+    <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopBuyPopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\TitleWindow\TitleWindow.cs" />
     <Compile Include="Assets\Scripts\Utils\FileUtils.cs" />
     <Compile Include="Assets\Unity Technologies\SignInWithApple\API\SignInWithApple.cs" />
