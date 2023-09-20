@@ -356,6 +356,7 @@ namespace Seunghak.Common
             }
             return prefabObjectpools[objectName].GetPoolObject();
         }
+
         public Object LoadObject(string objectName)
         {
 #if UNITY_EDITOR

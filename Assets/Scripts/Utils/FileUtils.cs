@@ -102,6 +102,7 @@ public static class FileUtils
 #elif UNITY_IOS
             return "/IOS/;
 #endif
+        return "/StandaloneWindows/";
     }
     public static void SaveFile<T>(string savePath,string fileName,T saveData)
     {
@@ -122,6 +123,11 @@ public static class FileUtils
         {
 
         }
+    }
+    public static T DeSerealString<T>(string target)
+    {
+        T returnValue = JsonConvert.DeserializeObject<T>(target);
+        return returnValue;
     }
     public static bool CompareHash<T>(T userData , string downloadData)
     {

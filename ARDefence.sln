@@ -7,11 +7,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Play.Games", "Google
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.RenderPipelines.HighDefinition.Config.Runtime", "Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj", "{D490F749-743C-07EE-4134-65496B798DC4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Play.Common", "Google.Play.Common.csproj", "{3DE4D11D-DDE5-FBBB-07FF-B51296AC0BBC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Play.AppUpdate", "Google.Play.AppUpdate.csproj", "{18A9FABC-526C-94D3-E918-6728313F86A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Play.Core", "Google.Play.Core.csproj", "{B44944D6-5A07-292B-BC25-722FE727BA66}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.AssetBundleBrowser.Editor", "Unity.AssetBundleBrowser.Editor.csproj", "{01B6C78F-9C81-C413-9299-5B28F80C88B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{61726266-FAA2-6603-8078-743BD9F54E8C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Play.Games.Editor", "Google.Play.Games.Editor.csproj", "{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Android.AppBundle.Editor", "Google.Android.AppBundle.Editor.csproj", "{FB929D7E-773C-CBE4-B945-EA829CBC707B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +39,18 @@ Global
 		{D490F749-743C-07EE-4134-65496B798DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D490F749-743C-07EE-4134-65496B798DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D490F749-743C-07EE-4134-65496B798DC4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3DE4D11D-DDE5-FBBB-07FF-B51296AC0BBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3DE4D11D-DDE5-FBBB-07FF-B51296AC0BBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3DE4D11D-DDE5-FBBB-07FF-B51296AC0BBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3DE4D11D-DDE5-FBBB-07FF-B51296AC0BBC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18A9FABC-526C-94D3-E918-6728313F86A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18A9FABC-526C-94D3-E918-6728313F86A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18A9FABC-526C-94D3-E918-6728313F86A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18A9FABC-526C-94D3-E918-6728313F86A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B44944D6-5A07-292B-BC25-722FE727BA66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B44944D6-5A07-292B-BC25-722FE727BA66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B44944D6-5A07-292B-BC25-722FE727BA66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B44944D6-5A07-292B-BC25-722FE727BA66}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01B6C78F-9C81-C413-9299-5B28F80C88B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01B6C78F-9C81-C413-9299-5B28F80C88B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01B6C78F-9C81-C413-9299-5B28F80C88B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -43,6 +63,10 @@ Global
 		{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB929D7E-773C-CBE4-B945-EA829CBC707B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB929D7E-773C-CBE4-B945-EA829CBC707B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB929D7E-773C-CBE4-B945-EA829CBC707B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB929D7E-773C-CBE4-B945-EA829CBC707B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

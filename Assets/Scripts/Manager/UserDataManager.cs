@@ -29,12 +29,14 @@ namespace Seunghak.Common
                 case E_LOGIN_TYPE.GUEST_LOGIN:
                     userLogin = new GuestLogin();
                     break;
+#if UNITY_ANDROID || UNITY_IOS
                 case E_LOGIN_TYPE.GOOGLE_LOGIN:
                     userLogin = new GoogleLogin();
                     break;
                 case E_LOGIN_TYPE.APPLE_LOGIN:
                     userLogin = new AppleLogin();
                     break;
+#endif
             }
             userLoginType = loginType;
 

@@ -1,10 +1,13 @@
-﻿using Seunghak.UIManager;
+﻿using Google.Play.AppUpdate;
+using Google.Play.Common;
+using Seunghak.UIManager;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 #if UNITY_ANDROID
 using UnityEngine.Android;
-#else
+#elif UNITY_IOS
 using UnityEngine.iOS;
 #endif
 namespace Seunghak.Common
@@ -17,6 +20,8 @@ namespace Seunghak.Common
         [Header("Init UI")]
         [SerializeField] TitleWindow usertitleWindow;
         [SerializeField] DownloadBundlePopup userDownloadBundlePopup;
+        [SerializeField] BaseAwnserPopup userAwnserPopup;
+
         //[SerializeField] private 
         private E_APPLICATION_STATE applicationState = E_APPLICATION_STATE.APPLICATION_START;
         private void InitApplication()
@@ -32,6 +37,10 @@ namespace Seunghak.Common
             if (userDownloadBundlePopup == null)
             {
                 userDownloadBundlePopup = usertitleWindow.downloadPopup;
+            }
+            if (userAwnserPopup == null)
+            {
+                userAwnserPopup = usertitleWindow.baseAwnserPopup;
             }
             if (usertitleWindow != null)
             {
@@ -90,23 +99,23 @@ namespace Seunghak.Common
         private IEnumerator GameResourceLoad(bool isLocal = false)
         {
             //만약 에셋을 다운로드 받지 않았다면 초기화가 필요
-            if (isLocal
 #if UNITY_EDITOR
-                && !AssetBundleManager.SimulateAssetBundleInEditor
-#endif
+            if (!AssetBundleManager.SimulateAssetBundleInEditor
                 )
+#endif
             {
                 string bundleLoadPath = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
                 AssetBundleManager.BaseDownloadingURL = Application.persistentDataPath;
 
                 BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
-                string target = FileUtils.LoadFile<string>($"{Application.persistentDataPath}/Android");
-                    
-                yield return AssetBundleManager.Initialize().IsDone();
-                
-                while (AssetBundleManager.inProgressOperations.Count > 0)
+                if (isLocal)
                 {
-                    yield return WaitTimeManager.WaitForEndFrame();
+                    yield return AssetBundleManager.Initialize().IsDone();
+
+                    while (AssetBundleManager.inProgressOperations.Count > 0)
+                    {
+                        yield return WaitTimeManager.WaitForEndFrame();
+                    }
                 }
                 AssetBundleManager.Instance.InitAssetBundleManager(loadDic);
                 while (AssetBundleManager.inProgressOperations.Count > 0)
@@ -135,7 +144,49 @@ namespace Seunghak.Common
         }
         private IEnumerator ApplicationUpdate()
         {
+#if UNITY_EDITOR
             MoveNextState(E_APPLICATION_STATE.USER_LOGIN);
+            //IOS는 
+#elif UNITY_ANDROID
+            AppUpdateManager appUpdater = new AppUpdateManager();
+            PlayAsyncOperation<AppUpdateInfo, AppUpdateErrorCode> appUpdateInfoOperaion =
+                appUpdater.GetAppUpdateInfo();
+
+            yield return appUpdateInfoOperaion;
+
+            if (appUpdateInfoOperaion.IsSuccessful)
+            {
+                AppUpdateInfo result = appUpdateInfoOperaion.GetResult();
+
+                if(result.UpdateAvailability == UpdateAvailability.UpdateAvailable)
+                {
+                    //업데이트 팝업 띄우고
+                    userAwnserPopup.gameObject.SetActive(true);
+                    userAwnserPopup.OpenPopup("확인",
+                        () =>
+                        {
+                            appUpdater.StartUpdate(result, AppUpdateOptions.ImmediateAppUpdateOptions());
+                            AppUpdateOptions.ImmediateAppUpdateOptions();
+                            userAwnserPopup.gameObject.SetActive(false);
+                            MoveNextState(E_APPLICATION_STATE.USER_LOGIN);
+                        },
+                        "취소",
+                        () =>
+                        {
+                            Application.Quit();
+                        }
+                        );
+
+                }
+                else
+                {
+                    MoveNextState(E_APPLICATION_STATE.USER_LOGIN);
+                }
+            }
+#elif UNITY_IOS
+
+#endif
+
             yield break;
         }
         public void UserLoginSuccess()
@@ -171,7 +222,6 @@ namespace Seunghak.Common
             //CdnPath강제로 가라 처리
             userData.cdnAddressInfoPath = "C://Users/dhtmd/Desktop/TestLocalStorage/Android/09111200";
             string preCheckDownloadFile = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
-
             BundleListsDic preLoadDic = FileUtils.LoadFile<BundleListsDic>(preCheckDownloadFile);
             //만약 해당 파일이 없을 경우엔 모두 받는것으로 판정
             if (preLoadDic == null)
@@ -196,7 +246,6 @@ namespace Seunghak.Common
             BundleListsDic finalDownloadDic = FileUtils.CompareDicData(preLoadDic, compareLoadDic);
 
             long totalDownloadSize = finalDownloadDic.GetTotalSize();
-
             if (totalDownloadSize <= 0)
             {
                 MoveNextState(E_APPLICATION_STATE.GAME_RESOURCE_LOAD,true);
@@ -231,12 +280,6 @@ namespace Seunghak.Common
             {
                 //다운로드 경로 강제로 가라 처리
                 AssetBundleManager.BaseDownloadingURL = "C:/Users/dhtmd/Desktop/TestLocalStorage/Android/09111200";
-
-                //AssetBundleManager.overrideBaseDownloadingURL += (string assetBundle) => {
-                //다운로드 URL에 빠져잇는경우 전부 persistance
-                //    return "AAA";
-                //};
-                //if (!AssetBundleManager.SimulateAssetBundleInEditor)
                 {
                     yield return AssetBundleManager.Initialize().IsDone();
                 }
@@ -255,7 +298,6 @@ namespace Seunghak.Common
                 //어플리케이션용 미니게임 또는 서브게임이 출력 또는 가라 게임이 출력
                 yield return WaitTimeManager.WaitForEndFrame();
             }
-
             FileUtils.SaveFile<BundleListsDic>(Application.persistentDataPath, FileUtils.BUNDLE_LIST_FILE_NAME, compareLoadDic);
  
             MoveNextState(E_APPLICATION_STATE.GAME_RESOURCE_LOAD,false);

@@ -2,9 +2,9 @@
 
 namespace Seunghak.LoginSystem
 {
-    using GooglePlayGames;
     using System;
-
+#if UNITY_ANDROID || UNITY_IOS
+    using GooglePlayGames;
     public class GoogleLogin :  LoginInterface
     {
         private Action loginSuccessAction = null;
@@ -46,5 +46,6 @@ namespace Seunghak.LoginSystem
             PlayGamesPlatform.Activate();
         }
     }
+#endif
 }
 

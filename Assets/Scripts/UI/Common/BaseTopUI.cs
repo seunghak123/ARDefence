@@ -7,9 +7,25 @@ namespace Seunghak.UIManager
     {
         [SerializeField] private UserInfoUI userInfoUIObject;
         [SerializeField] private WealthUI[] wealthUIObjects;
-        private void InitTopUI()
+        public void InitTopUI(UI_TYPE curUIType)
         {
             //재화 세팅
+
+            switch (curUIType)
+            {
+                case UI_TYPE.LobbyWindow:
+
+                    break;
+                case UI_TYPE.ShopWindow:
+                    break;
+                case UI_TYPE.BattleWindow:
+                    break;
+                default:
+                    break;
+            }
+        }
+        private void SetWealthUI()
+        {
 
         }
         //옵션 버튼 클래스

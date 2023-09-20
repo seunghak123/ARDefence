@@ -53,15 +53,13 @@
     <UnityVersion>2019.4.34f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Assets\AssetsBundle\AssetBundleManager\AssetBundleLoadOperation.cs" />
-    <Compile Include="Assets\AssetsBundle\AssetBundleManager\AssetBundleManager.cs" />
-    <Compile Include="Assets\AssetsBundle\AssetBundleManager\Utility.cs" />
     <Compile Include="Assets\GPGSIds.cs" />
-    <Compile Include="Assets\GooglePlayGames\AssemblyInfo.cs" />
     <Compile Include="Assets\Scripts\Common\CommonEnum.cs" />
     <Compile Include="Assets\Scripts\Common\CommonUtil.cs" />
+    <Compile Include="Assets\Scripts\Common\GameVersion.cs" />
     <Compile Include="Assets\Scripts\Common\OHAssetBundleManager.cs" />
     <Compile Include="Assets\Scripts\Common\OHScrollView.cs" />
+    <Compile Include="Assets\Scripts\Common\SceneController.cs" />
     <Compile Include="Assets\Scripts\Common\UnitySingleton.cs" />
     <Compile Include="Assets\Scripts\Common\UserDataJsonEnum.cs" />
     <Compile Include="Assets\Scripts\Event\CharacterEvent.cs" />
@@ -73,18 +71,15 @@
     <Compile Include="Assets\Scripts\Login\GuestLogin.cs" />
     <Compile Include="Assets\Scripts\Login\LoginInterface.cs" />
     <Compile Include="Assets\Scripts\Manager\ApplicationManager.cs" />
-    <Compile Include="Assets\Scripts\Manager\AtlasManager.cs" />
+    <Compile Include="Assets\Scripts\Manager\AssetBundleManager.cs" />
     <Compile Include="Assets\Scripts\Manager\CameraManager.cs" />
     <Compile Include="Assets\Scripts\Manager\GameManager.cs" />
     <Compile Include="Assets\Scripts\Manager\GameResourceManager.cs" />
-    <Compile Include="Assets\Scripts\Manager\GameVersion.cs" />
     <Compile Include="Assets\Scripts\Manager\JsonDataManager.cs" />
     <Compile Include="Assets\Scripts\Manager\NetworkManager.cs" />
-    <Compile Include="Assets\Scripts\Manager\SceneController.cs" />
     <Compile Include="Assets\Scripts\Manager\SceneManager.cs" />
     <Compile Include="Assets\Scripts\Manager\SoundManager.cs" />
     <Compile Include="Assets\Scripts\Manager\SpriteManager.cs" />
-    <Compile Include="Assets\Scripts\Manager\StoreManager.cs" />
     <Compile Include="Assets\Scripts\Manager\TimeManager.cs" />
     <Compile Include="Assets\Scripts\Manager\UIManager.cs" />
     <Compile Include="Assets\Scripts\Manager\UserDataManager.cs" />
@@ -98,9 +93,9 @@
     <Compile Include="Assets\Scripts\UI\Common\BaseCanvas.cs" />
     <Compile Include="Assets\Scripts\UI\Common\BaseTopUI.cs" />
     <Compile Include="Assets\Scripts\UI\Common\LocalizeText.cs" />
-    <Compile Include="Assets\Scripts\UI\Common\OptionUI.cs" />
     <Compile Include="Assets\Scripts\UI\Common\UserInfoUI.cs" />
     <Compile Include="Assets\Scripts\UI\Common\WealthUI.cs" />
+    <Compile Include="Assets\Scripts\UI\Popup\BaseAwnserPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\DownloadBundlePopup.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\UserInfoPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Window\BattleWindow\BattleWindow.cs" />
@@ -109,39 +104,45 @@
     <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\TitleWindow\TitleWindow.cs" />
     <Compile Include="Assets\Scripts\Utils\FileUtils.cs" />
-    <Compile Include="Assets\Unity Technologies\SignInWithApple\API\SignInWithApple.cs" />
-    <Compile Include="Assets\Unity Technologies\SignInWithApple\Samples\Scripts\SignInWithAppleTest_Callbacks.cs" />
-    <Compile Include="Assets\Unity Technologies\SignInWithApple\Samples\Scripts\SignInWithAppleTest_EventSystem.cs" />
+    <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\AssetBundleLoadOperation.cs" />
+    <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Utility.cs" />
+    <Compile Include="Assets\UnityExternalLibrary\GooglePlayGames\AssemblyInfo.cs" />
+    <Compile Include="Assets\UnityExternalLibrary\Unity Technologies\SignInWithApple\API\SignInWithApple.cs" />
+    <Compile Include="Assets\UnityExternalLibrary\Unity Technologies\SignInWithApple\Samples\Scripts\SignInWithAppleTest_Callbacks.cs" />
+    <Compile Include="Assets\UnityExternalLibrary\Unity Technologies\SignInWithApple\Samples\Scripts\SignInWithAppleTest_EventSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\BaseSources\BuildInfo\CDNAddress.txt" />
     <None Include="Assets\BaseSources\BuildInfo\UpdateVersionInfo.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMPro.cginc" />
     <None Include="Assets\ScriptTemplates\01-ClassCreate__NewSceneControllerr-NewSceneControllerr.cs.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
-    <None Include="Assets\GooglePlayGames\com.google.play.games\Proguard\games.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+    <None Include="Assets\UnityExternalLibrary\GooglePlayGames\com.google.play.games\Proguard\games.txt" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
+    <None Include="Assets\UnityExternalLibrary\GooglePlayPlugins\com.google.play.appupdate\Proguard\app_update.txt" />
     <None Include="Assets\ScriptTemplates\01-ClassCreate__NewPopup-NewUIPopup.cs.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
-    <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
+    <None Include="Assets\UnityExternalLibrary\Plugins\Android\GooglePlayGamesManifest.androidlib\AndroidManifest.xml" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
     <None Include="Assets\ScriptTemplates\01-ClassCreate__NewWindow-NewUIWindow.cs.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
+    <None Include="Assets\UnityExternalLibrary\GooglePlayPlugins\com.google.play.core\Proguard\common.txt" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
     <None Include="Assets\ScriptTemplates\01-ClassCreate__NewManager-NewManager.cs.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\UnityExternalLibrary\TextMesh Pro\Shaders\TMP_Sprite.shader" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -737,6 +738,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj">
+      <Project>{D490F749-743C-07EE-4134-65496B798DC4}</Project>
+      <Name>Unity.RenderPipelines.HighDefinition.Config.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="Google.Play.Core.csproj">
+      <Project>{B44944D6-5A07-292B-BC25-722FE727BA66}</Project>
+      <Name>Google.Play.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="Google.Android.AppBundle.Editor.csproj">
+      <Project>{FB929D7E-773C-CBE4-B945-EA829CBC707B}</Project>
+      <Name>Google.Android.AppBundle.Editor</Name>
+    </ProjectReference>
     <ProjectReference Include="Google.Play.Games.csproj">
       <Project>{42DCC785-A0E6-A773-FDFF-9700F611EB0C}</Project>
       <Name>Google.Play.Games</Name>
@@ -749,9 +762,13 @@
       <Project>{01B6C78F-9C81-C413-9299-5B28F80C88B8}</Project>
       <Name>Unity.AssetBundleBrowser.Editor</Name>
     </ProjectReference>
-    <ProjectReference Include="Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj">
-      <Project>{D490F749-743C-07EE-4134-65496B798DC4}</Project>
-      <Name>Unity.RenderPipelines.HighDefinition.Config.Runtime</Name>
+    <ProjectReference Include="Google.Play.AppUpdate.csproj">
+      <Project>{18A9FABC-526C-94D3-E918-6728313F86A7}</Project>
+      <Name>Google.Play.AppUpdate</Name>
+    </ProjectReference>
+    <ProjectReference Include="Google.Play.Common.csproj">
+      <Project>{3DE4D11D-DDE5-FBBB-07FF-B51296AC0BBC}</Project>
+      <Name>Google.Play.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

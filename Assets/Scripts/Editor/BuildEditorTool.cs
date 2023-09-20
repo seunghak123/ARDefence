@@ -15,6 +15,7 @@ public class BuildEditorTool : MonoBehaviour
 #elif UNITY_IOS
     private static string buildPath = "IOS";
 #endif
+#if UNITY_ANDROID || UNITY_IOS
     [MenuItem("Build/AndroidAAB",true)]
     public static bool SetAndroidAAB()
     {
@@ -26,6 +27,7 @@ public class BuildEditorTool : MonoBehaviour
     {
         BuildPipeline.BuildAssetBundles("Assets/Android", BuildAssetBundleOptions.None, BuildTarget.Android);
     }
+
     [MenuItem("Build/PlatformBuild", false, 1001)]
     public static void BuildPlatform()
     {
@@ -58,6 +60,7 @@ public class BuildEditorTool : MonoBehaviour
         //    }
         //}
     }
+#endif
     [MenuItem("Build/InfoFiles", false, 1002)]
     private static void MakeVersionAndCDNFile()
     {

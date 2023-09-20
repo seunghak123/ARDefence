@@ -8,7 +8,16 @@ namespace Seunghak.UIManager
     {
         [SerializeField] public Transform windowUIParent;
         [SerializeField] public Transform popUpUIParent;
-        [SerializeField] public Transform UtilUIParent;
+        [SerializeField] public Transform utilUIParent;
+        [SerializeField] public BaseTopUI baseTopUI;
 
+        public void OpenBaseTopUI(UI_TYPE curUIType)
+        {
+            if(baseTopUI != null)
+            {
+                baseTopUI.gameObject.SetActive(true);
+            }
+
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Seunghak.Common;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Seunghak

@@ -1,8 +1,8 @@
 ﻿using System;
 using UnityEngine;
-
 namespace Seunghak.SceneManager
 {
+    using Seunghak.UIManager;
     public class LobbySceneController : SceneController
     {
         protected override void Awake()
@@ -14,9 +14,7 @@ namespace Seunghak.SceneManager
         //���� �� ��Ʈ�ѷ� �ʱ�ȭ �Լ�
         public override void InitSceneController() 
         {
-            UIManager.UIManager.Instance.PushUI(UIManager.UI_TYPE.LobbyWindow);
-
-
+            UIManager.Instance.PushUI(UI_TYPE.LobbyWindow);
             //로그인 보상등등 이벤트 팝업 띄워주고, 
 
         }

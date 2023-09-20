@@ -90,17 +90,13 @@ namespace Seunghak.UIManager
         public BaseUI PushUI(UI_TYPE uiType)
         {
             string targetUIName = uiType.ToString();
-            return PushUI(targetUIName);
-        }
-        public BaseUI PushUI(string uiType)
-        {
-            string targetUIName = uiType;
             BaseUI uicomponent = null;
 
             if (addedWindowLists.ContainsKey(targetUIName))
             {
                 uicomponent = addedWindowLists[targetUIName];
             }
+
             if (uicomponent == null)
             {
                 GameObject targetUI = GameResourceManager.Instance.SpawnObject(targetUIName);
@@ -117,6 +113,7 @@ namespace Seunghak.UIManager
 
             if (uicomponent != null)
             {
+                uicomponent.CUR_UI_TYPE = uiType; 
                 int layerSortingOrder = 0;
                 if (uicomponent.GetComponent<BaseUIWindow>() != null)
                 {
@@ -129,7 +126,7 @@ namespace Seunghak.UIManager
                         currentUI.ExitWindow();
                         GetUI(windowStack.Peek()).gameObject.SetActive(false);
                     }
-                    else if(currentUI is BaseUIWindow)
+                    else if (currentUI is BaseUIWindow)
                     {
                         currentUI.gameObject.SetActive(false);
                     }
@@ -154,7 +151,7 @@ namespace Seunghak.UIManager
                 else
                 {
                     layerSortingOrder = 5000;
-                    uicomponent.transform.parent = UIManager.Instance.baseCanvasObject.UtilUIParent;
+                    uicomponent.transform.parent = UIManager.Instance.baseCanvasObject.utilUIParent;
                 }
                 uicomponent.transform.position = Vector3.zero;
                 Canvas targetUICanvas = uicomponent.GetComponent<Canvas>();
@@ -184,7 +181,7 @@ namespace Seunghak.UIManager
                     {
                         while (windowStack.Peek() != targetUIName)
                         {
-                            GetUI( windowStack.Peek()).ExitWindow();
+                            GetUI(windowStack.Peek()).ExitWindow();
                         }
                     }
                 }
@@ -224,18 +221,18 @@ namespace Seunghak.UIManager
 
                 if (targetUI.GetComponent<BaseUIWindow>() != null)
                 {
-                    layerSortingOrder = SortingLayer.NameToID("Window");
+                    layerSortingOrder = 10;
                     targetUI.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;  
                 }
                 else if (targetUI.GetComponent<BaseUIPopup>() != null)
                 {
-                    layerSortingOrder = SortingLayer.NameToID("Popup");
+                    layerSortingOrder = 100;
                     targetUI.transform.parent = UIManager.Instance.baseCanvasObject.popUpUIParent;
                 }
                 else
                 {
-                    layerSortingOrder = SortingLayer.NameToID("Utils");
-                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.UtilUIParent;
+                    layerSortingOrder = 5000;
+                    targetUI.transform.parent = UIManager.Instance.baseCanvasObject.utilUIParent;
                 }
                 targetUI.transform.position = Vector3.zero;
                 Canvas targetUICanvas = targetUI.GetComponent<Canvas>();
@@ -257,6 +254,16 @@ namespace Seunghak.UIManager
             return uicomponent;
         }
         #endregion UI_FlowLogic
+        #region InGame_Logic
+        public BaseUIWindow GetCurWindow()
+        {
+            return GetUI(windowStack.Peek()) as BaseUIWindow;
+        }
+        public void SetTopUI(UI_TYPE curUIType)
+        {
+            baseCanvasObject.OpenBaseTopUI(curUIType);
+        }
+        #endregion InGame_Logic
         public void Update()
         {
             if (Input.GetKeyDown(KeyCode.Escape))

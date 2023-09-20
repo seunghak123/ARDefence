@@ -12,15 +12,18 @@ namespace Seunghak.UIManager
     }
     public enum UI_TYPE
     {
+        None,
         //1~100까진 기본 Window
         LobbyWindow,
-        TitleWindow,
         ShopWindow,
         BattleWindow,
 
         BasePopupWindow = 1000,
         UserInfoPopup ,
         ShopBuyPopup,
+
+        OtherUI = 4000,
+        BaseAwnserPopup,
     }
     public interface IBaseUIController
     {
@@ -32,8 +35,13 @@ namespace Seunghak.UIManager
 
     public class BaseUI : MonoBehaviour, IBaseUIController
     {
+        protected UI_TYPE ui_Type = UI_TYPE.None;
         private Action exitAction = null;
-        
+        public UI_TYPE CUR_UI_TYPE
+        {
+            get { return ui_Type; }
+            set { ui_Type = value; }
+        }
         public void SetAction(Action exit)
         {
             exitAction = exit;
