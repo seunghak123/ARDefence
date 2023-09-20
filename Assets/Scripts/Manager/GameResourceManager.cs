@@ -348,15 +348,81 @@ namespace Seunghak.Common
 
                     if (useritem != null)
                     {
+                        UpdateAssetBundleObjectMatrial(useritem as GameObject);
                         return useritem as GameObject;
                     }
 
                     return null;
                 }
             }
-            return prefabObjectpools[objectName].GetPoolObject();
-        }
+            GameObject poolObject = prefabObjectpools[objectName].GetPoolObject();
 
+            UpdateAssetBundleObjectMatrial(poolObject);
+
+            return poolObject;
+        }
+        public void UpdateAssetBundleObjectMatrial(GameObject inGameObject)
+        {
+#if UNITY_EDITOR
+            {
+                if (inGameObject == null) return;
+            }
+            {
+                {
+                    var lComList = new List<SpriteRenderer>(inGameObject.GetComponentsInChildren<SpriteRenderer>(true));
+                    if (lComList != null && lComList.Count > 0)
+                    {				
+                        lComList.ForEach((fCom) =>
+                        {
+                            if (fCom != null && fCom.sharedMaterial != null && fCom.sharedMaterial.shader != null)
+                            {
+                                fCom.sharedMaterial.shader = Shader.Find(fCom.sharedMaterial.shader.name);
+                            }
+                        });
+                    }
+                }
+                {
+                    var lComList = new List<SkinnedMeshRenderer>(inGameObject.GetComponentsInChildren<SkinnedMeshRenderer>(true));
+                    if (lComList != null && lComList.Count > 0)
+                    {
+                        lComList.ForEach((fCom) =>
+                        {
+                            if (fCom != null && fCom.sharedMaterial != null && fCom.sharedMaterial.shader != null)
+                            {
+                                fCom.sharedMaterial.shader = Shader.Find(fCom.sharedMaterial.shader.name);
+                            }
+                        });
+                    }
+                }
+                {
+                    var lComList = new List<MeshRenderer>(inGameObject.GetComponentsInChildren<MeshRenderer>(true));
+                    if (lComList != null && lComList.Count > 0)
+                    {
+                        lComList.ForEach((fCom) =>
+                        {
+                            if (fCom != null && fCom.sharedMaterial != null && fCom.sharedMaterial.shader != null)
+                            {
+                                fCom.sharedMaterial.shader = Shader.Find(fCom.sharedMaterial.shader.name);
+                            }
+                        });
+                    }
+                }
+                {
+                    var lComList = new List<ParticleSystemRenderer>(inGameObject.GetComponentsInChildren<ParticleSystemRenderer>());
+                    if (lComList != null && lComList.Count > 0)
+                    {
+                        lComList.ForEach((fCom) =>
+                        {
+                            if (fCom != null && fCom.sharedMaterial != null && fCom.sharedMaterial.shader != null)
+                            {
+                                fCom.sharedMaterial.shader = Shader.Find(fCom.sharedMaterial.shader.name);
+                            }
+                        });
+                    }
+                }
+            }
+#endif
+        }
         public Object LoadObject(string objectName)
         {
 #if UNITY_EDITOR

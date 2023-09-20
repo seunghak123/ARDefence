@@ -5,7 +5,6 @@ namespace Seunghak.UIManager
 {
     public class BaseTopUI : BaseUI
     {
-        [SerializeField] private UserInfoUI userInfoUIObject;
         [SerializeField] private WealthUI[] wealthUIObjects;
         public void InitTopUI(UI_TYPE curUIType)
         {

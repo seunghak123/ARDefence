@@ -321,8 +321,11 @@ namespace Seunghak.Common
                 Permission.RequestUserPermission(Permission.ExternalStorageWrite);
             }
 #elif UNITY_iOS && !UNITY_EDITOR
-            
 
+         if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
+        {
+            Application.RequestUserAuthorization(UserAuthorization.WebCam);
+        }  
 #endif 
             MoveNextState(E_APPLICATION_STATE.APPLICATION_UPDATE);
             yield return null;

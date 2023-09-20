@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Editor\AnimationTool.cs" />
+    <Compile Include="Assets\Scripts\Editor\AttachScriptTool.cs" />
     <Compile Include="Assets\Scripts\Editor\BuildEditorTool.cs" />
     <Compile Include="Assets\Scripts\Editor\CustomEditorTool.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Editor\AssetbundlesMenuItems.cs" />
