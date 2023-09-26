@@ -6,12 +6,19 @@ using UnityEngine;
 
 namespace Seunghak.Common
 {
+    
     public enum PlayerPrefKey
     {
         SaveTest,
     }
+    public class UserDataInfo
+    {
+        private UserOptionData userOption;
+        private UserItemDatas userItemDatas;
+    }
     public class UserDataManager : UnitySingleton<UserDataManager>
     {
+        private UserDataInfo userDataInfo = new UserDataInfo();
         private E_LOGIN_TYPE userLoginType = E_LOGIN_TYPE.GUEST_LOGIN;
         private LoginInterface userLogin;
         private string userIDToken = "";
@@ -46,6 +53,12 @@ namespace Seunghak.Common
         {
             userLogin.PlatformLogin(successResultAction);
         }
+        public int GetUserItemCount(int id)
+        {
+            return 0;
+        }
+
+        #region PlayerPref
         public static void SavePlayerPref<T>(PlayerPrefKey saveKey, T saveData)
         {
             PlayerPrefs.SetString(saveKey.ToString(), saveData.ToString());
@@ -88,6 +101,23 @@ namespace Seunghak.Common
             }
             return returnValue;
         }
+        #endregion PlayerPref
+    }
+    class UserSaveData
+    {
+        protected void SaveData()
+        {
+
+        }
+        protected void LoadData()
+        {
+
+        }
+    }
+    class UserItemDatas
+    {
+       // Dictionary<>
+        //유저 아이템 내역
     }
     class UserOptionData
     {

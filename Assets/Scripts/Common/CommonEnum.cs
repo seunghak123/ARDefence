@@ -1,17 +1,11 @@
-﻿
+﻿#region ResourceType
 public enum E_ANIMATION_EVENT
 {
     CREATE_OBJECT,          //오브젝트 생성 이벤트
     CREATE_PARTICLE,        //파티클 생성 이벤트
     PLAY_SOUND,             //사운드 플레이 이벤트
     CAMERA_ACATION,         //카메라 이벤트
-    
-}
-public enum E_LOGIN_TYPE
-{
-    GUEST_LOGIN,
-    GOOGLE_LOGIN,
-    APPLE_LOGIN,
+
 }
 public enum E_SOUND_TYPE
 {
@@ -19,13 +13,8 @@ public enum E_SOUND_TYPE
     VOICE_SOUND,
     FBX_SOUND,
 }
-public enum E_LANGUAGE_TYPE
-{
-    //Default 는 한국어
-    KOREAN,
-    ENGLISH,
-}
-
+#endregion ResourceType
+#region EnviromentType
 public enum E_APPLICATION_STATE
 {
     APPLICATION_START,
@@ -37,7 +26,6 @@ public enum E_APPLICATION_STATE
     INAPP_UPDATE,
     TITLE,
 }
-
 public enum E_APPLICATION_PERMISSION_TYPE
 {
     //퍼미션 타입
@@ -45,3 +33,25 @@ public enum E_APPLICATION_PERMISSION_TYPE
     CAMERA_PERMISSION,
     END,
 }
+#endregion EnviromentType
+#region UserInfoType
+public enum E_LOGIN_TYPE
+{
+    GUEST_LOGIN,
+    GOOGLE_LOGIN,
+    APPLE_LOGIN,
+}
+public enum E_LANGUAGE_TYPE
+{
+    //Default 는 한국어
+    KOREAN,
+    ENGLISH,
+}
+#endregion UserInfoType
+#region UserDataType
+public enum E_ITEM_TYPE
+{
+    GOLD,
+    CRYSTALS,
+}
+#endregion UserDataType

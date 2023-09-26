@@ -35,9 +35,54 @@ namespace Seunghak.Common
         public string atlasName;
         public List<string> spriteLists;
     }
+    #region LowCPUBundleInfo
+    public struct LowCPUBundleFileInfo
+    {
+        public string bundleName;
+        public string fileName;
+        public long fileSize;
+        public int hashCode;
+        public string filePath;
+    }
+    public struct LowCPUBundleListInfo
+    {
+        public string bundleName;
+        public long totalBundleSize;
+        public int bundleTotalHashCode;
+    }
+    public class LowCPUBundleListDic
+    {
+        [SerializeField]
+        public List<LowCPUBundleListInfo> bundleNameLists = new List<LowCPUBundleListInfo>();
+
+        //object Name
+        [SerializeField]
+        public Dictionary<string, LowCPUBundleFileInfo> bundleObjectLists = new Dictionary<string,LowCPUBundleFileInfo>();
+
+        public void AddObjectName(LowCPUBundleFileInfo bundleInfo)
+        {
+            bundleObjectLists[bundleInfo.fileName] = bundleInfo;
+        }
+        public void AddObjectsRejeon(string bundleName, List<LowCPUBundleFileInfo> objectInfoLists)
+        {
+            foreach (var objectInfo in objectInfoLists)
+            {
+                bundleObjectLists[objectInfo.fileName] = objectInfo;
+            }
+        }
+        public long GetTotalSize()
+        {
+            long returnValue = 0;
+            foreach (var listInfo in bundleNameLists)
+            {
+                returnValue += listInfo.totalBundleSize;
+            }
+            return returnValue;
+        }
+    }
+    #endregion LowCPUBundleInfo
     public class BundleListsDic
     {
-        public bool isEndDownload = false;
         [SerializeField]
         public List<BundleListInfo> bundleNameLists = new List<BundleListInfo>();
         [SerializeField]
@@ -101,7 +146,7 @@ namespace Seunghak.Common
     {
         private Dictionary<string, UnityEngine.Object> prefabLists = new Dictionary<string, UnityEngine.Object>();
         private Dictionary<string, ObjectPool> prefabObjectpools = new Dictionary<string, ObjectPool>();
-        private static string DOWNLOAD_WEB_URL = "C:/Users/dhtmd/ARDefence/Assets/Android";
+        private BundleListsDic currentBuildListsDic = new BundleListsDic();
         public bool isReady = false;
 #if UNITY_EDITOR
         [MenuItem("Tools/MakeBundleJson", false, 1000)]
@@ -241,38 +286,50 @@ namespace Seunghak.Common
 
             yield return AssetBundleManager.Instance.GetReadyStatus();
 
-            LoadAssetDatas();
-
-            yield break;
-        }
-        public void LoadAssetDatas()
-        {
             string bundleLoadPath = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
 #if UNITY_EDITOR
             if (AssetBundleManager.SimulateAssetBundleInEditor)
             {
                 bundleLoadPath = $"{FileUtils.GetStreamingAssetsPath()}/{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
             }
+#endif
+            currentBuildListsDic =  FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+
+            LoadAssetDatas();
+
+            yield break;
+        }
+        /// <summary>
+        /// 에셋이 적은 환경에 해당
+        /// </summary>
+        ///LoadAssetDatas로 미리 에셋 데이터들을 저장하는 방식은 에셋 데이터가 적어서 미리 에셋 데이터를
+        ///메모리에 올려놓아도 크게 문제가 안되는 경우에 해당합니다. 메모리가 4GB이하등 저 사양의 디바이스에서 구동할 경우
+        ///해당 오브젝트를 찾고, 에셋을 로드하고, 오브젝트를 풀에 넣고 다시 로드에셋을 해제하는 방식이 필요합니다.
+        ///이는 CPU 부담이 커질 수 있습니다.
+        public void LoadAssetDatas()
+        {
+            string bundleLoadPath = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+#if UNITY_EDITOR
             if (!AssetBundleManager.SimulateAssetBundleInEditor)
 #endif
             {
-                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
-                for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
+                for (int i = 0; i < currentBuildListsDic.bundleNameLists.Count; i++)
                 {
                     string errorCode;
-                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(loadDic.bundleNameLists[i].bundleName, out errorCode);
+                    LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(currentBuildListsDic.bundleNameLists[i].bundleName, out errorCode);
 
                     if (loadedAssets == null)
                     {
                         return;
                     }
 
-                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName].Count; j++)
+                    for (int j = 0; j < currentBuildListsDic.bundleObjectLists[currentBuildListsDic.bundleNameLists[i].bundleName].Count; j++)
                     {
-                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName][j].fileName;
+                        string insertObject = currentBuildListsDic.bundleObjectLists[currentBuildListsDic.bundleNameLists[i].bundleName][j].fileName;
                         string[] namelists = insertObject.Split('.');
                         if (prefabLists.ContainsKey(namelists[0]))
                         {
+                            Resources.UnloadAsset(prefabLists[namelists[0]]);
                             prefabLists[namelists[0]]=loadedAssets.assetBundle.LoadAsset(insertObject);
                         }
                         else
@@ -285,14 +342,13 @@ namespace Seunghak.Common
 #if UNITY_EDITOR
             else
             {
-                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
-                for (int i = 0; i < loadDic.bundleNameLists.Count; i++)
+                for (int i = 0; i < currentBuildListsDic.bundleNameLists.Count; i++)
                 {
  
-                    for (int j = 0; j < loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName].Count; j++)
+                    for (int j = 0; j < currentBuildListsDic.bundleObjectLists[currentBuildListsDic.bundleNameLists[i].bundleName].Count; j++)
                     {
-                        string loadPath = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName][j].filePath;
-                        string insertObject = loadDic.bundleObjectLists[loadDic.bundleNameLists[i].bundleName][j].fileName;
+                        string loadPath = currentBuildListsDic.bundleObjectLists[currentBuildListsDic.bundleNameLists[i].bundleName][j].filePath;
+                        string insertObject = currentBuildListsDic.bundleObjectLists[currentBuildListsDic.bundleNameLists[i].bundleName][j].fileName;
                         string[] namelists = insertObject.Split('.');
                         if (namelists.Length > 0)
                         {
@@ -307,7 +363,26 @@ namespace Seunghak.Common
             isReady = true;
             Debug.Log("Ready To Load");
         }
+        /// <summary>
+        /// 에셋이 많은 환경에 해당
+        /// </summary>
+        /// 에셋이 많아서, 한번에 올려놓는 메모리가 일정 크기 이상인 경우
+        /// 미리 에셋을 복사할 Dictionary에 올려두는 것은 비효율적일 수 있습니다. 
+        /// BundleListsDic 구조가 아닌 오브젝트가 에셋 번들 네임을 들고있는 Dictionary구조가 적합합니다. 
+        /// 차후 이러한 구조로 설계할 경우 필요 asset들을 리스트로 받고 한번에 LoadAssetObjects하는 코드가 필요
+        public void LoadAssetObject(string assetName)
+        {
+            //이 코드를 파일에서 읽어오는 코드로 변경
+            LowCPUBundleListDic lowCpuBundleList = new LowCPUBundleListDic();
+            string errorCode; 
+            LoadedAssetBundle loadedAssets = AssetBundleManager.GetLoadedAssetBundle(lowCpuBundleList.bundleObjectLists[assetName].bundleName, out errorCode);
 
+            if (loadedAssets == null)
+            {
+                return;
+            }
+            prefabLists[assetName] = loadedAssets.assetBundle.LoadAsset(assetName);
+        }
         public GameObject GetPoolObject(string type)
         {
             if (!prefabObjectpools.ContainsKey(type))
@@ -484,13 +559,25 @@ namespace Seunghak.Common
     {
         private List<GameObject> poolObjects = new List<GameObject>();
         private Object poolObject;
+        private System.DateTime currentAccessTime = new System.DateTime();
+        private void RemoveLifeTimeSpanObjectPool()
+        {
+            //오브젝트 풀에 일정 시간 엑세스 하지 않았다면, 씬 넘어갈때 해당 오브젝트는 날아가도록 하게함.
+            if (System.DateTime.Now > currentAccessTime.AddSeconds(CommonUtil.PoolRemoveSecTime))
+            {
+                DestoryPool();
+            }
+        }
         public void PushPool(Object targetObject)
-        { 
+        {
+            currentAccessTime = System.DateTime.Now;
             poolObject = targetObject;
         }
         public GameObject GetPoolObject()
         {
-            for(int i = 0; i < poolObjects.Count; i++)
+            //PoolObject를 가져가고 각 단계의 초기화는 각 매니저에서 진행한다.
+            currentAccessTime = System.DateTime.Now;
+            for (int i = 0; i < poolObjects.Count; i++)
             {
                 if (!poolObjects[i].activeInHierarchy)
                 {

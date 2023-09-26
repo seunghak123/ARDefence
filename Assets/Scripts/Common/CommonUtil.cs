@@ -5,6 +5,7 @@ namespace Seunghak.Common
 {
     class CommonUtil
     {
+        public static long PoolRemoveSecTime = 600;
         public static string StringToMD5(string str)
         {
             StringBuilder MD5Str = new StringBuilder();

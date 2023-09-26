@@ -64,7 +64,7 @@ namespace Seunghak.Common
             switch (applicationState)
             {
                 case E_APPLICATION_STATE.APPLICATION_START:
-                    MoveNextState(E_APPLICATION_STATE.REQUEST_PERMISSION);
+                    InitApplicationInfo();
                     break;
                 case E_APPLICATION_STATE.REQUEST_PERMISSION:
                     StartCoroutine(RequestPermission());
@@ -96,51 +96,35 @@ namespace Seunghak.Common
             ApplicationWork(nextType, isLocal);
 
         }
-        private IEnumerator GameResourceLoad(bool isLocal = false)
+        #region ApplicationLogic
+        private void InitApplicationInfo()
         {
-            //만약 에셋을 다운로드 받지 않았다면 초기화가 필요
-#if UNITY_EDITOR
-            if (!AssetBundleManager.SimulateAssetBundleInEditor
-                )
-#endif
-            {
-                string bundleLoadPath = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
-                AssetBundleManager.BaseDownloadingURL = Application.persistentDataPath;
+            //각종 어플리케이션 기본 정보들 세팅하는 위치
+            Application.targetFrameRate = 60;
 
-                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
-                if (isLocal)
-                {
-                    yield return AssetBundleManager.Initialize().IsDone();
+            //FCM등록
 
-                    while (AssetBundleManager.inProgressOperations.Count > 0)
-                    {
-                        yield return WaitTimeManager.WaitForEndFrame();
-                    }
-                }
-                AssetBundleManager.Instance.InitAssetBundleManager(loadDic);
-                while (AssetBundleManager.inProgressOperations.Count > 0)
-                {
-                    //게임 리소스하는데 좀 길어진다 싶으면 영상 틀것
-                    yield return WaitTimeManager.WaitForEndFrame();
-                }
-            }
-
-            StartCoroutine(GameResourceManager.Instance.SetDownloadDatas());
-
-            while (!GameResourceManager.Instance.isReady)
-            {
-                yield return WaitTimeManager.WaitForEndFrame();
-            }
-
-            MoveNextState(E_APPLICATION_STATE.INAPP_UPDATE);
-            yield break;
+            MoveNextState(E_APPLICATION_STATE.REQUEST_PERMISSION);
         }
-        private IEnumerator GoToTitle()
+        private IEnumerator RequestPermission()
         {
-            //로비로 가야하는가 ? 아니면 인트로로 가야하는가에 따라 결정 우선 인트로는 빠지고 
-            //바로 로비로 인토르는, 스킵가능하도록 만들자
-            SceneManager.SceneManager.Instance.ChangeScene(E_SCENE_TYPE.LOBBY);
-            yield break;
+#if UNITY_EDITOR
+
+            //iOS의 경우 퍼미션
+#elif UNITY_ANDROID && !UNITY_EDITOR
+            if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+            {
+                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+            }
+#elif UNITY_iOS && !UNITY_EDITOR
+
+         if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
+        {
+            Application.RequestUserAuthorization(UserAuthorization.WebCam);
+        }  
+#endif 
+            MoveNextState(E_APPLICATION_STATE.APPLICATION_UPDATE);
+            yield return null;
         }
         private IEnumerator ApplicationUpdate()
         {
@@ -303,32 +287,44 @@ namespace Seunghak.Common
             MoveNextState(E_APPLICATION_STATE.GAME_RESOURCE_LOAD,false);
             yield return null;
         }
-
-        private string AssetBundleManager_overrideBaseDownloadingURL(string bundleName)
+        private IEnumerator GameResourceLoad(bool isLocal = false)
         {
-            throw new System.NotImplementedException();
-        }
-
-        //private void 
-        private IEnumerator RequestPermission()
-        {
+            //만약 에셋을 다운로드 받지 않았다면 초기화가 필요
 #if UNITY_EDITOR
-
-            //iOS의 경우 퍼미션
-#elif UNITY_ANDROID && !UNITY_EDITOR
-            if (!Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+            if (!AssetBundleManager.SimulateAssetBundleInEditor
+                )
+#endif
             {
-                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
-            }
-#elif UNITY_iOS && !UNITY_EDITOR
+                string bundleLoadPath = $"{Application.persistentDataPath}/{ FileUtils.BUNDLE_LIST_FILE_NAME}";
+                AssetBundleManager.BaseDownloadingURL = Application.persistentDataPath;
 
-         if (!Application.HasUserAuthorization(UserAuthorization.WebCam))
-        {
-            Application.RequestUserAuthorization(UserAuthorization.WebCam);
-        }  
-#endif 
-            MoveNextState(E_APPLICATION_STATE.APPLICATION_UPDATE);
-            yield return null;
+                BundleListsDic loadDic = FileUtils.LoadFile<BundleListsDic>(bundleLoadPath);
+                if (isLocal)
+                {
+                    yield return AssetBundleManager.Initialize().IsDone();
+
+                    while (AssetBundleManager.inProgressOperations.Count > 0)
+                    {
+                        yield return WaitTimeManager.WaitForEndFrame();
+                    }
+                }
+                AssetBundleManager.Instance.InitAssetBundleManager(loadDic);
+                while (AssetBundleManager.inProgressOperations.Count > 0)
+                {
+                    //게임 리소스하는데 좀 길어진다 싶으면 영상 틀것
+                    yield return WaitTimeManager.WaitForEndFrame();
+                }
+            }
+
+            StartCoroutine(GameResourceManager.Instance.SetDownloadDatas());
+
+            while (!GameResourceManager.Instance.isReady)
+            {
+                yield return WaitTimeManager.WaitForEndFrame();
+            }
+
+            MoveNextState(E_APPLICATION_STATE.INAPP_UPDATE);
+            yield break;
         }
         private IEnumerator InAppUpdate()
         {
@@ -336,9 +332,132 @@ namespace Seunghak.Common
             Destroy(usertitleWindow.gameObject);
             yield break;
         }
-        //어플리케이션 업데이트 로직
-        //어플리케이션 권한 로직
-        //어플리케이션 각종 권한 껏다 켯다 하는 로직
+        private IEnumerator GoToTitle()
+        {
+            //로비로 가야하는가 ? 아니면 인트로로 가야하는가에 따라 결정 우선 인트로는 빠지고 
+            //바로 로비로 인토르는, 스킵가능하도록 만들자
+            SceneManager.SceneManager.Instance.ChangeScene(E_SCENE_TYPE.LOBBY);
+            yield break;
+        }
+        #endregion ApplicationLogic
+
+        #region InsertLogic
+        //FCM 설정
+        public void InitializeFCM()
+        {
+            // Google Play 버전 체크 (비동기)
+            //FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+            //    var dependencyStatus = task.Result;
+            //    if (dependencyStatus == DependencyStatus.Available)
+            //    {
+            //        Debug.Log("Google Play version OK");
+
+            //        // FCM 초기화
+            //        FirebaseMessaging.TokenReceived += OnTokenReceived; 
+            //        FirebaseMessaging.MessageReceived += OnMessageReceived; 
+            //        FirebaseMessaging.RequestPermissionAsync().ContinueWithOnMainThread(task => {
+            //            Debug.Log("push permission: " + task.Status.ToString());
+            //        });
+            //    }
+            //    else
+            //    {
+            //        Debug.LogError(string.Format(
+            //            "Could not resolve all Firebase dependencies: {0}",
+            //            dependencyStatus
+            //        ));
+            //    }
+            //});
+        }
+        //public void OnTokenReceived(object sender, TokenReceivedEventArgs token)
+        //{
+        //    Debug.Log("OnTokenReceived: " + token.Token);
+        //}
+        //public void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+        //{
+        //    // [3. FCM 서버 푸시 수신]에서 작성
+        //}
+        public void InitializeAndroidLocalPush()
+        {
+        //    // 디바이스의 안드로이드 api level 얻기
+        //    string androidInfo = SystemInfo.operatingSystem;
+        //    Debug.Log("androidInfo: " + androidInfo);
+        //    apiLevel = int.Parse(androidInfo.Substring(androidInfo.IndexOf("-") + 1, 2));
+        //    Debug.Log("apiLevel: " + apiLevel);
+
+        //    // 디바이스의 api level이 33 이상이라면 퍼미션 요청
+        //    if (apiLevel >= 33 &&
+        //        !Permission.HasUserAuthorizedPermission("android.permission.POST_NOTIFICATIONS"))
+        //    {
+        //        Permission.RequestUserPermission("android.permission.POST_NOTIFICATIONS");
+        //    }
+
+        //    // 디바이스의 api level이 26 이상이라면 알림 채널 설정
+        //    if (apiLevel >= 26)
+        //    {
+        //        var channel = new AndroidNotificationChannel()
+        //        {
+        //            Id = CHANNEL_ID,
+        //            Name = "pubSdk",
+        //            Importance = Importance.High, // 아래 참고
+        //            Description = "for test",
+        //        };
+        //        AndroidNotificationCenter.RegisterNotificationChannel(channel);
+        //    }
+        }
+        //로컬 알람
+        public static void SendNotification(string title, string explain, DateTime time)
+        {
+//            try
+//            {
+//#if UNITY_ANDROID
+//                var notification = new AndroidNotification();
+//                notification.Title = title;
+//                notification.Text = explain;
+//                notification.FireTime = time;
+
+//                notification.SmallIcon = "icon_1";
+//                notification.LargeIcon = "icon_0";
+//                notification.ShowInForeground = false;
+//                string channelId = "my_channel_id";
+
+//                AndroidNotificationCenter.SendNotification(notification, channelId);
+//#elif UNITY_IOS
+//        var timeTrigger = new iOSNotificationTimeIntervalTrigger()
+//        {
+//            TimeInterval = time - DateTime.Now,
+//            Repeats = false
+//        };
+
+//        var notification = new iOSNotification()
+//        {
+//            Identifier = "_notification",
+//            Title = title,
+//            Body = explain,
+//            //Subtitle = explain,
+//            ShowInForeground = false,
+//            ForegroundPresentationOption = (PresentationOption.Alert | PresentationOption.Sound),
+//            CategoryIdentifier = "category_a",
+//            ThreadIdentifier = "thread1",
+//            Trigger = timeTrigger,
+//        };
+
+//        iOSNotificationCenter.ScheduleNotification(notification);
+//#endif
+//            }
+//            catch (Exception e)
+//            {
+
+//            }
+        }
+        public static void CancelAllNotifications()
+        {
+//#if UNITY_ANDROID
+//            AndroidNotificationCenter.CancelAllNotifications();
+//#elif UNITY_IOS
+//        iOSNotificationCenter.RemoveAllScheduledNotifications();
+//#endif
+        }
+        #endregion InsertLogic
     }
     [SerializeField]
     public class UpdateVersionInfo

@@ -198,4 +198,8 @@ public static class FileUtils
         }
         return "file://" + Application.streamingAssetsPath;
     }
+    public static int GetPrefabsUnique(GameObject target)
+    {
+        return target.GetInstanceID();
+    }
 }
