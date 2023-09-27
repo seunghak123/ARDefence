@@ -16,8 +16,8 @@ namespace Seunghak.UIManager
             if(baseTopUI != null)
             {
                 baseTopUI.gameObject.SetActive(true);
+                baseTopUI.InitTopUI(curUIType);
             }
-
         }
     }
 }

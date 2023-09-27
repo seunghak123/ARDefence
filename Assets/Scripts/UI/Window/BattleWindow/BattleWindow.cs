@@ -14,17 +14,14 @@ namespace Seunghak.UIManager
         {
             base.EnterWindow();
         }
-
         public override void ExitWindow()
         {
             base.ExitWindow();
         }
-
         public override void RestoreWindow()
         {
             base.RestoreWindow();
         }
-
         public override void StartWindow()
         {
             base.StartWindow();

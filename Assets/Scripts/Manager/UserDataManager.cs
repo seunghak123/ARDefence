@@ -5,16 +5,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace Seunghak.Common
-{
-    
+{    
     public enum PlayerPrefKey
     {
         SaveTest,
-    }
-    public class UserDataInfo
-    {
-        private UserOptionData userOption;
-        private UserItemDatas userItemDatas;
+        UserData,
+        UserToken,
     }
     public class UserDataManager : UnitySingleton<UserDataManager>
     {
@@ -57,7 +53,45 @@ namespace Seunghak.Common
         {
             return 0;
         }
+        public void SetUserToken(string userToken)
+        {
+            userIDToken = userToken;
+        }
+        public bool AutoLogin()
+        {
+            userIDToken = GetPlayerPref<string>(PlayerPrefKey.UserToken);
+            if(string.IsNullOrEmpty(userIDToken))
+            {
+                return false;
+            }
+            //userIDToken 으로 서버쪽에 로그인 메소드 보내고
 
+            return true;
+        }
+        public UserItemDatas GetUserItemData()
+        {
+            return userDataInfo.userItemDatas;
+        }
+        public UserOptionData GetUserOptionData()
+        {
+            return userDataInfo.userOption;
+        }
+
+        #region DB_SAVE
+        /// <summary>
+        /// 해당 내용들은 로컬 DB를 사용할 경우에만 해당한다
+        /// 하나는 PlayerPref를 이용 차후엔 확장해서 직접적으로 호출하는게 아닌 
+        /// DB매니저를 통해서 어떤 DB를 통하든 특정 인터페이스를 상속받은 DB의 행동을 실행하도록한다.
+        /// </summary>
+        public void SaveUserData()
+        {
+            SavePlayerPref<UserDataInfo>(PlayerPrefKey.UserData, userDataInfo);
+        }
+        public void LoadUserData()
+        {
+            userDataInfo = GetPlayerPref<UserDataInfo>(PlayerPrefKey.UserData);
+        }
+        #endregion DB_SAVE
         #region PlayerPref
         public static void SavePlayerPref<T>(PlayerPrefKey saveKey, T saveData)
         {
@@ -103,23 +137,78 @@ namespace Seunghak.Common
         }
         #endregion PlayerPref
     }
-    class UserSaveData
+    public class UserItemDatas
     {
-        protected void SaveData()
+        private Dictionary<int, long> itemDic = new Dictionary<int, long>();
+
+        public bool AddItem(int id, long itemCount)
         {
+            if ((int)E_ITEM_TYPE.CRYSTALS == id || (int)E_ITEM_TYPE.VALID_CRYSTALS == id)
+            {
+                long useritemCount = itemDic[(int)E_ITEM_TYPE.CRYSTALS] + itemDic[(int)E_ITEM_TYPE.VALID_CRYSTALS];
+
+                if (itemCount > 0)
+                {
+                    itemDic[id] += itemCount;
+                    return true;
+                }
+                else
+                {
+                    long remainCount = 0;
+                    if (useritemCount + itemCount > 0)
+                    {
+                        itemDic[(int)E_ITEM_TYPE.VALID_CRYSTALS] -= itemCount;
+                        if (itemDic[(int)E_ITEM_TYPE.VALID_CRYSTALS] < 0)
+                        {
+                            remainCount = itemDic[(int)E_ITEM_TYPE.VALID_CRYSTALS];
+                            itemDic[(int)E_ITEM_TYPE.VALID_CRYSTALS] = 0;
+                        }
+                        itemDic[(int)E_ITEM_TYPE.CRYSTALS] -= remainCount;
+
+                        return true;
+                    }
+                    return false;
+                }
+
+            }
+            else
+            {
+                if (itemDic[id] + itemCount > 0)
+                {
+                    itemDic[id] += itemCount;
+                    return true;
+                }
+                return false;
+            }
+        }
+        public long GetItemCount(E_ITEM_TYPE itemType)
+        {
+            int id = (int)itemType;
+            return GetItemCount(id);
+        }
+        private void MakeItemDic(int id)
+        {
+            if (!itemDic.ContainsKey(id))
+            {
+                itemDic[id] = 0;
+            }
+        }
+        public long GetItemCount(int id)
+        {
+            MakeItemDic(id);
+            if ((int)E_ITEM_TYPE.CRYSTALS == id || (int)E_ITEM_TYPE.VALID_CRYSTALS == id)
+            {
+                MakeItemDic((int)E_ITEM_TYPE.CRYSTALS);
+                MakeItemDic((int)E_ITEM_TYPE.VALID_CRYSTALS);
+                return itemDic[(int)E_ITEM_TYPE.CRYSTALS] + itemDic[(int)E_ITEM_TYPE.VALID_CRYSTALS];
+            }
+
+            return itemDic[id];
 
         }
-        protected void LoadData()
-        {
-
-        }
-    }
-    class UserItemDatas
-    {
-       // Dictionary<>
         //유저 아이템 내역
     }
-    class UserOptionData
+    public class UserOptionData
     {
         [Range(0, 100)] private int masterVolume = 50;
         [Range(0, 100)] private int soundVolume = 50;
@@ -130,5 +219,10 @@ namespace Seunghak.Common
         public int FBXVolume { get { return fbxVolume; } set { fbxVolume = value; } }
         public bool IsMute { get; set; } = false;
         public E_LANGUAGE_TYPE UserLanguageType { get { return userLangType; }set { userLangType = value; } }
+    }
+    public class UserDataInfo
+    {
+        public UserOptionData userOption = new UserOptionData();
+        public UserItemDatas userItemDatas = new UserItemDatas();
     }
 }

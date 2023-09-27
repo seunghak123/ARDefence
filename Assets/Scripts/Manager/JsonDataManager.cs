@@ -9,7 +9,7 @@ namespace Seunghak.Common
     public class JsonDataManager : UnitySingleton<JsonDataManager>
     {
         private static Dictionary<string,string> dicJsonData = new Dictionary<string, string>();
-  
+
         public static List<T> LoadJsonDatas<T>(E_JSON_TYPE loadType)
         {
             String loadPath = "";
@@ -41,5 +41,7 @@ namespace Seunghak.Common
             return loadedObject;
         }
 
+
+        
     }
 }

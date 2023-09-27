@@ -53,5 +53,13 @@ public enum E_ITEM_TYPE
 {
     GOLD,
     CRYSTALS,
+    VALID_CRYSTALS,
 }
 #endregion UserDataType
+
+public enum E_STOREITEM_TYPE
+{
+    CONSUME,
+    NON_CONSUME,
+    SUBSCRIPTION,
+}

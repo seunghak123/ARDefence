@@ -18,7 +18,28 @@ namespace Seunghak.Common
         }
         public Sprite LoadSprite(string spriteName)
         {
-            return null;
+            Object target = GameResourceManager.Instance.LoadObject(spriteName);
+            if (target != null)
+            {
+                return target as Sprite;
+            }
+
+            if (spriteAtlasPathDic.ContainsKey(spriteName))
+            {
+                SpriteAtlas targetAtlas = spriteAtlasLists.Find(find => find.name == spriteAtlasPathDic[spriteName]);
+                if (targetAtlas == null)
+                {
+                    Debug.Log($"{spriteAtlasPathDic[spriteName]} atlas no there");
+                    return null;
+                }
+                return targetAtlas.GetSprite(spriteName);
+            }
+            else
+            {
+                Debug.Log($"{spriteName} sprite nothing");
+                //없어요 없어!
+                return null;
+            }
         }
         private void InitAtlasLists()
         {
@@ -42,7 +63,7 @@ namespace Seunghak.Common
 
             for (int i = 0; i < atlasLists.atlaseLists.Count; i++)
             {
-                BundleListInfo listInfo = bundleLists.bundleNameLists.Find(find => find.bundleName == "AtlasList");
+                BundleListInfo listInfo = bundleLists.bundleNameLists.Find(find => find.bundleName == "atlas");
                 if (!string.IsNullOrEmpty(listInfo.bundleName))
                 {
                     List<BundleFileInfo> infos = bundleLists.bundleObjectLists[listInfo.bundleName];
