@@ -57,7 +57,6 @@
     <Compile Include="Assets\Scripts\Editor\AttachScriptTool.cs" />
     <Compile Include="Assets\Scripts\Editor\BuildEditorTool.cs" />
     <Compile Include="Assets\Scripts\Editor\CustomEditorTool.cs" />
-    <Compile Include="Assets\UnityExternalLibrary\AppleSignInUnity\AppleAuthSample\Editor\SignInWithApplePostprocessor.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Editor\AssetbundlesMenuItems.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Editor\BuildScript.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Editor\ExecuteInternalMono.cs" />
@@ -784,14 +783,6 @@
     <ProjectReference Include="Google.Play.Common.csproj">
       <Project>{3DE4D11D-DDE5-FBBB-07FF-B51296AC0BBC}</Project>
       <Name>Google.Play.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="AppleAuth.csproj">
-      <Project>{6EBCCC6A-7D43-B139-7298-139860A87AC4}</Project>
-      <Name>AppleAuth</Name>
-    </ProjectReference>
-    <ProjectReference Include="AppleAuth.Editor.csproj">
-      <Project>{08D09D58-B8D7-E0AA-A414-F378CAAE44E6}</Project>
-      <Name>AppleAuth.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Play.Core", "Google.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.RenderPipelines.HighDefinition.Config.Runtime", "Unity.RenderPipelines.HighDefinition.Config.Runtime.csproj", "{D490F749-743C-07EE-4134-65496B798DC4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppleAuth", "AppleAuth.csproj", "{6EBCCC6A-7D43-B139-7298-139860A87AC4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity.AssetBundleBrowser.Editor", "Unity.AssetBundleBrowser.Editor.csproj", "{01B6C78F-9C81-C413-9299-5B28F80C88B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Android.AppBundle.Editor", "Google.Android.AppBundle.Editor.csproj", "{FB929D7E-773C-CBE4-B945-EA829CBC707B}"
@@ -22,8 +20,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{61726266-FAA2-6603-8078-743BD9F54E8C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Google.Play.Games.Editor", "Google.Play.Games.Editor.csproj", "{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppleAuth.Editor", "AppleAuth.Editor.csproj", "{08D09D58-B8D7-E0AA-A414-F378CAAE44E6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +51,6 @@ Global
 		{D490F749-743C-07EE-4134-65496B798DC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D490F749-743C-07EE-4134-65496B798DC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D490F749-743C-07EE-4134-65496B798DC4}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6EBCCC6A-7D43-B139-7298-139860A87AC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6EBCCC6A-7D43-B139-7298-139860A87AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6EBCCC6A-7D43-B139-7298-139860A87AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6EBCCC6A-7D43-B139-7298-139860A87AC4}.Release|Any CPU.Build.0 = Release|Any CPU
 		{01B6C78F-9C81-C413-9299-5B28F80C88B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{01B6C78F-9C81-C413-9299-5B28F80C88B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{01B6C78F-9C81-C413-9299-5B28F80C88B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,10 +67,6 @@ Global
 		{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{08D09D58-B8D7-E0AA-A414-F378CAAE44E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{08D09D58-B8D7-E0AA-A414-F378CAAE44E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{08D09D58-B8D7-E0AA-A414-F378CAAE44E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{08D09D58-B8D7-E0AA-A414-F378CAAE44E6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
