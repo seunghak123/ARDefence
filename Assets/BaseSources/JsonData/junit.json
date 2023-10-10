@@ -2,26 +2,61 @@
   {
     "index": 0,
     "unitName": "궁수",
-    "unitHp": 3
+    "unitExp": "3,4,5",
+    "unitHp": 3,
+    "unitAttack": 4,
+    "unitDefence": 1,
+    "unitAttackRange": 10,
+    "unitCriticalPercent": 20.0,
+    "unitShield": 1,
+    "upgradeTableId": 1
   },
   {
     "index": 1,
     "unitName": "기사",
-    "unitHp": 10
+    "unitExp": "5,6,7",
+    "unitHp": 10,
+    "unitAttack": 2,
+    "unitDefence": 1,
+    "unitAttackRange": 2,
+    "unitCriticalPercent": 5.0,
+    "unitShield": 1,
+    "upgradeTableId": 1
   },
   {
     "index": 2,
     "unitName": "마법사",
-    "unitHp": 5
+    "unitExp": "8,9,10",
+    "unitHp": 5,
+    "unitAttack": 6,
+    "unitDefence": 1,
+    "unitAttackRange": 8,
+    "unitCriticalPercent": 30.0,
+    "unitShield": 10,
+    "upgradeTableId": 1
   },
   {
     "index": 3,
     "unitName": "전사",
-    "unitHp": 12
+    "unitExp": "5,6,7",
+    "unitHp": 12,
+    "unitAttack": 3,
+    "unitDefence": 1,
+    "unitAttackRange": 2,
+    "unitCriticalPercent": 5.0,
+    "unitShield": 1,
+    "upgradeTableId": 1
   },
   {
     "index": 4,
     "unitName": "토끼",
-    "unitHp": 1
+    "unitExp": "1,2,3",
+    "unitHp": 1,
+    "unitAttack": 1,
+    "unitDefence": 1,
+    "unitAttackRange": 1,
+    "unitCriticalPercent": 100.0,
+    "unitShield": 1,
+    "upgradeTableId": 1
   }
 ]

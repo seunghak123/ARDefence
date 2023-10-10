@@ -85,6 +85,7 @@
     <Compile Include="Assets\Scripts\Manager\UserDataManager.cs" />
     <Compile Include="Assets\Scripts\Manager\WaitTimeManager.cs" />
     <Compile Include="Assets\Scripts\Purchase\Purchase.cs" />
+    <Compile Include="Assets\Scripts\SceneController\IntroSceneController.cs" />
     <Compile Include="Assets\Scripts\SceneController\LobbySceneController.cs" />
     <Compile Include="Assets\Scripts\SceneController\TitleSceneController.cs" />
     <Compile Include="Assets\Scripts\SimpleCameraController.cs" />
@@ -104,6 +105,8 @@
     <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopBuyPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\TitleWindow\TitleWindow.cs" />
+    <Compile Include="Assets\Scripts\Units\BaseAI.cs" />
+    <Compile Include="Assets\Scripts\Units\UnitController.cs" />
     <Compile Include="Assets\Scripts\Utils\FileUtils.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\AssetBundleLoadOperation.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Utility.cs" />

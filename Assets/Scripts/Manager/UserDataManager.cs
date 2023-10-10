@@ -194,13 +194,16 @@ namespace Seunghak.Common
             }
         }
         public long GetItemCount(int id)
-        {
-            MakeItemDic(id);
+        {  
             if ((int)E_ITEM_TYPE.CRYSTALS == id || (int)E_ITEM_TYPE.VALID_CRYSTALS == id)
             {
                 MakeItemDic((int)E_ITEM_TYPE.CRYSTALS);
                 MakeItemDic((int)E_ITEM_TYPE.VALID_CRYSTALS);
                 return itemDic[(int)E_ITEM_TYPE.CRYSTALS] + itemDic[(int)E_ITEM_TYPE.VALID_CRYSTALS];
+            }
+            else
+            {
+                MakeItemDic(id);
             }
 
             return itemDic[id];

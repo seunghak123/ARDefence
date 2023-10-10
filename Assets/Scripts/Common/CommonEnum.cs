@@ -63,3 +63,49 @@ public enum E_STOREITEM_TYPE
     NON_CONSUME,
     SUBSCRIPTION,
 }
+//서버에 보낼 행동 타입
+public enum E_OBJECT_ACTION_TYPE
+{
+    ATTACK_OTHER,
+    MOVE_SELF,
+    MOVE_OTHER,
+    HEAL_OTHER,
+    DEFENCE_SELF,
+}
+
+#region IngameType
+public enum E_INGAME_TEAM_TYPE
+{
+    NONE,
+    //pvp용 팀
+    ALPAH_TEAM,
+    BETA_TEAM,
+
+    //인던용 팀
+    USER_TEAM,
+    MONSTER_TEAM,
+    TEAM_TYPE_END,
+}
+//움직임은 크게, 이동 공격, 먹히기전 스턴 , 이벤트 액션-> 이벤트 액션은 등록한 액션 실행
+public enum E_INGAME_AI_TYPE
+{
+    NONE,
+    UNIT_IDLE,
+    UNIT_MOVE,
+    UNIT_ATTACK,
+    UNIT_STUN,
+    UNIT_EVENT,
+
+    END,
+}
+public enum E_STATVALUE_TYPE
+{
+    ATTACK_VALUE,
+    DEFENCE_VALUE,
+    HP_VALUE,
+    MAX_HP_VALUE,
+    SHIELD_VALUE,
+    HP_DRAIN_VALUE,
+    CRITICAL_PERCENT_VALUE,
+}
+#endregion IngameType
