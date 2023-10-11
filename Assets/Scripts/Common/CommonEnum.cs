@@ -93,7 +93,8 @@ public enum E_INGAME_AI_TYPE
     UNIT_IDLE,
     UNIT_MOVE,
     UNIT_ATTACK,
-    UNIT_STUN,
+    UNIT_HIT,
+    UNIT_DEAD,
     UNIT_EVENT,
 
     END,

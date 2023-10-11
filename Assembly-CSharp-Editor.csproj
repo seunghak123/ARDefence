@@ -53,9 +53,11 @@
     <UnityVersion>2019.4.34f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Assets\BaseSources\Character\Skeleton\Readme\Scripts\Editor\ReadmeEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\AnimationTool.cs" />
     <Compile Include="Assets\Scripts\Editor\AttachScriptTool.cs" />
     <Compile Include="Assets\Scripts\Editor\BuildEditorTool.cs" />
+    <Compile Include="Assets\Scripts\Editor\CaptureEditor.cs" />
     <Compile Include="Assets\Scripts\Editor\CustomEditorTool.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Editor\AssetbundlesMenuItems.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\Editor\BuildScript.cs" />
@@ -756,6 +758,10 @@
       <Project>{B44944D6-5A07-292B-BC25-722FE727BA66}</Project>
       <Name>Google.Play.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="NavMeshComponentsEditor.csproj">
+      <Project>{C5A2B208-28D2-2B25-7A11-30F1A1A1497E}</Project>
+      <Name>NavMeshComponentsEditor</Name>
+    </ProjectReference>
     <ProjectReference Include="Google.Android.AppBundle.Editor.csproj">
       <Project>{FB929D7E-773C-CBE4-B945-EA829CBC707B}</Project>
       <Name>Google.Android.AppBundle.Editor</Name>
@@ -763,6 +769,10 @@
     <ProjectReference Include="Google.Play.Games.csproj">
       <Project>{42DCC785-A0E6-A773-FDFF-9700F611EB0C}</Project>
       <Name>Google.Play.Games</Name>
+    </ProjectReference>
+    <ProjectReference Include="NavMeshComponents.csproj">
+      <Project>{F2A11C68-FF16-460C-B0DA-9BDBB76B43B7}</Project>
+      <Name>NavMeshComponents</Name>
     </ProjectReference>
     <ProjectReference Include="Google.Play.Games.Editor.csproj">
       <Project>{3C5A6F23-663F-603B-76C3-1CFCE7D0ACB5}</Project>

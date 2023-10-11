@@ -13,7 +13,7 @@ namespace Seunghak.Common
         public static List<T> LoadJsonDatas<T>(E_JSON_TYPE loadType)
         {
             String loadPath = "";
-            String loadTypeString = loadType.ToString()+".json";
+            String loadTypeString = loadType.ToString();
 
             if (loadTypeString.Contains("Data"))
             {
@@ -26,6 +26,7 @@ namespace Seunghak.Common
 
             List<T> loadedObject = new List<T>();
 #if UNITY_EDITOR
+            loadTypeString = loadTypeString + ".json";
             loadPath = FileUtils.JSONFILE_LOAD_PATH + loadTypeString.ToLower();
             object loadData = FileUtils.LoadFile<object>(loadPath);
 
@@ -41,7 +42,36 @@ namespace Seunghak.Common
             return loadedObject;
         }
 
+        public List<JUnitData> GetUnitDatas()
+        {
+            List<JUnitData> unitDatas = LoadJsonDatas<JUnitData>(E_JSON_TYPE.JUnitData);
 
-        
+            return unitDatas;
+        }
+        public JUnitData[] GetUnitDatasArray(params int[] unitIdArray)
+        {
+            List<JUnitData> unitDatas = LoadJsonDatas<JUnitData>(E_JSON_TYPE.JUnitData);
+
+            JUnitData[] unitArray = unitDatas.FindAll(find => { 
+                for(int i = 0; i < unitIdArray.Length; i++)
+                {
+                    if (find.index == unitIdArray[i])
+                    {
+                        return true;
+                    }
+                }
+                return false; 
+            }).ToArray();
+
+            return unitArray;
+        }
+        public JUnitData GetUnitData(int unitId)
+        {
+            List<JUnitData> unitDatas = LoadJsonDatas<JUnitData>(E_JSON_TYPE.JUnitData);
+
+            JUnitData unitData = unitDatas.Find(find => find.index == unitId);
+
+            return unitData;
+        }
     }
 }

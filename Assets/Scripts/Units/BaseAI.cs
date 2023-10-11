@@ -1,18 +1,24 @@
-﻿using System;
+﻿using Seunghak.Common;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BaseAI : MonoBehaviour
 {
-    [SerializeField] private CharacterController unitController;
+    [Header("UnitInfo")]
     [SerializeField] private E_INGAME_AI_TYPE unitAIType = E_INGAME_AI_TYPE.NONE;
-    [SerializeField] private E_INGAME_TEAM_TYPE unitTeamType;
+
+    [Space(2)]
+    [Header("UnitAnimation")]
+    [SerializeField] private Animator unitAnim;
+    [SerializeField] private UnitStructure unitInfo;
+    private Dictionary<E_INGAME_AI_TYPE, Action> userActionDic = new Dictionary<E_INGAME_AI_TYPE, Action>();
+    
     private bool isDead = false;
     private Action currentUnitEvent = null;
 
-    private Dictionary<E_INGAME_AI_TYPE, Action> userActionDic = new Dictionary<E_INGAME_AI_TYPE, Action>();
-    private void Awake()
+    public void Awake()
     {
         RegistAction();
     }
@@ -22,12 +28,29 @@ public class BaseAI : MonoBehaviour
         userActionDic[E_INGAME_AI_TYPE.UNIT_ATTACK] = UnitAttack;
         userActionDic[E_INGAME_AI_TYPE.UNIT_MOVE] = UnitMove;
         userActionDic[E_INGAME_AI_TYPE.UNIT_EVENT] = UnitEvent;
-        userActionDic[E_INGAME_AI_TYPE.UNIT_STUN] = UnitStun;
+        userActionDic[E_INGAME_AI_TYPE.UNIT_HIT] = UnitStun;
 
     }
     protected void ChangeAI(E_INGAME_AI_TYPE nextAIType)
     {
-        unitAIType = nextAIType;
+        if (!unitAIType.Equals(nextAIType))
+        {
+            unitAIType = nextAIType;
+
+            if (unitAnim != null)
+            {
+                switch (unitAIType)
+                {
+                    case E_INGAME_AI_TYPE.UNIT_ATTACK:
+                        break;
+                    case E_INGAME_AI_TYPE.UNIT_HIT:
+                        break;
+                    case E_INGAME_AI_TYPE.UNIT_DEAD:
+                        unitAnim.SetTrigger("IsDead");
+                        break;
+                }
+            }
+        }
     }
     protected virtual void UnitStun()
     {
@@ -42,7 +65,7 @@ public class BaseAI : MonoBehaviour
     }
     protected virtual void UnitMove()
     {
-
+        //목표 위치로 이동
     }
     protected virtual void UnitAttack()
     {

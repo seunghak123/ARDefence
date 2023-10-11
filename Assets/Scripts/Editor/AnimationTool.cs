@@ -5,6 +5,7 @@ using System;
 using UnityEditor;
 using UnityEditor.Animations;
 using UnityEngine;
+using UnityEngine.Animations;
 
 public class EffectToolData : ScriptableObject
 {
@@ -53,7 +54,7 @@ public class AnimationTool : EditorWindow
         {
             if (UnityEditor.SceneManagement.EditorSceneManager.GetActiveScene().name == "AnimationTool")
             {
-                //UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/Scenes/Test/TestBuildScene.unity");
+                UnityEditor.SceneManagement.EditorSceneManager.OpenScene("Assets/Scenes/Editor/AnimationTool.unity");
             }
         }
     }
@@ -288,7 +289,7 @@ public class AnimationTool : EditorWindow
         {
             return;
         }
-        AnimatorController animationController = _selectedAnimator.runtimeAnimatorController as UnityEditor.Animations.AnimatorController;
+        AnimatorController animationController = _selectedAnimator.runtimeAnimatorController as AnimatorController;
         if (animationController == null)
         {
             return;
