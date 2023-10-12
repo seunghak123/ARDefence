@@ -1,24 +1,21 @@
 ﻿using System;
 using UnityEngine;
-
 namespace Seunghak.SceneManager
 {
     using Seunghak.UIManager;
-    public class LobbySceneController : SceneController
+    public class BattleSceneController : SceneController
     {
         protected override void Awake()
         {
             base.Awake();
-
-            InitSceneController();
         }
         //���� �� ��Ʈ�ѷ� �ʱ�ȭ �Լ�
         public override void InitSceneController() 
         {
-            UIManager.Instance.OpenUI();
-            UIManager.Instance.PushUI(UI_TYPE.LobbyWindow);
-            //로그인 보상등등 이벤트 팝업 띄워주고, 
+            UIManager.Instance.CloseUI();
 
+            //테스트 코드 SceneController에 데이터 넘기고 그걸 인게임 매니저에 전달 필요
+            IngameManager.currentManager.CreateGame(0);
         }
         //�� �ε� �� �� �Ŵ����� ���� ��Ʈ�ѷ� ����ϴ� �Լ�
         public override void RegistSceneController()

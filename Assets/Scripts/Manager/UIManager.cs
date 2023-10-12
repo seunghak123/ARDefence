@@ -263,6 +263,17 @@ namespace Seunghak.UIManager
         {
             baseCanvasObject.OpenBaseTopUI(curUIType);
         }
+        public void CloseUI()
+        {
+            baseCanvasObject.gameObject.SetActive(false);
+        }
+        public void OpenUI()
+        {
+            if(!baseCanvasObject.gameObject.activeSelf)
+            {
+                baseCanvasObject.gameObject.SetActive(true);
+            }
+        }
         #endregion InGame_Logic
         public void Update()
         {

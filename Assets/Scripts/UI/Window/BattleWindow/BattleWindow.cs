@@ -10,6 +10,11 @@ namespace Seunghak.UIManager
         {
             UIManager.Instance.PushUI(UI_TYPE.LobbyWindow);
         }
+        public void TestBattleScene()
+        {
+            int allId = 0;
+            Seunghak.SceneManager.SceneManager.Instance.ChangeScene(E_SCENE_TYPE.INGAME);
+        }
         public override void EnterWindow()
         {
             base.EnterWindow();

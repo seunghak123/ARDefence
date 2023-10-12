@@ -7,6 +7,7 @@ using System.Collections;
 using UnityEngine;
 using Seunghak.Common;
 
+
 public static class FileUtils
 {
     public const string BUNDLE_LIST_FILE_NAME = "AssetbundleList.json";
@@ -123,6 +124,10 @@ public static class FileUtils
         {
 
         }
+    }
+    public static void SaveToExcel(string savePath,string fileName,string saveData)
+    {
+
     }
     public static T DeSerealString<T>(string target)
     {

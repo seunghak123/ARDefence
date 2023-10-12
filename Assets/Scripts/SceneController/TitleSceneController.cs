@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Seunghak.SceneManager
 {
+    using Seunghak.UIManager;
     public class TitleSceneController : SceneController
     {
         protected override void Awake()
@@ -10,7 +11,10 @@ namespace Seunghak.SceneManager
             base.Awake();
         }
         //���� �� ��Ʈ�ѷ� �ʱ�ȭ �Լ�
-        public override void InitSceneController() { }
+        public override void InitSceneController() 
+        {
+            UIManager.Instance.OpenUI();
+        }
         //�� �ε� �� �� �Ŵ����� ���� ��Ʈ�ѷ� ����ϴ� �Լ�
         public override void RegistSceneController()
         {

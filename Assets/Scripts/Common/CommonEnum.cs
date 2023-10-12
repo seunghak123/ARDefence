@@ -102,6 +102,7 @@ public enum E_INGAME_AI_TYPE
 public enum E_STATVALUE_TYPE
 {
     ATTACK_VALUE,
+    ATTACK_RANGE,
     DEFENCE_VALUE,
     HP_VALUE,
     MAX_HP_VALUE,

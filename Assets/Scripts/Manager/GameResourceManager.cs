@@ -175,6 +175,14 @@ namespace Seunghak.Common
                     newFileInfo.filePath = bundleobjectlists[j];
                     totalBundleSize += bundleSize;
                     newFileInfo.fileName = bundlepaths[bundlepaths.Length - 1];
+                    if(newFileInfo.fileName.Contains('.'))
+                    {
+                        string[] fileNameSplit = newFileInfo.fileName.Split('.');
+                        if (fileNameSplit.Length > 0)
+                        {
+                            newFileInfo.fileName = fileNameSplit[0];
+                        }
+                    }
                     AssetImporter importer = AssetImporter.GetAtPath(bundleobjectlists[j]);
                     newFileInfo.hashCode = 0;
 

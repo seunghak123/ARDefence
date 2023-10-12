@@ -15,6 +15,6 @@ EditorBuildSettings:
     path: Assets/Scenes/LOBBY.unity
     guid: 86c2793b55320c8438bbca33a69ecfb4
   - enabled: 1
-    path: Assets/Scenes/BATTLE.unity
+    path: Assets/Scenes/INGAME.unity
     guid: 804ef2df5fddb254eab2d344eebd4fc8
   m_configObjects: {}

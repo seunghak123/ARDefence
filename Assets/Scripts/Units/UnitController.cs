@@ -8,7 +8,6 @@ public class UnitController : MonoBehaviour
     [SerializeField] private BaseAI unitAI;
     //
     //[SerializeField] private BaseUnitUI unitUI;
-    [SerializeField] private E_INGAME_TEAM_TYPE unitTeamType;
     //생성시 유닛 고유 식별 ID
     private long unitIntanceId;
     //AI Type받고 해당 AI 생성

@@ -8,7 +8,7 @@ public class BaseAI : MonoBehaviour
 {
     [Header("UnitInfo")]
     [SerializeField] private E_INGAME_AI_TYPE unitAIType = E_INGAME_AI_TYPE.NONE;
-
+    [SerializeField] private E_INGAME_TEAM_TYPE unitTeamType;
     [Space(2)]
     [Header("UnitAnimation")]
     [SerializeField] private Animator unitAnim;
@@ -28,7 +28,8 @@ public class BaseAI : MonoBehaviour
         userActionDic[E_INGAME_AI_TYPE.UNIT_ATTACK] = UnitAttack;
         userActionDic[E_INGAME_AI_TYPE.UNIT_MOVE] = UnitMove;
         userActionDic[E_INGAME_AI_TYPE.UNIT_EVENT] = UnitEvent;
-        userActionDic[E_INGAME_AI_TYPE.UNIT_HIT] = UnitStun;
+        userActionDic[E_INGAME_AI_TYPE.UNIT_HIT] = UnitHit;
+        userActionDic[E_INGAME_AI_TYPE.UNIT_DEAD] = UnitDead;
 
     }
     protected void ChangeAI(E_INGAME_AI_TYPE nextAIType)
@@ -42,8 +43,10 @@ public class BaseAI : MonoBehaviour
                 switch (unitAIType)
                 {
                     case E_INGAME_AI_TYPE.UNIT_ATTACK:
+                        unitAnim.SetTrigger("Attack");
                         break;
                     case E_INGAME_AI_TYPE.UNIT_HIT:
+                        unitAnim.SetTrigger("Hit");
                         break;
                     case E_INGAME_AI_TYPE.UNIT_DEAD:
                         unitAnim.SetTrigger("IsDead");
@@ -52,9 +55,23 @@ public class BaseAI : MonoBehaviour
             }
         }
     }
-    protected virtual void UnitStun()
+    #region UnitFunction
+    private void FindTargetObject()
     {
+        //IngameManager
+        // 인근 UnitController 를 찾아서 TeamType이 자신의 Team이 아닌 것을 찾아야한다.
+    }
+    #endregion UnitFunction
 
+    #region UnitState
+    protected virtual void UnitHit()
+    {
+        //데미지 입었을떄 해당, 만약 현재 HP가 0 이하라면 사망처리
+    }
+    protected virtual void UnitDead()
+    {
+        //사망했을 시 쓰러져 있고, 애니메이션 종료시 이벤트 읽어서 사망처리
+        //물체는 살려둔다
     }
     protected virtual void UnitEvent()
     {
@@ -65,15 +82,18 @@ public class BaseAI : MonoBehaviour
     }
     protected virtual void UnitMove()
     {
-        //목표 위치로 이동
+        //타겟의 거리가 공격 거리까지 들어올떄까지 해당 방향으로 이동
     }
     protected virtual void UnitAttack()
     {
-
+        //일반적인 공격력 계산 공식으로 세팅
+        //BaseAI의 경우는 투사체등이 아닌 직접 공격에 해당(무조껀 히트)
     }
     protected virtual void UnitIdle()
     {
-        
+        //타겟이 있으면 움직임
+        //타겟 없으면 타겟서치
+
     }
     private void Action()
     {
@@ -86,7 +106,7 @@ public class BaseAI : MonoBehaviour
             unitAIType = E_INGAME_AI_TYPE.UNIT_IDLE;
         }
     }
-
+    #endregion UnitState
     public void Update()
     {
         if(!isDead)

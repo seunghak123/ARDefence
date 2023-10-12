@@ -73,5 +73,14 @@ namespace Seunghak.Common
 
             return unitData;
         }
+
+        public JStageData GetStageData(int stageId)
+        {
+            List<JStageData> stageDatas = LoadJsonDatas<JStageData>(E_JSON_TYPE.JStageData);
+
+            JStageData stageData = stageDatas.Find(find => find.index == stageId);
+
+            return stageData;
+        }
     }
 }
