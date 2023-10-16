@@ -114,5 +114,6 @@ public enum E_UNIT_AI_TYPE
 {
     MELEE_AI,
     RANGE_AI,
+    ANIMATION_AI,//로비용 AI 로비외엔 생성 금지
 }
 #endregion IngameType

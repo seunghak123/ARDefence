@@ -14,6 +14,7 @@ namespace Seunghak.UIManager
         [SerializeField] private Button googleLoginButton;
         [SerializeField] private Button appleLoginButton;
         [SerializeField] private Button guestLoginButton;
+        [SerializeField] private GameObject downloadProgressBar;
         [SerializeField] public DownloadBundlePopup downloadPopup;
         [SerializeField] public BaseAwnserPopup baseAwnserPopup;
         private void Awake()

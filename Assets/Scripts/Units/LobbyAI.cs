@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LobbyAI : MonoBehaviour
+public class LobbyAI : BaseAI
 {
-    // Start is called before the first frame update
-    void Start()
+    private List<E_INGAME_AI_TYPE> playAnimAiLists = new List<E_INGAME_AI_TYPE>()
     {
-        
+        E_INGAME_AI_TYPE.UNIT_ATTACK,
+        E_INGAME_AI_TYPE.UNIT_HIT
+    };
+    public void PlayAnim()
+    {
+        int random = Random.Range(0,playAnimAiLists.Count);
+        ChangeAI(playAnimAiLists[random]);
     }
-
-    // Update is called once per frame
-    void Update()
+    public override void Update()
     {
-        
+        //Update문을 실행하지 않기 위한 override
     }
 }

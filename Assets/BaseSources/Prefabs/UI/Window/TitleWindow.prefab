@@ -285,6 +285,7 @@ MonoBehaviour:
   googleLoginButton: {fileID: 5821965972209240747}
   appleLoginButton: {fileID: 5821965972424787524}
   guestLoginButton: {fileID: 5821965973661948668}
+  downloadProgressBar: {fileID: 5821965973694161888}
   downloadPopup: {fileID: 7444619310596575985}
   baseAwnserPopup: {fileID: 962194760391341320}
 --- !u!114 &5821965972368715506
@@ -369,8 +370,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  m_Type: 1
+  m_Sprite: {fileID: 21300000, guid: c0f202c2c9f734366b196745d9f67be3, type: 3}
+  m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -488,7 +489,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 9c0d6ec706e01ce448aea81584af092b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: d1019afa74b0d5544a2250da90709e0d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1019,7 +1020,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5821965973694161891
 RectTransform:
   m_ObjectHideFlags: 0

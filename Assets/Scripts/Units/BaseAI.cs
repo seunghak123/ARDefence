@@ -28,6 +28,7 @@ public class BaseAI : MonoBehaviour
     public void Awake()
     {
         characterController = GetComponent<CharacterController>();
+        unitAnim = GetComponentInChildren<Animator>();
         RegistAction();
     }
     private void RegistAction()

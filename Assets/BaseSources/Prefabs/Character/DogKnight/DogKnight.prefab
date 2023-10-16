@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1022625565091134192}
   m_Layer: 0
   m_Name: DogKnight
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -46,7 +46,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitAI: {fileID: 0}
-  unitTeamType: 0
 --- !u!143 &1022625565091134192
 CharacterController:
   m_ObjectHideFlags: 0

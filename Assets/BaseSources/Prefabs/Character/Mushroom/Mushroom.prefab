@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2892437912202433850}
   m_Layer: 0
   m_Name: Mushroom
-  m_TagString: Untagged
+  m_TagString: Character
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -64,7 +64,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitAI: {fileID: 0}
-  unitTeamType: 0
 --- !u!1001 &3493716296200692854
 PrefabInstance:
   m_ObjectHideFlags: 0

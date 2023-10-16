@@ -7,6 +7,10 @@ namespace Seunghak.UIManager
     public class BaseTopUI : BaseUI
     {
         [SerializeField] private WealthUI[] wealthUIObjects;
+        public void OpenOptionPopup()
+        {
+            UIManager.Instance.PushUI(UI_TYPE.UserOptionPopup);
+        }
         public void InitTopUI(UI_TYPE curUIType)
         {
             //재화 세팅

@@ -26,6 +26,7 @@ namespace Seunghak.UIManager
         UserInfoPopup ,
         ShopBuyPopup,
         UserEventPopup,
+        UserOptionPopup,
         OtherUI = 4000,
         BaseAwnserPopup,
     }

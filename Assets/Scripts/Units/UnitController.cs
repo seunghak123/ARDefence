@@ -14,6 +14,10 @@ public class UnitController : MonoBehaviour
     //[SerializeField] private BaseUnitUI unitUI;
     //생성시 유닛 고유 식별 ID
     private long unitIntanceId;
+    public void CreateLobbyAI()
+    {
+        AttachAIComponent(E_UNIT_AI_TYPE.ANIMATION_AI);
+    }
     //AI Type받고 해당 AI 생성
     public bool SetUnitInfo(int unitId)
     {
@@ -37,6 +41,9 @@ public class UnitController : MonoBehaviour
                 break;
             case E_UNIT_AI_TYPE.RANGE_AI:
                 addedAI = this.gameObject.AddComponent<RangeAI>();
+                break;
+            case E_UNIT_AI_TYPE.ANIMATION_AI:
+                addedAI = this.gameObject.AddComponent<LobbyAI>();
                 break;
         }
         if (addedAI != null)
