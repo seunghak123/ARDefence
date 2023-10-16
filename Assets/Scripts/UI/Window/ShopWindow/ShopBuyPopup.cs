@@ -10,6 +10,10 @@ namespace Seunghak.UIManager
         {
             UIManager.Instance.PushUI(UI_TYPE.LobbyWindow);
         }
+        public void EnterBattle()
+        {
+            UIManager.Instance.PushUI(UI_TYPE.BattleWindow);
+        }
         public override void EnterWindow()
         {
             base.EnterWindow();

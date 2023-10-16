@@ -15,6 +15,11 @@ namespace Seunghak.UIManager
             int allId = 0;
             Seunghak.SceneManager.SceneManager.Instance.ChangeScene(E_SCENE_TYPE.INGAME);
         }
+
+        public void TestGoToShop()
+        {
+            UIManager.Instance.PushUI(UI_TYPE.ShopWindow);
+        }
         public override void EnterWindow()
         {
             base.EnterWindow();

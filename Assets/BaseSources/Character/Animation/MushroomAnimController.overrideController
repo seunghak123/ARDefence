@@ -8,4 +8,19 @@ AnimatorOverrideController:
   m_PrefabAsset: {fileID: 0}
   m_Name: MushroomAnimController
   m_Controller: {fileID: 9100000, guid: 61e06e6b418809c41b207912c4fa7204, type: 2}
-  m_Clips: []
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: 6019f1b4a095b0b4396f5561a51fee89, type: 2}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: 3afd084ecc3e4f56af5eeadd5792a379,
+      type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 5d190d8211c88a64281f7b90c69f3eb3, type: 2}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: f0085118ccc344269042a6158acf7991,
+      type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: 1588532e68f51a040bda71c68cfab177, type: 2}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: d19a8f0292eb4266b21cd4010159b274,
+      type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: b79ff7bb68348be479d3db6b7fe8a569, type: 2}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: a40b48ebaacc4a16a1f2b2c594d3cea8,
+      type: 3}
+  - m_OriginalClip: {fileID: 7400000, guid: f0c8c1d913b359a428b42d53947d3e93, type: 2}
+    m_OverrideClip: {fileID: 1827226128182048838, guid: 210b1278c425407495dc4f93a8ae07e4,
+      type: 3}

@@ -54,8 +54,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Assets\BaseSources\Character\Skeleton\Readme\Scripts\Readme.cs" />
+    <Compile Include="Assets\BaseSources\Prefabs\UI\ScrollButton\UserEventScrollItem.cs" />
     <Compile Include="Assets\GPGSIds.cs" />
     <Compile Include="Assets\Scripts\Common\CommonEnum.cs" />
+    <Compile Include="Assets\Scripts\Common\CommonScrollItemData.cs" />
     <Compile Include="Assets\Scripts\Common\CommonUtil.cs" />
     <Compile Include="Assets\Scripts\Common\GameVersion.cs" />
     <Compile Include="Assets\Scripts\Common\OHAssetBundleManager.cs" />
@@ -65,7 +67,9 @@
     <Compile Include="Assets\Scripts\Common\UserDataJsonEnum.cs" />
     <Compile Include="Assets\Scripts\Event\CharacterEvent.cs" />
     <Compile Include="Assets\Scripts\Event\CommonEvent.cs" />
+    <Compile Include="Assets\Scripts\InGame\IngameCanvas.cs" />
     <Compile Include="Assets\Scripts\InGame\IngameManager.cs" />
+    <Compile Include="Assets\Scripts\InGame\IngameMapUnitSpawnCam.cs" />
     <Compile Include="Assets\Scripts\JClass\JShopData.cs" />
     <Compile Include="Assets\Scripts\JClass\JStageData.cs" />
     <Compile Include="Assets\Scripts\JClass\JUnitData.cs" />
@@ -105,6 +109,7 @@
     <Compile Include="Assets\Scripts\UI\Common\WealthUI.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\BaseAwnserPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\DownloadBundlePopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Popup\EventPopup\UserEventPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Popup\UserInfoPopup.cs" />
     <Compile Include="Assets\Scripts\UI\Window\BattleWindow\BattleWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\LobbyWindow\LobbyWindow.cs" />
@@ -112,7 +117,9 @@
     <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\TitleWindow\TitleWindow.cs" />
     <Compile Include="Assets\Scripts\Units\BaseAI.cs" />
+    <Compile Include="Assets\Scripts\Units\LobbyAI.cs" />
     <Compile Include="Assets\Scripts\Units\NormalAI.cs" />
+    <Compile Include="Assets\Scripts\Units\RangeAI.cs" />
     <Compile Include="Assets\Scripts\Units\UnitController.cs" />
     <Compile Include="Assets\Scripts\Utils\FileUtils.cs" />
     <Compile Include="Assets\UnityExternalLibrary\AssetsBundle\AssetBundleManager\AssetBundleLoadOperation.cs" />

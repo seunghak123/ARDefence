@@ -11,7 +11,6 @@ public class UserInfoUI : MonoBehaviour
     [SerializeField] private Image userIconImage;
     [SerializeField] private Button userInfoPopupButton;
     [SerializeField] private TextMeshProUGUI userNameText;
-    [SerializeField] private TextMeshProUGUI userLvText;
 
     private void OnEnable()
     {

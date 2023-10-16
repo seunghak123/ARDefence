@@ -533,6 +533,7 @@ namespace Seunghak.Common
 #if UNITY_EDITOR
             else
             {
+                //해당 내용은 최적화가 쥐뿔도 안되어있기때문에, 차후 수정 요망
                  string bundleFilePath = $"{Application.dataPath}{FileUtils.GetPlatformString()}{ FileUtils.BUNDLE_LIST_FILE_NAME}";
                  
                 BundleListsDic bundleLists = FileUtils.LoadFile<BundleListsDic>(bundleFilePath);
@@ -543,7 +544,7 @@ namespace Seunghak.Common
                     if (!string.IsNullOrEmpty(info.fileName))
                     {
                         //찾앗다면
-                        return Resources.Load(info.filePath);
+                        return AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(info.filePath);
                     }
                 }
 

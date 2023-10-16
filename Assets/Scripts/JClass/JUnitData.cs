@@ -11,4 +11,6 @@ public class JUnitData
 	public float unitCriticalPercent;
 	public int unitShield;
 	public int upgradeTableId;
+	public string unitPrefab;
+	public int aiType;
 }

@@ -26,18 +26,18 @@ public class OHScrollView : MonoBehaviour
     private int maxCount = 20;
 
     [SerializeField]
-    private E_SCROLLDIRECT _direction;
+    private E_SCROLLDIRECT direction;
 
-    public OnItemPositionChange _onUpdateItem = new OnItemPositionChange();
+    public OnItemPositionChange onUpdateItem = new OnItemPositionChange();
 
     [System.NonSerialized]
-    public LinkedList<RectTransform> _itemList = new LinkedList<RectTransform>();
+    public LinkedList<RectTransform> itemList = new LinkedList<RectTransform>();
+    
+    protected float diffPreFramePosition = 0;
 
-    protected float _diffPreFramePosition = 0;
-
-    protected int _currentItemNo = 0;
+    protected int currentItemNo = 0;
     private int SceneSizeCount = 1;
-
+    public List<CommonScrollItemData> itemInfoLists = new List<CommonScrollItemData>();
     public enum E_SCROLLDIRECT
     {
         VERTICAL,
@@ -46,28 +46,28 @@ public class OHScrollView : MonoBehaviour
 
     // cache component
 
-    private RectTransform _rectTransform;
-    protected RectTransform rectTransform
+    private RectTransform rectTransform;
+    protected RectTransform ScrollRectTransform
     {
         get
         {
-            if (_rectTransform == null) _rectTransform = GetComponent<RectTransform>();
-            return _rectTransform;
+            if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+            return rectTransform;
         }
     }
 
-    private float _anchoredPosition
+    private float anchoredPosition
     {
         get
         {
-            return _direction == E_SCROLLDIRECT.VERTICAL ? -rectTransform.anchoredPosition.y : rectTransform.anchoredPosition.x;
+            return direction == E_SCROLLDIRECT.VERTICAL ? -ScrollRectTransform.anchoredPosition.y : ScrollRectTransform.anchoredPosition.x;
         }
     }
     public int lineItemCount
     {
         get
         {
-            if (_direction == E_SCROLLDIRECT.VERTICAL)
+            if (direction == E_SCROLLDIRECT.VERTICAL)
             {
                 return (int)(_scrollViewTransform.rect.width / (gapSizex + _itemPrototype.sizeDelta.x));
             }
@@ -78,30 +78,34 @@ public class OHScrollView : MonoBehaviour
         }
     }
 
-    private float _itemScale = -1;
-    public float itemScale
+    private float itemScale = -1;
+    public float ItemScale
     {
         get
         {
-            if (_itemPrototype != null && _itemScale == -1)
+            if (_itemPrototype != null && itemScale == -1)
             {
-                _itemScale = _direction == E_SCROLLDIRECT.VERTICAL ? _itemPrototype.sizeDelta.y : _itemPrototype.sizeDelta.x;
+                itemScale = direction == E_SCROLLDIRECT.VERTICAL ? _itemPrototype.sizeDelta.y : _itemPrototype.sizeDelta.x;
             }
-            return _itemScale;
+            return itemScale;
         }
     }
 
-    protected void Start()
+    private bool IsInit = false;
+    protected void InitScrollView(List<CommonScrollItemData> infos)
     {
+        IsInit = true;
+        SetInfoList(infos);
+
         var controllers = GetComponents<MonoBehaviour>()
-                .Where(item => item is IInfiniteScrollSetup)
-                .Select(item => item as IInfiniteScrollSetup)
+                .Where(item => item is IInfiniteScrollSetup<CommonScrollItemData>)
+                .Select(item => item as IInfiniteScrollSetup<CommonScrollItemData>)
                 .ToList();
 
         var scrollRect = _scrollRect;
-        scrollRect.horizontal = _direction == E_SCROLLDIRECT.HORIZONTAL;
-        scrollRect.vertical = _direction == E_SCROLLDIRECT.VERTICAL;
-        scrollRect.content = rectTransform;
+        scrollRect.horizontal = direction == E_SCROLLDIRECT.HORIZONTAL;
+        scrollRect.vertical = direction == E_SCROLLDIRECT.VERTICAL;
+        scrollRect.content = ScrollRectTransform;
         _itemPrototype.gameObject.SetActive(false);
         Vector2 pivotvecter = Vector2.zero;
 
@@ -135,15 +139,15 @@ public class OHScrollView : MonoBehaviour
             var item = GameObject.Instantiate(_itemPrototype) as RectTransform;
             item.SetParent(_scrollContent, false);
             item.name = i.ToString();
-            item.anchoredPosition = _direction == E_SCROLLDIRECT.VERTICAL ? new Vector2((itemScale+ gapSizex) * (i% lineItemCount), (-itemScale-gapSizey) * (i / lineItemCount)) :
-                new Vector2((itemScale+gapSizex) * (i/ lineItemCount), (-itemScale - gapSizey) *( i % lineItemCount));
-            _itemList.AddLast(item);
+            item.anchoredPosition = direction == E_SCROLLDIRECT.VERTICAL ? new Vector2((ItemScale+ gapSizex) * (i% lineItemCount), (-ItemScale-gapSizey) * (i / lineItemCount)) :
+                new Vector2((ItemScale+gapSizex) * (i/ lineItemCount), (-ItemScale - gapSizey) *( i % lineItemCount));
+            itemList.AddLast(item);
 
             item.gameObject.SetActive(true);
 
             foreach (var controller in controllers)
             {
-                controller.OnUpdateItem(i, item.gameObject);
+                controller.OnUpdateItem(i, item.gameObject, itemInfoLists);
             }
         }
         foreach (var controller in controllers)
@@ -151,94 +155,101 @@ public class OHScrollView : MonoBehaviour
             controller.OnPostSetupItems();
         }
     }
-
+    public void SetInfoList(List<CommonScrollItemData> infos)
+    {
+        itemInfoLists = infos;
+    }
     void Update()
     {
-        if (_itemList.First == null)
+        if(!IsInit)
         {
             return;
         }
-        int gapsize = _direction == E_SCROLLDIRECT.VERTICAL ? gapSizey : gapSizex;
-        Vector3 limitPos = Vector3.zero;
-        if (_direction == E_SCROLLDIRECT.VERTICAL)
+        if (itemList.First == null)
         {
-            if (rectTransform.anchoredPosition.y < 0)
+            return;
+        }
+        int gapsize = direction == E_SCROLLDIRECT.VERTICAL ? gapSizey : gapSizex;
+        Vector3 limitPos = Vector3.zero;
+        if (direction == E_SCROLLDIRECT.VERTICAL)
+        {
+            if (ScrollRectTransform.anchoredPosition.y < 0)
             {
-                rectTransform.anchoredPosition = new Vector2(rectTransform.anchoredPosition.x, 0);
+                ScrollRectTransform.anchoredPosition = new Vector2(ScrollRectTransform.anchoredPosition.x, 0);
                 return;
             }
-            SceneSizeCount = (int)rectTransform.sizeDelta.y / (int)(itemScale + gapsize);
-            limitPos = new Vector3(0, (maxCount / lineItemCount) * (itemScale + gapsize) - (SceneSizeCount-1)*(itemScale+gapsize), 0);
+            SceneSizeCount = (int)ScrollRectTransform.sizeDelta.y / (int)(ItemScale + gapsize);
+            limitPos = new Vector3(0, (maxCount / lineItemCount) * (ItemScale + gapsize) - (SceneSizeCount-1)*(ItemScale+gapsize), 0);
         }
         else
         {
-            if (rectTransform.anchoredPosition.x < 0)
+            if (ScrollRectTransform.anchoredPosition.x < 0)
             {
-                rectTransform.anchoredPosition = new Vector2(0, rectTransform.anchoredPosition.y);
+                ScrollRectTransform.anchoredPosition = new Vector2(0, ScrollRectTransform.anchoredPosition.y);
                 return;
             }
-            SceneSizeCount = (int)rectTransform.sizeDelta.x / (int)(itemScale + gapsize);
-            limitPos = new Vector3(-(maxCount / lineItemCount) * (itemScale + gapsize) + (SceneSizeCount - 1) * (itemScale + gapsize), 0, 0);
+            SceneSizeCount = (int)ScrollRectTransform.sizeDelta.x / (int)(ItemScale + gapsize);
+            limitPos = new Vector3(-(maxCount / lineItemCount) * (ItemScale + gapsize) + (SceneSizeCount - 1) * (ItemScale + gapsize), 0, 0);
         }
-        while (_anchoredPosition - _diffPreFramePosition < -(itemScale+ gapsize))
+        while (anchoredPosition - diffPreFramePosition < -(ItemScale+ gapsize))
         {
-            if (_currentItemNo + instantateItemCount >= maxCount)
+            if (currentItemNo + instantateItemCount >= maxCount)
             {
                 _scrollViewTransform.anchoredPosition = limitPos;
                 break;
             }
-            var item = _itemList.First.Value;
-            _itemList.RemoveFirst();
-            _itemList.AddLast(item);
-            var pos = (itemScale+ gapsize) * (instantateItemCount/ lineItemCount);
-            item.anchoredPosition = (_direction == E_SCROLLDIRECT.VERTICAL) ? new Vector2((itemScale + gapSizex) *((_currentItemNo + instantateItemCount) % lineItemCount), -pos+ _diffPreFramePosition) : 
-                new Vector2(pos+ _diffPreFramePosition, (-itemScale - gapSizey) * ((_currentItemNo + instantateItemCount) % lineItemCount));
+            var item = itemList.First.Value;
+            itemList.RemoveFirst();
+            itemList.AddLast(item);
+            var pos = (ItemScale+ gapsize) * (instantateItemCount/ lineItemCount);
+            item.anchoredPosition = (direction == E_SCROLLDIRECT.VERTICAL) ? new Vector2((ItemScale + gapSizex) *((currentItemNo + instantateItemCount) % lineItemCount), -pos+ diffPreFramePosition) : 
+                new Vector2(pos+ diffPreFramePosition, (-ItemScale - gapSizey) * ((currentItemNo + instantateItemCount) % lineItemCount));
 
-            _onUpdateItem.Invoke(_currentItemNo + instantateItemCount, item.gameObject);
+            onUpdateItem.Invoke(currentItemNo + instantateItemCount, item.gameObject);
 
-            item.gameObject.transform.name = (_currentItemNo + instantateItemCount).ToString();
-            _currentItemNo++;
+            item.gameObject.transform.name = (currentItemNo + instantateItemCount).ToString();
+            currentItemNo++;
 
-            if ((_currentItemNo + instantateItemCount) % lineItemCount  == 0|| _currentItemNo + instantateItemCount == maxCount)
+            if ((currentItemNo + instantateItemCount) % lineItemCount  == 0|| currentItemNo + instantateItemCount == maxCount)
             {
-                if (_direction == E_SCROLLDIRECT.VERTICAL)
+                if (direction == E_SCROLLDIRECT.VERTICAL)
                 {
-                    _diffPreFramePosition -= itemScale + gapsize;
+                    diffPreFramePosition -= ItemScale + gapsize;
                 }
                 else
                 {
-                    _diffPreFramePosition += itemScale + gapsize;
+                    diffPreFramePosition += ItemScale + gapsize;
                 }
             }
         }
 
-        while (_anchoredPosition - _diffPreFramePosition > 0)
+        while (anchoredPosition - diffPreFramePosition > 0)
         {
-            if (_currentItemNo - 1 < 0)
+            if (currentItemNo - 1 < 0)
             {
                 _scrollContent.anchoredPosition = new Vector3(0, 0, 0);
                 break;
             }
-            _currentItemNo--;
-            if (_currentItemNo% lineItemCount == 0)
+            currentItemNo--;
+            if (currentItemNo% lineItemCount == 0)
             {
-                _diffPreFramePosition += itemScale + gapsize;
+                diffPreFramePosition += ItemScale + gapsize;
             }
 
-            var item = _itemList.Last.Value;
-            _itemList.RemoveLast();
-            _itemList.AddFirst(item);
+            var item = itemList.Last.Value;
+            itemList.RemoveLast();
+            itemList.AddFirst(item);
 
-            var pos = (itemScale + gapsize) * (_currentItemNo/ lineItemCount);
-            item.anchoredPosition = (_direction == E_SCROLLDIRECT.VERTICAL) ? new Vector2((itemScale+gapSizex) *Mathf.Abs((_currentItemNo % lineItemCount)), -pos) : new Vector2(pos, (-itemScale-gapSizey) * Mathf.Abs((_currentItemNo % lineItemCount)));
-            _onUpdateItem.Invoke(_currentItemNo, item.gameObject);
-            item.gameObject.transform.name = _currentItemNo.ToString();
+            var pos = (ItemScale + gapsize) * (currentItemNo/ lineItemCount);
+            item.anchoredPosition = (direction == E_SCROLLDIRECT.VERTICAL) ? new Vector2((ItemScale+gapSizex) *Mathf.Abs((currentItemNo % lineItemCount)), -pos) : new Vector2(pos, (-ItemScale-gapSizey) * Mathf.Abs((currentItemNo % lineItemCount)));
+            onUpdateItem.Invoke(currentItemNo, item.gameObject);
+            item.gameObject.transform.name = currentItemNo.ToString();
         }
     }
-    public interface IInfiniteScrollSetup
+    public interface IInfiniteScrollSetup<T> where T : CommonScrollItemData
     {
         void OnPostSetupItems();
-        void OnUpdateItem(int itemCount, GameObject obj);
+        void OnUpdateItem(int itemCount, GameObject obj,List<T> infos);
     }
     [System.Serializable]
     public class OnItemPositionChange : UnityEngine.Events.UnityEvent<int, GameObject> { }

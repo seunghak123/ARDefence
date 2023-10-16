@@ -6,6 +6,10 @@ namespace Seunghak.SceneManager
     using Seunghak.UIManager;
     public class LobbySceneController : SceneController
     {
+        //메인 캐릭터 위치
+        [SerializeField] private Transform mainCHPos;
+
+        private GameObject mainCharacter;
         protected override void Awake()
         {
             base.Awake();
@@ -28,10 +32,6 @@ namespace Seunghak.SceneManager
         public override void RegistSceneStepAction(E_SCENESTEP_TYPE actionType, Action playAction)
         {
             base.RegistSceneStepAction(actionType, playAction);
-        }
-        public override void ChangeScene(E_SCENE_TYPE nextScene)
-        {
-            base.ChangeScene(nextScene);
         }
     }
 }

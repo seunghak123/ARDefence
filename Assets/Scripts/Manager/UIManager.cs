@@ -20,21 +20,18 @@ namespace Seunghak.UIManager
             //윈도우 뺴주는 작업 연계되어있는 것들을 다뺸다.
             while (windowStack.Count > 0)
             {
-                BaseUI popUI = GetUI(windowStack.Pop());
-                if(popUI is BaseUIWindow)
+                BaseUI popUI = GetUI(windowStack.Peek());
+                if (popUI is BaseUIWindow)
                 {
-                    if(popUI is LobbyWindow)
+                    if (popUI is LobbyWindow)
                     {
                         break;
                     }
-                    popUI.ExitWindow();
+                    windowStack.Pop();
+                    currentUI.CloseUI();
                     currentUI = GetUI(windowStack.Peek());
+                    currentUIString = currentUI.CUR_UI_TYPE.ToString();
                     break;
-                }
-                else
-                {
-                    popupStack.Pop();
-                    popUI.ExitWindow();
                 }
             }
 
@@ -42,6 +39,27 @@ namespace Seunghak.UIManager
             if (windowStack.Count == 0)
             {
                 PushUI(UI_TYPE.LobbyWindow);
+            }
+        }
+        public void popPopup()
+        {
+            while (popupStack.Count > 0)
+            {
+                BaseUI popUI = GetUI(popupStack.Pop());
+                if (popUI is BaseUIPopup)
+                {
+                    currentUI.CloseUI();
+                    if (popupStack.Count > 0)
+                    {
+                        currentUI = GetUI(popupStack.Peek());
+                    }
+                    else
+                    {
+                        currentUI = GetUI(windowStack.Peek());
+                    }
+                    currentUIString = currentUI.CUR_UI_TYPE.ToString();
+                    break;
+                }
             }
         }
         public void PopUI()
@@ -58,8 +76,7 @@ namespace Seunghak.UIManager
                 }
                 else if(currentUI is BaseUIPopup)
                 {
-                    popupStack.Clear();
-                    currentUI = GetUI(windowStack.Peek());
+                    popPopup();
                 }
             }
         }
@@ -120,11 +137,12 @@ namespace Seunghak.UIManager
                     layerSortingOrder = 10;
 
                     BaseUIWindow targetUIWindow = uicomponent.GetComponent<BaseUIWindow>();
-                    uicomponent.transform.parent = UIManager.Instance.baseCanvasObject.windowUIParent;
+                    uicomponent.transform.SetParent(UIManager.Instance.baseCanvasObject.windowUIParent, false);
                     if (currentUI is BaseUIPopup)
                     {
                         currentUI.ExitWindow();
                         GetUI(windowStack.Peek()).gameObject.SetActive(false);
+
                     }
                     else if (currentUI is BaseUIWindow)
                     {
@@ -137,8 +155,7 @@ namespace Seunghak.UIManager
                 else if (uicomponent.GetComponent<BaseUIPopup>() != null)
                 {
                     layerSortingOrder = 100;
-                    uicomponent.transform.parent = UIManager.Instance.baseCanvasObject.popUpUIParent;
-
+                    uicomponent.transform.SetParent(UIManager.Instance.baseCanvasObject.popUpUIParent, false);
                     BaseUIPopup targetPopupWindow = uicomponent.GetComponent<BaseUIPopup>();
 
                     if (currentUI is BaseUIPopup)
@@ -167,8 +184,14 @@ namespace Seunghak.UIManager
                 {
                     uicomponent.GetComponent<RectTransform>().localPosition = Vector2.zero;
                 }
+                uicomponent.gameObject.SetActive(true);
             }
-
+            if (uiType is UI_TYPE.LobbyWindow)
+            {
+                //UI일떄
+                windowStack.Clear();
+                popupStack.Clear();
+            }
             if (uicomponent != null)
             {
                 if (uicomponent is BaseUIWindow)
@@ -251,6 +274,10 @@ namespace Seunghak.UIManager
 
                 addedWindowLists.Add(targetUIName, uicomponent);
             }
+            else
+            {
+                uicomponent.gameObject.SetActive(true);
+            }
             return uicomponent;
         }
         #endregion UI_FlowLogic
@@ -279,7 +306,7 @@ namespace Seunghak.UIManager
         {
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-
+                currentUI.ExitWindow();
             }
         }
     }

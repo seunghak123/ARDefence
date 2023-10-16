@@ -17,11 +17,15 @@ namespace Seunghak.UIManager
         LobbyWindow,
         ShopWindow,
         BattleWindow,
+        InventoryWindow,
+
+        EventBegin = 100,
+
 
         BasePopupWindow = 1000,
         UserInfoPopup ,
         ShopBuyPopup,
-
+        UserEventPopup,
         OtherUI = 4000,
         BaseAwnserPopup,
     }
@@ -50,16 +54,18 @@ namespace Seunghak.UIManager
         {
             this.gameObject.SetActive(true);
         }
-
-        public virtual void ExitWindow()
+        public void CloseUI()
         {
-            UIManager.Instance.PopUI();
             if (exitAction != null)
             {
                 exitAction();
             }
 
             this.gameObject.SetActive(false);
+        }
+        public virtual void ExitWindow()
+        {
+            UIManager.Instance.PopUI();
         }
 
         public virtual void RestoreWindow()

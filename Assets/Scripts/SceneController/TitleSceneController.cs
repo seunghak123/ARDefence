@@ -24,9 +24,5 @@ namespace Seunghak.SceneManager
         {
             base.RegistSceneStepAction(actionType, playAction);
         }
-        public override void ChangeScene(E_SCENE_TYPE nextScene)
-        {
-            base.ChangeScene(nextScene);
-        }
     }
 }

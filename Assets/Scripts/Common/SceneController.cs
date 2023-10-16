@@ -20,7 +20,7 @@ namespace Seunghak.SceneManager
         {
             SceneManager.Instance.AddStepAction(actionType, playAction);
         }
-        public virtual void ChangeScene(E_SCENE_TYPE nextScene)
+        public void ChangeScene(E_SCENE_TYPE nextScene)
         {
             SceneManager.Instance.ChangeScene(nextScene);
         }

@@ -9,17 +9,25 @@ public class BaseAI : MonoBehaviour
     [Header("UnitInfo")]
     [SerializeField] private E_INGAME_AI_TYPE unitAIType = E_INGAME_AI_TYPE.NONE;
     [SerializeField] private E_INGAME_TEAM_TYPE unitTeamType;
+
     [Space(2)]
     [Header("UnitAnimation")]
     [SerializeField] private Animator unitAnim;
     [SerializeField] private UnitStructure unitInfo;
+
+    [Space(2)]
+    [Header("UnitFuction")]
+    [SerializeField] private CharacterController characterController;
     private Dictionary<E_INGAME_AI_TYPE, Action> userActionDic = new Dictionary<E_INGAME_AI_TYPE, Action>();
     
     private bool isDead = false;
+    private JUnitData aiUnitData = null;
     private Action currentUnitEvent = null;
 
+    private BaseAI targetAI = null;
     public void Awake()
     {
+        characterController = GetComponent<CharacterController>();
         RegistAction();
     }
     private void RegistAction()
@@ -56,10 +64,37 @@ public class BaseAI : MonoBehaviour
         }
     }
     #region UnitFunction
-    private void FindTargetObject()
+    private BaseAI FindTargetObject()
     {
+        targetAI = null;
+        //팀타입이 아군일떄
+        List<BaseAI> targetLists = IngameManager.currentManager.GetEnemyUnits();
+
+        if (targetLists.Count <= 0)
+        {
+            return null;
+        }
+        BaseAI closeAI = targetLists[0];
+
+        for(int i=1;i< targetLists.Count; i++)
+        {
+            //거리가 가깝고, 죽지 않았다면 해당 타겟으로 가까운 AI지정
+            if(Vector3.Distance( closeAI.transform.position,this.transform.position)>
+                Vector3.Distance(targetLists[i].transform.position,this.transform.position)
+                && !targetLists[i].isDead)
+            {
+                closeAI = targetLists[i];
+            }
+        }
         //IngameManager
         // 인근 UnitController 를 찾아서 TeamType이 자신의 Team이 아닌 것을 찾아야한다.
+
+        if (closeAI.isDead)
+        {
+            return null;
+        }
+        targetAI = closeAI;
+        return closeAI;
     }
     #endregion UnitFunction
 
@@ -91,6 +126,15 @@ public class BaseAI : MonoBehaviour
     }
     protected virtual void UnitIdle()
     {
+        if(isDead)
+        {
+            //죽어있는 상태면 아무것도 하지 않는다
+            return;
+        }
+        if (FindTargetObject() != null)
+        {
+            ChangeAI(E_INGAME_AI_TYPE.UNIT_MOVE);
+        }
         //타겟이 있으면 움직임
         //타겟 없으면 타겟서치
 
@@ -107,7 +151,7 @@ public class BaseAI : MonoBehaviour
         }
     }
     #endregion UnitState
-    public void Update()
+    public virtual void Update()
     {
         if(!isDead)
         {

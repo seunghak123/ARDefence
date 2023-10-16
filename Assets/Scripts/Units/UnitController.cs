@@ -6,6 +6,10 @@ using UnityEngine;
 public class UnitController : MonoBehaviour
 {
     [SerializeField] private BaseAI unitAI;
+    public BaseAI UNIT_AI
+    {
+        get { return unitAI; }
+    }
     //
     //[SerializeField] private BaseUnitUI unitUI;
     //생성시 유닛 고유 식별 ID
@@ -19,16 +23,26 @@ public class UnitController : MonoBehaviour
 
         //유닛데이터 지정하고
 
-
+        AttachAIComponent((E_UNIT_AI_TYPE)unitData.aiType);
         //AI 
         return true;
     }
-    private void AttachAIComponent(int AIType)
+    private void AttachAIComponent(E_UNIT_AI_TYPE aiType)
     {
-        
-        //AI 타입에따라 AI 스크립트 붙여주고
-
-        //this.gameObject.AddComponent<>
+        BaseAI addedAI = null;
+        switch (aiType)
+        {
+            case E_UNIT_AI_TYPE.MELEE_AI:
+                addedAI = this.gameObject.AddComponent<BaseAI>();
+                break;
+            case E_UNIT_AI_TYPE.RANGE_AI:
+                addedAI = this.gameObject.AddComponent<RangeAI>();
+                break;
+        }
+        if (addedAI != null)
+        {
+            unitAI = addedAI;
+        }
     }
 }
 #region UnitStruct

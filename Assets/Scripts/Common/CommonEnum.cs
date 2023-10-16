@@ -110,4 +110,9 @@ public enum E_STATVALUE_TYPE
     HP_DRAIN_VALUE,
     CRITICAL_PERCENT_VALUE,
 }
+public enum E_UNIT_AI_TYPE
+{
+    MELEE_AI,
+    RANGE_AI,
+}
 #endregion IngameType
