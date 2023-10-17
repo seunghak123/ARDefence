@@ -11,7 +11,8 @@ public class LobbyAI : BaseAI
     };
     public void PlayAnim()
     {
-        int random = Random.Range(0,playAnimAiLists.Count);
+        int random = Random.Range(0, playAnimAiLists.Count);
+        unitAIType = E_INGAME_AI_TYPE.NONE;
         ChangeAI(playAnimAiLists[random]);
     }
     public override void Update()

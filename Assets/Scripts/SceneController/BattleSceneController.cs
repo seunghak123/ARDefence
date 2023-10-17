@@ -5,6 +5,7 @@ namespace Seunghak.SceneManager
     using Seunghak.UIManager;
     public class BattleSceneController : SceneController
     {
+        [SerializeField] private IngameCanvas ingameUICanvas;
         protected override void Awake()
         {
             base.Awake();
@@ -17,7 +18,7 @@ namespace Seunghak.SceneManager
             //테스트 코드 SceneController에 데이터 넘기고 그걸 인게임 매니저에 전달 필요
             IngameManager.currentManager.CreateGame(0);
             //유저 데이터 가져와주고
-
+            ingameUICanvas.InitIngameCanvas();
             //로비씬으로 변경시 현재 데이터 보내주고
         }
         //�� �ε� �� �� �Ŵ����� ���� ��Ʈ�ѷ� ����ϴ� �Լ�

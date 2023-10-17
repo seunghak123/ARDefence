@@ -17,11 +17,8 @@ public class UserEventScrollItem : OHScrollView.IInfiniteScrollSetup<UserEventSc
         
     }
 
-    public void OnUpdateItem(int itemCount, GameObject obj, List<UserEventScrollData> infos)
+    public void OnUpdateItem( GameObject obj, UserEventScrollData infos)
     {
-        if(infos.Count> itemCount)
-        {
-            //해당 데이터로 현재 UI 세팅
-        }
+
     }
 }

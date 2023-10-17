@@ -1,5 +1,5 @@
 [System.Serializable]
-public class JStageData
+public class JStageData : JBaseData 
 {
 	public int index;
 	public string mapPrefab;

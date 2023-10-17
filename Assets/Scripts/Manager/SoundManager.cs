@@ -9,10 +9,16 @@ namespace Seunghak.Common
         [SerializeField] private AudioSource voiceAudioSource;
         [SerializeField] private List<AudioSource> fxAudioSources;
         private string currentPlayBGM;
-        public void PlayBGM(string soundName, float soundVolume)
+        public void PlayBGM(string soundName)
         {
             AudioClip resourceAudio = GameResourceManager.Instance.LoadObject(soundName) as AudioClip;
-
+            UserOptionData optionData = UserDataManager.Instance.GetUserOptionData();
+            if (optionData.IsMute)
+            {
+                return;
+            }
+            int volume = optionData.MasterVolume < optionData.SoundVolume ? optionData.MasterVolume : optionData.SoundVolume;
+            float percentVolume = volume / 100.0f;
             if (resourceAudio == null)
             {
                 return;
@@ -22,7 +28,7 @@ namespace Seunghak.Common
             {
                 return;
             }
-            StartCoroutine(PlayBGM(resourceAudio, soundVolume));
+            StartCoroutine(PlayBGM(resourceAudio, percentVolume));
 
         }
         private IEnumerator PlayBGM(AudioClip playingClip, float soundVolume)
@@ -40,21 +46,29 @@ namespace Seunghak.Common
         }
         public void PlaySound(string soundName, float soundVolume, bool isLoop/*,type도 넣어줄것*/)
         {
+            UserOptionData optionData = UserDataManager.Instance.GetUserOptionData();
+            if (optionData.IsMute)
+            {
+                return;
+            }
             AudioClip resourceAudio = GameResourceManager.Instance.LoadObject(soundName) as AudioClip;
+
+            int volume = optionData.MasterVolume < optionData.FBXVolume ? optionData.MasterVolume : optionData.FBXVolume;
+            float percentVolume = volume / 100.0f;
 
             if (resourceAudio == null)
             {
                 return;
             }
 
-            StartCoroutine(PlayVoice(resourceAudio, soundVolume));
+            StartCoroutine(PlayVoice(resourceAudio, percentVolume, isLoop));
 
         }
-        private IEnumerator PlayVoice(AudioClip playingClip, float soundVolume)
+        private IEnumerator PlayVoice(AudioClip playingClip, float soundVolume, bool isLoop)
         {
             voiceAudioSource.volume = soundVolume;
             voiceAudioSource.clip = playingClip;
-            voiceAudioSource.loop = true;
+            voiceAudioSource.loop = isLoop;
             voiceAudioSource.Play();
             yield break;
 

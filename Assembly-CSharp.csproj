@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\InGame\IngameCanvas.cs" />
     <Compile Include="Assets\Scripts\InGame\IngameManager.cs" />
     <Compile Include="Assets\Scripts\InGame\IngameMapUnitSpawnCam.cs" />
+    <Compile Include="Assets\Scripts\JClass\JBaseData.cs" />
     <Compile Include="Assets\Scripts\JClass\JShopData.cs" />
     <Compile Include="Assets\Scripts\JClass\JStageData.cs" />
     <Compile Include="Assets\Scripts\JClass\JUnitData.cs" />
@@ -116,6 +117,7 @@
     <Compile Include="Assets\Scripts\UI\Window\LobbyWindow\LobbyCamController.cs" />
     <Compile Include="Assets\Scripts\UI\Window\LobbyWindow\LobbyWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopBuyPopup.cs" />
+    <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopScrollItem.cs" />
     <Compile Include="Assets\Scripts\UI\Window\ShopWindow\ShopWindow.cs" />
     <Compile Include="Assets\Scripts\UI\Window\TitleWindow\TitleWindow.cs" />
     <Compile Include="Assets\Scripts\Units\BaseAI.cs" />

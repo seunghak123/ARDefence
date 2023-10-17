@@ -50,6 +50,7 @@ namespace Seunghak.UIManager
     {
         public DateTime eventTime;
         public string eventText;
-        //데이터 내용
+
+
     }
 }

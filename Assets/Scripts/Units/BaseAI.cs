@@ -7,7 +7,7 @@ using UnityEngine;
 public class BaseAI : MonoBehaviour
 {
     [Header("UnitInfo")]
-    [SerializeField] private E_INGAME_AI_TYPE unitAIType = E_INGAME_AI_TYPE.NONE;
+    [SerializeField] protected E_INGAME_AI_TYPE unitAIType = E_INGAME_AI_TYPE.NONE;
     [SerializeField] private E_INGAME_TEAM_TYPE unitTeamType;
 
     [Space(2)]

@@ -14,13 +14,18 @@ public class IngameCanvas : MonoBehaviour
     [Header("OptionPanel")]
     [SerializeField] private Button exitButton;
 
+    public void InitIngameCanvas()
+    {
+    }
     private void OnEnable()
     {
         optionButton.onClick.AddListener(OnOffOptionPanel);
+        exitButton.onClick.AddListener(ExitInGame);
     }
     private void OnDisable()
     {
         optionButton.onClick.RemoveListener(OnOffOptionPanel);
+        exitButton.onClick.RemoveListener(ExitInGame);
     }
     private void OnOffOptionPanel()
     {

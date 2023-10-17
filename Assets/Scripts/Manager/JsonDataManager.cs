@@ -10,7 +10,7 @@ namespace Seunghak.Common
     {
         private static Dictionary<string,string> dicJsonData = new Dictionary<string, string>();
 
-        public static List<T> LoadJsonDatas<T>(E_JSON_TYPE loadType)
+        public static List<T> LoadJsonDatas<T>(E_JSON_TYPE loadType) where T : JBaseData
         {
             String loadPath = "";
             String loadTypeString = loadType.ToString();
@@ -21,7 +21,7 @@ namespace Seunghak.Common
             }
             if (dicJsonData.ContainsKey(loadType.ToString()))
             {
-                return JsonConvert.DeserializeObject<List<T>>(dicJsonData[loadType.ToString()]);
+                return JsonConvert.DeserializeObject<List<T>> (dicJsonData[loadType.ToString()]) ;
             }
 
             List<T> loadedObject = new List<T>();
@@ -37,7 +37,7 @@ namespace Seunghak.Common
 #endif
             if (!dicJsonData.ContainsKey(loadType.ToString()))
             {
-                dicJsonData[loadType.ToString()] = loadedObject.ToString();
+                dicJsonData[loadType.ToString()] = loadData.ToString();
             }
             return loadedObject;
         }
