@@ -115,7 +115,8 @@ namespace Seunghak.SceneManager
             {
                 yield return waitframe;
             }
-
+            //여기에 데이터 로드 할떄까지 대기
+            //씬 로드시 완료될떄까지 대기탄다
             NextStep(E_SCENESTEP_TYPE.OPENSTEP);
             yield break;
         }

@@ -9,7 +9,7 @@ namespace Seunghak.SceneManager
         [SerializeField] private VideoPlayer introPlayer;
         protected void Awake()
         {
-            //로고 뜨고 뭐하고 ㅈㄹ하는거 여기다 넣을것
+            //로고 뜨고 뭐하고 
             introPlayer.Play();
         }
         bool isNext = false;
